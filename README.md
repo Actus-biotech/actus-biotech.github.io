@@ -34,4 +34,4 @@ The site is deployed automatically via GitHub Pages from the `main` branch.
 
 ## License
 
-[MIT](LICENSE) © 2026 Actus Biotech
+Copyright © 2026 Actus Biotech. All rights reserved. See [LICENSE](LICENSE).
