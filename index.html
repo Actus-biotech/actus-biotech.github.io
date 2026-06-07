@@ -952,6 +952,128 @@
     }
 
     /* ============================================================
+       CONTACT
+    ============================================================ */
+    .contact {
+      background: var(--surface-page);
+      padding: 90px 40px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .contact__inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .contact { padding: 72px 20px; }
+      .contact__inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+    .contact__h2 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text-strong);
+      margin-top: 14px;
+    }
+    .contact__body {
+      font-size: 16px;
+      line-height: 1.68;
+      color: var(--text-muted);
+      margin-top: 16px;
+      max-width: 420px;
+    }
+    .contact__links {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 32px;
+    }
+    .contact__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-body);
+      transition: color var(--dur-base) var(--ease-standard);
+    }
+    .contact__link:hover { color: var(--signal-600); }
+    .contact__link-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-md);
+      background: var(--surface-sunken);
+      border: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      flex: 0 0 auto;
+      transition: background var(--dur-base) var(--ease-standard),
+                  border-color var(--dur-base) var(--ease-standard),
+                  color var(--dur-base) var(--ease-standard);
+    }
+    .contact__link:hover .contact__link-icon {
+      background: var(--signal-100);
+      border-color: var(--signal-200);
+      color: var(--signal-600);
+    }
+
+    /* Social grid */
+    .social__label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 20px;
+    }
+    .social__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .social__card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--dur-slow) var(--ease-standard),
+                  transform var(--dur-slow) var(--ease-standard),
+                  border-color var(--dur-slow) var(--ease-standard);
+      text-decoration: none;
+    }
+    .social__card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--border-default);
+    }
+    .social__card-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      flex: 0 0 auto;
+      font-size: 20px;
+    }
+    .social__card-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-strong);
+    }
+    .social__card-handle {
+      font-size: 12.5px;
+      color: var(--text-faint);
+      margin-top: 2px;
+    }
+
+    /* ============================================================
        KEYFRAMES
     ============================================================ */
     @keyframes pulse-dot {
@@ -989,6 +1111,7 @@
       <li><a href="#technology">Technology</a></li>
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav__actions">
       <a href="#" class="nav__signin">Sign in</a>
@@ -1365,6 +1488,90 @@
       </div>
     </section>
 
+    <!-- ============================================================
+         CONTACT
+    ============================================================ -->
+    <section class="contact" id="contact" aria-label="Contact">
+      <div class="contact__inner">
+
+        <!-- Left: get in touch -->
+        <div data-reveal>
+          <span class="eyebrow">Get in touch</span>
+          <h2 class="contact__h2">We'd love to hear from you.</h2>
+          <p class="contact__body">Whether you're an athlete, physio, coach, or researcher — reach out and we'll get back to you within one business day.</p>
+          <div class="contact__links">
+            <a href="mailto:hello@actus.bio" class="contact__link">
+              <span class="contact__link-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+              </span>
+              hello@actus.bio
+            </a>
+            <a href="mailto:research@actus.bio" class="contact__link">
+              <span class="contact__link-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </span>
+              research@actus.bio
+            </a>
+            <a href="mailto:teams@actus.bio" class="contact__link">
+              <span class="contact__link-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </span>
+              teams@actus.bio
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: social media -->
+        <div data-reveal data-delay="1">
+          <div class="social__label">Follow us</div>
+          <div class="social__grid">
+
+            <a href="https://instagram.com/actusbiotech" class="social__card" target="_blank" rel="noopener" aria-label="Instagram">
+              <div class="social__card-icon" style="background: linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>
+              </div>
+              <div>
+                <div class="social__card-name">Instagram</div>
+                <div class="social__card-handle">@actusbiotech</div>
+              </div>
+            </a>
+
+            <a href="https://linkedin.com/company/actus-biotech" class="social__card" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <div class="social__card-icon" style="background: #0A66C2;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </div>
+              <div>
+                <div class="social__card-name">LinkedIn</div>
+                <div class="social__card-handle">Actus Biotech</div>
+              </div>
+            </a>
+
+            <a href="https://x.com/actusbiotech" class="social__card" target="_blank" rel="noopener" aria-label="X / Twitter">
+              <div class="social__card-icon" style="background: #000;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.857L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </div>
+              <div>
+                <div class="social__card-name">X / Twitter</div>
+                <div class="social__card-handle">@actusbiotech</div>
+              </div>
+            </a>
+
+            <a href="https://github.com/Actus-biotech" class="social__card" target="_blank" rel="noopener" aria-label="GitHub">
+              <div class="social__card-icon" style="background: #24292F;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              </div>
+              <div>
+                <div class="social__card-name">GitHub</div>
+                <div class="social__card-handle">Actus-biotech</div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -1415,7 +1622,20 @@
     </div>
     <div class="footer__bottom">
       <span>Copyright © 2026 Actus Biotech. All rights reserved.</span>
-      <span>Designed for athletes who train on signal.</span>
+      <div style="display:flex;gap:18px;align-items:center;">
+        <a href="https://instagram.com/actusbiotech" target="_blank" rel="noopener" aria-label="Instagram" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://linkedin.com/company/actus-biotech" target="_blank" rel="noopener" aria-label="LinkedIn" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="https://x.com/actusbiotech" target="_blank" rel="noopener" aria-label="X / Twitter" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.857L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://github.com/Actus-biotech" target="_blank" rel="noopener" aria-label="GitHub" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </a>
+      </div>
     </div>
   </footer>
 
