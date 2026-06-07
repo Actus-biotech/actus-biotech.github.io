@@ -2141,17 +2141,10 @@
     loader.load('assets/sensor.glb', (gltf) => {
       const obj = gltf.scene;
 
-      // Override materials: PBR metallic look with vertex colours if present
+      // Use the GLB's embedded materials as-is; just ensure smooth normals
       obj.traverse(child => {
         if (!child.isMesh) return;
         child.geometry.computeVertexNormals();
-        const hasVC = !!child.geometry.attributes.color;
-        child.material = new THREE.MeshStandardMaterial({
-          vertexColors : hasVC,
-          color        : hasVC ? 0xffffff : 0x999999,
-          roughness    : 0.38,
-          metalness    : 0.72,
-        });
       });
 
       // Centre the bounding box at the pivot origin
