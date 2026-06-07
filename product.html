@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Actus Sensor — The EMG Biowearable</title>
+  <meta name="description" content="The Actus EMG sensor. Clinical-grade muscle signal at 1 kHz, sub-20ms latency, six-axis IMU. Place anywhere on the body. Connects to your phone.">
+  <link rel="canonical" href="https://actus.bio/product.html">
+  <meta property="og:title" content="Actus Sensor — The EMG Biowearable">
+  <meta property="og:description" content="Clinical-grade EMG + IMU in a wearable sensor. Train and rehab on signal.">
+  <meta property="og:url" content="https://actus.bio/product.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Design tokens ──────────────────────────────────────────── */
+    :root {
+      --ink-950:#08080E; --ink-900:#0E0D16; --ink-850:#14131E;
+      --ink-800:#1A1926; --ink-700:#22212F; --ink-600:#2E2D3D;
+      --neutral-0:#FFFFFF; --neutral-25:#FAFAFD; --neutral-50:#F3F2FA;
+      --neutral-100:#E7E5F4; --neutral-200:#C6C4DC; --neutral-300:#A7A5C2;
+      --neutral-400:#8886A4; --neutral-500:#6A6882; --neutral-600:#515064;
+      --neutral-700:#3B3A4C; --neutral-800:#272634; --neutral-900:#181620;
+      --signal-100:#F1EFFE; --signal-200:#E0DAFC; --signal-300:#C5BAFF;
+      --signal-400:#A595F5; --signal-500:#8878E8; --signal-600:#6655C8;
+      --good-500:#5CB68A; --fatigue-500:#E5787E; --rest-500:#5AAEDF;
+      --font-display:'Sora',system-ui,sans-serif;
+      --font-sans:'Hanken Grotesk',system-ui,sans-serif;
+      --font-mono:'JetBrains Mono',ui-monospace,monospace;
+      --ease-out:cubic-bezier(0.16,1,0.3,1);
+      --ease-standard:cubic-bezier(0.2,0,0,1);
+      --dur-fast:140ms; --dur-base:220ms; --dur-slow:340ms;
+      --radius-md:8px; --radius-lg:12px; --radius-xl:16px; --radius-2xl:20px; --radius-pill:999px;
+      --glow-signal-sm:0 0 12px rgba(136,120,232,0.35);
+      --glow-signal-md:0 0 28px rgba(136,120,232,0.45);
+    }
+
+    /* ── Reset ──────────────────────────────────────────────────── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-sans);background:var(--ink-950);color:#fff;
+         -webkit-font-smoothing:antialiased;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    img{display:block;max-width:100%}
+
+    /* ── Scroll reveal ──────────────────────────────────────────── */
+    [data-reveal]{opacity:0;transform:translateY(30px);
+      transition:opacity .9s var(--ease-out),transform .9s var(--ease-out)}
+    [data-reveal].is-visible{opacity:1;transform:none}
+    [data-reveal][data-delay="1"]{transition-delay:120ms}
+    [data-reveal][data-delay="2"]{transition-delay:240ms}
+    [data-reveal][data-delay="3"]{transition-delay:360ms}
+
+    /* ── Nav ────────────────────────────────────────────────────── */
+    .nav{position:fixed;inset:0 0 auto;z-index:200;display:flex;
+      align-items:center;justify-content:space-between;padding:16px 40px;
+      transition:background var(--dur-slow) var(--ease-standard),
+                 border-color var(--dur-slow) var(--ease-standard);
+      border-bottom:1px solid transparent}
+    .nav.is-scrolled{background:rgba(8,8,14,.82);
+      -webkit-backdrop-filter:blur(22px) saturate(160%);
+      backdrop-filter:blur(22px) saturate(160%);
+      border-bottom-color:rgba(255,255,255,.07)}
+    .nav__logo{display:inline-flex;align-items:center;gap:10px}
+    .nav__logo img{height:26px}
+    .nav__wordmark{font-family:var(--font-display);font-weight:300;font-size:19px;
+      letter-spacing:.22em;color:#fff}
+    .nav__links{display:flex;align-items:center;gap:28px;list-style:none}
+    .nav__links a{font-size:14px;font-weight:500;color:rgba(255,255,255,.65);
+      transition:color var(--dur-fast) var(--ease-standard)}
+    .nav__links a:hover,.nav__links a.active{color:#fff}
+    .nav__actions{display:flex;align-items:center;gap:14px}
+    .nav__menu-btn{display:none;background:none;border:none;cursor:pointer;
+      padding:4px;gap:5px;flex-direction:column}
+    .nav__menu-btn span{display:block;width:22px;height:2px;
+      background:rgba(255,255,255,.85);border-radius:2px;
+      transition:transform var(--dur-base) var(--ease-standard),
+                 opacity var(--dur-base) var(--ease-standard)}
+    .nav__menu-btn.is-open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .nav__menu-btn.is-open span:nth-child(2){opacity:0;transform:scaleX(0)}
+    .nav__menu-btn.is-open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+    @media(max-width:860px){
+      .nav{padding:16px 20px}
+      .nav__links,.nav__actions{display:none}
+      .nav__menu-btn{display:flex}
+    }
+
+    /* Mobile menu */
+    .nav__mobile-menu{display:none;position:fixed;top:57px;left:0;right:0;
+      background:rgba(8,8,14,.97);
+      -webkit-backdrop-filter:blur(24px) saturate(160%);
+      backdrop-filter:blur(24px) saturate(160%);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding:8px 0 24px;z-index:199;flex-direction:column}
+    .nav__mobile-menu.is-open{display:flex}
+    .nav__mobile-menu li{list-style:none}
+    .nav__mobile-menu a{display:block;padding:15px 24px;font-size:17px;
+      font-weight:500;color:rgba(255,255,255,.82);
+      border-bottom:1px solid rgba(255,255,255,.05)}
+    .nav__mobile-menu a:hover{color:#fff;background:rgba(255,255,255,.04)}
+    .nav__mobile-cta{padding:18px 24px 0;display:flex;flex-direction:column;gap:10px}
+
+    /* ── Buttons ────────────────────────────────────────────────── */
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:0 26px;height:50px;
+      border-radius:var(--radius-pill);font-family:var(--font-sans);font-size:15px;
+      font-weight:600;border:none;cursor:pointer;white-space:nowrap;
+      transition:all var(--dur-base) var(--ease-standard)}
+    .btn--primary{background:var(--signal-500);color:#fff;
+      box-shadow:0 4px 20px rgba(136,120,232,.42)}
+    .btn--primary:hover{background:var(--signal-600);
+      box-shadow:0 6px 28px rgba(136,120,232,.55);transform:translateY(-1px)}
+    .btn--ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.88);
+      border:1.5px solid rgba(255,255,255,.16)}
+    .btn--ghost:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+    .btn--sm{height:40px;padding:0 18px;font-size:14px}
+
+    /* ── Shared section styles ──────────────────────────────────── */
+    .chapter-label{display:inline-flex;align-items:center;gap:10px;
+      font-family:var(--font-mono);font-size:12px;font-weight:600;
+      letter-spacing:.16em;text-transform:uppercase;color:var(--signal-400);
+      margin-bottom:22px}
+    .chapter-num{font-size:11px;color:var(--neutral-500);margin-right:4px}
+    .divider{width:100%;height:1px;background:rgba(255,255,255,.06)}
+    .photo-ph{width:100%;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:12px;
+      border-radius:var(--radius-xl);position:relative;overflow:hidden}
+    .photo-ph--dark{background:linear-gradient(160deg,var(--ink-800),var(--ink-950));
+      border:1.5px dashed rgba(136,120,232,.22)}
+    .photo-ph__lbl{font-size:11.5px;letter-spacing:.10em;text-transform:uppercase;
+      font-weight:600;color:var(--neutral-500)}
+    .photo-ph__icon{color:var(--neutral-600)}
+
+    /* ── HERO ───────────────────────────────────────────────────── */
+    .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;overflow:hidden;
+      padding:120px 40px 80px;text-align:center}
+    .hero__bg-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:900px;height:600px;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(136,120,232,.14) 0%,transparent 68%);
+      pointer-events:none}
+    .hero__bg-grid{position:absolute;inset:0;pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent)}
+    .hero__eyebrow{display:inline-flex;align-items:center;gap:8px;
+      font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+      color:var(--signal-400);margin-bottom:28px}
+    .hero__dot{width:6px;height:6px;border-radius:50%;background:var(--signal-500);
+      box-shadow:var(--glow-signal-sm);animation:pulse-dot 2.4s ease-in-out infinite}
+    .hero__h1{font-family:var(--font-display);font-size:clamp(52px,7vw,96px);
+      font-weight:600;letter-spacing:-.04em;line-height:1;margin-bottom:14px}
+    .hero__h1 em{font-style:normal;color:var(--signal-400)}
+    .hero__sub{font-size:clamp(16px,2vw,20px);color:var(--neutral-300);
+      max-width:540px;margin:0 auto 44px;line-height:1.6}
+    .hero__product{position:relative;width:100%;max-width:520px;
+      margin:0 auto 52px;aspect-ratio:1/1}
+    .hero__product .photo-ph{height:100%;border-radius:24px;min-height:400px}
+    .hero__product-glow{position:absolute;bottom:-40px;left:50%;
+      transform:translateX(-50%);width:320px;height:60px;
+      background:radial-gradient(ellipse,rgba(136,120,232,.4),transparent 70%);
+      filter:blur(20px);pointer-events:none}
+    .hero__specs-ribbon{display:flex;align-items:center;justify-content:center;
+      gap:0;border:1px solid rgba(255,255,255,.09);border-radius:var(--radius-pill);
+      overflow:hidden;background:rgba(255,255,255,.04);
+      -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+    .hero__spec{display:flex;flex-direction:column;align-items:center;
+      padding:16px 32px;gap:4px}
+    .hero__spec+.hero__spec{border-left:1px solid rgba(255,255,255,.09)}
+    .hero__spec-val{font-family:var(--font-mono);font-size:20px;font-weight:600;
+      color:#fff;letter-spacing:-.01em}
+    .hero__spec-lbl{font-size:11px;color:var(--neutral-500);
+      letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+    .hero__ctas{display:flex;gap:12px;justify-content:center;
+      flex-wrap:wrap;margin-top:36px}
+    @media(max-width:640px){
+      .hero{padding:110px 20px 64px}
+      .hero__specs-ribbon{flex-wrap:wrap;border-radius:var(--radius-xl)}
+      .hero__spec{flex:1 1 33%;border-left:none !important;
+        border-top:1px solid rgba(255,255,255,.09)}
+      .hero__spec:nth-child(-n+3){border-top:none}
+    }
+
+    /* ── STICKY PROGRESS BAR ────────────────────────────────────── */
+    .progress-bar{position:fixed;top:0;left:0;height:2px;width:0%;
+      background:var(--signal-500);z-index:300;
+      transition:width .1s linear;
+      box-shadow:0 0 8px rgba(136,120,232,.6)}
+
+    /* ── CHAPTER SECTIONS ───────────────────────────────────────── */
+    .chapter{position:relative;padding:120px 80px;overflow:hidden}
+    .chapter--full{padding:0;min-height:100vh;display:flex;align-items:center}
+    .chapter--alt{background:var(--ink-900)}
+    .chapter__inner{max-width:1200px;margin:0 auto;width:100%}
+    @media(max-width:1024px){.chapter{padding:88px 40px}}
+    @media(max-width:640px){.chapter{padding:64px 20px}}
+
+    /* Feature chapter — split layout */
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    .split--reverse{direction:rtl}
+    .split--reverse>*{direction:ltr}
+    @media(max-width:900px){
+      .split{grid-template-columns:1fr;gap:48px}
+      .split--reverse{direction:ltr}
+    }
+
+    .feat-h2{font-family:var(--font-display);
+      font-size:clamp(32px,4vw,52px);font-weight:600;
+      letter-spacing:-.03em;line-height:1.06;margin-bottom:20px}
+    .feat-body{font-size:17px;line-height:1.72;color:var(--neutral-300);
+      max-width:440px;margin-bottom:28px}
+    .feat-stat{display:flex;align-items:baseline;gap:8px;margin-top:32px}
+    .feat-stat__val{font-family:var(--font-mono);
+      font-size:clamp(52px,7vw,80px);font-weight:600;
+      color:#fff;letter-spacing:-.04em;line-height:1}
+    .feat-stat__unit{font-family:var(--font-mono);font-size:22px;
+      font-weight:500;color:var(--signal-400);letter-spacing:-.01em}
+    .feat-stat__lbl{font-size:13px;color:var(--neutral-500);
+      letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+      margin-left:4px;align-self:flex-end;padding-bottom:6px}
+
+    /* Pill tags */
+    .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+    .tag{display:inline-flex;align-items:center;gap:6px;
+      padding:6px 14px;border-radius:var(--radius-pill);
+      font-size:13px;font-weight:500;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);color:var(--neutral-200)}
+    .tag--signal{background:rgba(136,120,232,.12);
+      border-color:rgba(136,120,232,.28);color:var(--signal-300)}
+    .tag--good{background:rgba(92,182,138,.10);
+      border-color:rgba(92,182,138,.25);color:#80c9a2}
+    .tag--fatigue{background:rgba(229,120,126,.10);
+      border-color:rgba(229,120,126,.25);color:#f09898}
+
+    /* ── FULL-BLEED STAT SECTION ────────────────────────────────── */
+    .stat-chapter{min-height:60vh;display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:100px 40px;position:relative;overflow:hidden;
+      background:var(--ink-950)}
+    .stat-chapter__radial{position:absolute;inset:0;
+      background:radial-gradient(ellipse 70% 50% at 50% 50%,
+        rgba(136,120,232,.10),transparent 70%);pointer-events:none}
+    .stat-chapter__val{font-family:var(--font-mono);
+      font-size:clamp(80px,15vw,180px);font-weight:600;
+      letter-spacing:-.06em;line-height:.9;color:#fff;
+      position:relative;z-index:1}
+    .stat-chapter__val em{font-style:normal;color:var(--signal-400)}
+    .stat-chapter__label{font-size:clamp(16px,2vw,22px);
+      color:var(--neutral-400);margin-top:24px;letter-spacing:.02em;
+      position:relative;z-index:1}
+    .stat-chapter__sub{font-size:14px;color:var(--neutral-600);
+      margin-top:10px;letter-spacing:.06em;text-transform:uppercase;
+      font-weight:500;position:relative;z-index:1}
+
+    /* ── EMG WAVEFORM SECTION ───────────────────────────────────── */
+    .waveform-chapter{padding:100px 80px;background:var(--ink-900);
+      position:relative;overflow:hidden}
+    .waveform-chapter__inner{max-width:1200px;margin:0 auto}
+    .waveform-svg{width:100%;overflow:visible}
+    .waveform-path{fill:none;stroke:var(--signal-500);stroke-width:2px;
+      stroke-linecap:round;stroke-linejoin:round;
+      filter:drop-shadow(0 0 8px rgba(136,120,232,.55));
+      stroke-dasharray:1800;stroke-dashoffset:1800;
+      transition:stroke-dashoffset 2.8s var(--ease-out)}
+    .waveform-path.is-drawn{stroke-dashoffset:0}
+    .waveform-label-row{display:flex;justify-content:space-between;
+      align-items:flex-end;margin-bottom:24px}
+    @media(max-width:640px){.waveform-chapter{padding:64px 20px}}
+
+    /* ── PLACEMENT GRID ─────────────────────────────────────────── */
+    .placement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+      margin-top:40px}
+    @media(max-width:768px){.placement-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.placement-grid{grid-template-columns:1fr}}
+    .placement-card{padding:20px 18px;border-radius:var(--radius-lg);
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+      transition:background var(--dur-slow) var(--ease-standard),
+                 border-color var(--dur-slow) var(--ease-standard),
+                 transform var(--dur-slow) var(--ease-standard)}
+    .placement-card:hover{background:rgba(136,120,232,.08);
+      border-color:rgba(136,120,232,.22);transform:translateY(-2px)}
+    .placement-card__muscle{font-family:var(--font-display);font-size:15px;
+      font-weight:600;color:#fff;margin-bottom:4px}
+    .placement-card__use{font-size:12.5px;color:var(--neutral-500)}
+
+    /* ── SPEC TABLE ─────────────────────────────────────────────── */
+    .spec-table{width:100%;border-collapse:collapse;margin-top:40px}
+    .spec-table tr{border-bottom:1px solid rgba(255,255,255,.06)}
+    .spec-table tr:last-child{border-bottom:none}
+    .spec-table td{padding:18px 0;font-size:14.5px;vertical-align:top}
+    .spec-table td:first-child{color:var(--neutral-500);
+      font-size:13px;font-weight:500;letter-spacing:.04em;
+      text-transform:uppercase;width:40%;padding-right:24px}
+    .spec-table td:last-child{color:var(--neutral-100);font-weight:500;
+      font-family:var(--font-mono)}
+    @media(max-width:640px){
+      .spec-table td{font-size:13.5px}
+      .spec-table td:first-child{width:45%}
+    }
+
+    /* ── USE CASES ──────────────────────────────────────────────── */
+    .use-cases{display:grid;grid-template-columns:1fr 1fr;gap:2px;
+      margin-top:0}
+    @media(max-width:768px){.use-cases{grid-template-columns:1fr}}
+    .use-case{padding:72px 64px;position:relative;overflow:hidden;
+      min-height:480px;display:flex;flex-direction:column;justify-content:flex-end}
+    @media(max-width:640px){.use-case{padding:52px 24px;min-height:360px}}
+    .use-case--train{background:linear-gradient(160deg,var(--ink-800),var(--ink-950))}
+    .use-case--rehab{background:linear-gradient(160deg,rgba(92,182,138,.08),var(--ink-950))}
+    .use-case__ph{position:absolute;inset:0;display:flex;
+      align-items:center;justify-content:center;opacity:.15}
+    .use-case__content{position:relative;z-index:1}
+    .use-case__tag{font-size:11px;font-weight:600;letter-spacing:.14em;
+      text-transform:uppercase;margin-bottom:16px}
+    .use-case--train .use-case__tag{color:var(--signal-400)}
+    .use-case--rehab .use-case__tag{color:#80c9a2}
+    .use-case__h3{font-family:var(--font-display);font-size:clamp(26px,3vw,38px);
+      font-weight:600;letter-spacing:-.025em;line-height:1.08;margin-bottom:14px}
+    .use-case__body{font-size:15px;color:var(--neutral-400);
+      max-width:340px;line-height:1.68}
+
+    /* ── FINAL CTA ──────────────────────────────────────────────── */
+    .final-cta{padding:120px 40px;text-align:center;position:relative;overflow:hidden}
+    .final-cta__radial{position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:800px;height:400px;
+      background:radial-gradient(ellipse,rgba(136,120,232,.14),transparent 65%);
+      pointer-events:none}
+    .final-cta__h2{font-family:var(--font-display);
+      font-size:clamp(40px,6vw,80px);font-weight:600;
+      letter-spacing:-.04em;line-height:1;margin-bottom:18px}
+    .final-cta__h2 em{font-style:normal;color:var(--signal-400)}
+    .final-cta__sub{font-size:18px;color:var(--neutral-400);
+      max-width:480px;margin:0 auto 40px;line-height:1.6}
+    .final-cta__actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    @media(max-width:640px){.final-cta{padding:80px 20px}}
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    .footer{background:var(--ink-950);color:var(--neutral-400);
+      padding:56px 40px 38px;border-top:1px solid rgba(255,255,255,.06)}
+    .footer__inner{max-width:1200px;margin:0 auto;
+      display:flex;justify-content:space-between;
+      align-items:center;flex-wrap:wrap;gap:24px}
+    .footer__logo{display:inline-flex;align-items:center;gap:10px}
+    .footer__logo img{height:22px}
+    .footer__wordmark{font-family:var(--font-display);font-weight:300;
+      font-size:17px;letter-spacing:.22em;color:rgba(255,255,255,.6)}
+    .footer__links{display:flex;gap:28px;flex-wrap:wrap}
+    .footer__links a{font-size:13.5px;color:var(--neutral-500);
+      transition:color var(--dur-fast) var(--ease-standard)}
+    .footer__links a:hover{color:var(--neutral-200)}
+    .footer__copy{font-size:12.5px;color:var(--neutral-600);
+      width:100%;max-width:1200px;margin:24px auto 0;
+      padding-top:22px;border-top:1px solid rgba(255,255,255,.04)}
+    @media(max-width:640px){
+      .footer{padding:48px 20px 32px}
+      .footer__inner{flex-direction:column;align-items:flex-start}
+    }
+
+    /* ── Keyframes ──────────────────────────────────────────────── */
+    @keyframes pulse-dot{
+      0%,100%{opacity:1;transform:scale(1)}
+      50%{opacity:.4;transform:scale(.7)}
+    }
+    @keyframes breathe{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.04)}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div class="progress-bar" id="progress-bar"></div>
+
+<!-- ── NAV ──────────────────────────────────────────────────────── -->
+<nav class="nav" id="site-nav">
+  <a href="/" class="nav__logo" aria-label="Actus Biotech">
+    <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="">
+    <span class="nav__wordmark">ACTUS</span>
+  </a>
+  <ul class="nav__links">
+    <li><a href="/#product">Home</a></li>
+    <li><a href="product.html" class="active">Sensor</a></li>
+    <li><a href="/#how-it-works">How it works</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="nav__actions">
+    <a href="pricing.html" class="btn btn--primary btn--sm">Pre-order</a>
+  </div>
+  <button class="nav__menu-btn" aria-label="Open menu" id="menu-btn">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav__mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="product.html">Sensor</a></li>
+    <li><a href="/#how-it-works">How it works</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="nav__mobile-cta">
+    <a href="pricing.html" class="btn btn--primary">Pre-order →</a>
+  </div>
+</div>
+
+<!-- ── HERO ─────────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero__bg-glow" aria-hidden="true"></div>
+  <div class="hero__bg-grid" aria-hidden="true"></div>
+
+  <div class="hero__eyebrow" data-reveal>
+    <span class="hero__dot" aria-hidden="true"></span>
+    Actus Sensor — Gen 1
+  </div>
+
+  <h1 class="hero__h1" data-reveal data-delay="1">
+    Muscle<br><em>decoded.</em>
+  </h1>
+
+  <p class="hero__sub" data-reveal data-delay="2">
+    Clinical-grade EMG and six-axis IMU in a sensor small enough to wear anywhere on your body.
+  </p>
+
+  <!-- Product render placeholder -->
+  <div class="hero__product" data-reveal data-delay="2">
+    <div class="photo-ph photo-ph--dark" style="height:100%;min-height:400px;border-radius:24px;">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-600)" stroke-width="1.5" stroke-linecap="round" class="photo-ph__icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span class="photo-ph__lbl">Actus Sensor — product render</span>
+    </div>
+    <div class="hero__product-glow" aria-hidden="true"></div>
+  </div>
+
+  <!-- Specs ribbon -->
+  <div class="hero__specs-ribbon" data-reveal data-delay="3">
+    <div class="hero__spec">
+      <span class="hero__spec-val">1&thinsp;kHz</span>
+      <span class="hero__spec-lbl">Sample rate</span>
+    </div>
+    <div class="hero__spec">
+      <span class="hero__spec-val">&lt;20ms</span>
+      <span class="hero__spec-lbl">Latency</span>
+    </div>
+    <div class="hero__spec">
+      <span class="hero__spec-val">6-axis</span>
+      <span class="hero__spec-lbl">IMU</span>
+    </div>
+    <div class="hero__spec">
+      <span class="hero__spec-val">9h</span>
+      <span class="hero__spec-lbl">Battery</span>
+    </div>
+  </div>
+
+  <div class="hero__ctas" data-reveal data-delay="3">
+    <a href="pricing.html" class="btn btn--primary">Pre-order
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#chapter-emg" class="btn btn--ghost">Explore the technology</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CHAPTER 01: EMG SIGNAL ────────────────────────────────────── -->
+<section class="chapter" id="chapter-emg">
+  <div class="chapter__inner">
+    <div class="split">
+      <div data-reveal>
+        <div class="chapter-label">
+          <span class="chapter-num">01 /</span> EMG Signal
+        </div>
+        <h2 class="feat-h2">The electrical language of muscle.</h2>
+        <p class="feat-body">Every time a muscle fiber contracts it fires an electrical spike. Actus reads that signal at 1,000 times per second — fast enough to catch the micro-fluctuations that predict fatigue, form breakdown, and injury risk before you feel them.</p>
+        <div class="tag-row">
+          <span class="tag tag--signal">Clinical-grade amplifier</span>
+          <span class="tag tag--signal">Dry electrode contact</span>
+          <span class="tag tag--signal">Hardware noise filtering</span>
+        </div>
+        <div class="feat-stat">
+          <span class="feat-stat__val" data-countup="1000" data-suffix="">1000</span>
+          <span class="feat-stat__unit">Hz</span>
+          <span class="feat-stat__lbl">sample rate</span>
+        </div>
+      </div>
+      <div data-reveal data-delay="1">
+        <div class="photo-ph photo-ph--dark" style="aspect-ratio:1/1;min-height:380px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-600)" stroke-width="1.5" stroke-linecap="round" class="photo-ph__icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span class="photo-ph__lbl">Sensor on skin — close-up</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WAVEFORM INTERLUDE ─────────────────────────────────────────── -->
+<section class="waveform-chapter">
+  <div class="waveform-chapter__inner">
+    <div class="waveform-label-row" data-reveal>
+      <span style="font-family:var(--font-mono);font-size:12px;color:var(--neutral-600);letter-spacing:.10em;text-transform:uppercase;">Live EMG — left quadriceps</span>
+      <span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--good-500);font-weight:600;">
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--good-500);animation:pulse-dot 2s ease-in-out infinite;display:inline-block;"></span>
+        Recording
+      </span>
+    </div>
+    <svg class="waveform-svg" viewBox="0 0 1200 100" aria-label="Live EMG waveform" id="waveform-svg">
+      <!-- Baseline -->
+      <line x1="0" y1="50" x2="1200" y2="50" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+      <!-- Main signal -->
+      <polyline class="waveform-path" id="waveform-path"
+        points="0,50 60,50 80,50 96,18 108,50 116,72 128,8 140,90 152,50 180,50
+                210,50 226,50 240,22 254,50 262,68 274,14 286,84 298,50 330,50
+                360,50 376,50 392,26 406,50 414,66 426,10 438,88 450,50 480,50
+                510,50 526,50 542,28 556,50 564,70 576,12 588,86 600,50 630,50
+                660,50 676,50 690,24 704,50 712,68 724,8 736,90 748,50 780,50
+                810,50 826,50 840,26 854,50 862,66 874,10 886,88 898,50 930,50
+                960,50 976,50 990,24 1004,50 1012,68 1024,8 1036,92 1048,50 1080,50
+                1110,50 1126,50 1140,26 1154,50 1162,68 1174,12 1186,86 1200,50"/>
+    </svg>
+    <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--neutral-700);">
+      <span>0 ms</span><span>200 ms</span><span>400 ms</span><span>600 ms</span>
+      <span>800 ms</span><span>1000 ms</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── STAT: LATENCY ──────────────────────────────────────────────── -->
+<section class="stat-chapter" id="chapter-latency">
+  <div class="stat-chapter__radial" aria-hidden="true"></div>
+  <div>
+    <div class="stat-chapter__val" data-reveal>
+      &lt;<em>20</em>ms
+    </div>
+    <p class="stat-chapter__label" data-reveal data-delay="1">Signal-to-phone latency</p>
+    <p class="stat-chapter__sub" data-reveal data-delay="2">The signal reaches your screen before you feel the rep complete.</p>
+  </div>
+</section>
+
+<!-- ── CHAPTER 02: SIX-AXIS IMU ──────────────────────────────────── -->
+<section class="chapter chapter--alt" id="chapter-imu">
+  <div class="chapter__inner">
+    <div class="split split--reverse">
+      <div data-reveal>
+        <div class="chapter-label">
+          <span class="chapter-num">02 /</span> Motion Intelligence
+        </div>
+        <h2 class="feat-h2">EMG is only half the picture.</h2>
+        <p class="feat-body">Each sensor packs a 6-axis IMU — 3-axis accelerometer and 3-axis gyroscope. Actus fuses muscle signal with segment orientation in real time, so the app knows not just which muscles are firing, but exactly how your body is moving when they do.</p>
+        <div class="tag-row">
+          <span class="tag">3-axis accelerometer</span>
+          <span class="tag">3-axis gyroscope</span>
+          <span class="tag">Sensor fusion</span>
+        </div>
+        <div class="feat-stat">
+          <span class="feat-stat__val">6</span>
+          <span class="feat-stat__unit">-axis</span>
+          <span class="feat-stat__lbl">IMU per sensor</span>
+        </div>
+      </div>
+      <div data-reveal data-delay="1">
+        <div class="photo-ph photo-ph--dark" style="aspect-ratio:1/1;min-height:380px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-600)" stroke-width="1.5" stroke-linecap="round" class="photo-ph__icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span class="photo-ph__lbl">Sensor — IMU + EMG internals</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CHAPTER 03: PLACE ANYWHERE ────────────────────────────────── -->
+<section class="chapter" id="chapter-placement">
+  <div class="chapter__inner">
+    <div style="max-width:720px;margin-bottom:60px;" data-reveal>
+      <div class="chapter-label">
+        <span class="chapter-num">03 /</span> Place anywhere
+      </div>
+      <h2 class="feat-h2">Your whole body.<br>One system.</h2>
+      <p class="feat-body">Use a single sensor or place up to six simultaneously — on any muscle group. Actus maps activation across your entire body in one session.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start;">
+      <div data-reveal>
+        <div class="photo-ph photo-ph--dark" style="aspect-ratio:3/4;min-height:440px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-600)" stroke-width="1.5" stroke-linecap="round" class="photo-ph__icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span class="photo-ph__lbl">Body sensor placement map</span>
+        </div>
+      </div>
+      <div>
+        <div class="placement-grid">
+          <div class="placement-card" data-reveal data-delay="1">
+            <div class="placement-card__muscle">Quadriceps</div>
+            <div class="placement-card__use">Squat, cycling, running</div>
+          </div>
+          <div class="placement-card" data-reveal data-delay="1">
+            <div class="placement-card__muscle">Hamstrings</div>
+            <div class="placement-card__use">Sprint, deadlift, rehab</div>
+          </div>
+          <div class="placement-card" data-reveal data-delay="2">
+            <div class="placement-card__muscle">Gastrocnemius</div>
+            <div class="placement-card__use">Running, jumping</div>
+          </div>
+          <div class="placement-card" data-reveal data-delay="2">
+            <div class="placement-card__muscle">Gluteus Medius</div>
+            <div class="placement-card__use">Hip stability, gait</div>
+          </div>
+          <div class="placement-card" data-reveal data-delay="3">
+            <div class="placement-card__muscle">Biceps Brachii</div>
+            <div class="placement-card__use">Pull, curl, throw</div>
+          </div>
+          <div class="placement-card" data-reveal data-delay="3">
+            <div class="placement-card__muscle">Trapezius</div>
+            <div class="placement-card__use">Posture, press, carry</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--neutral-600);margin-top:20px;letter-spacing:.04em;">+ any skeletal muscle group</p>
+      </div>
+    </div>
+    @media(max-width:900px){
+      /* handled inline below */
+    }
+  </div>
+</section>
+
+<!-- ── STAT: SENSORS ─────────────────────────────────────────────── -->
+<section class="stat-chapter" style="background:var(--ink-900);">
+  <div class="stat-chapter__radial" aria-hidden="true"></div>
+  <div>
+    <div class="stat-chapter__val" data-reveal>
+      <em>6</em>+
+    </div>
+    <p class="stat-chapter__label" data-reveal data-delay="1">Simultaneous sensors</p>
+    <p class="stat-chapter__sub" data-reveal data-delay="2">Full bilateral coverage. Both sides, every major muscle group, one session.</p>
+  </div>
+</section>
+
+<!-- ── CHAPTER 04: THE APP ───────────────────────────────────────── -->
+<section class="chapter" id="chapter-app">
+  <div class="chapter__inner">
+    <div class="split">
+      <div data-reveal>
+        <div class="chapter-label">
+          <span class="chapter-num">04 /</span> The App
+        </div>
+        <h2 class="feat-h2">Signal translated<br>into action.</h2>
+        <p class="feat-body">The Actus app takes raw EMG and IMU streams and turns them into a calm, glanceable muscle map. No graphs to decode. Just clear cues — what to push, what to ease, and what to rest.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:28px;">
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--neutral-200);">
+            <span style="color:var(--signal-400);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>Live per-muscle activation map
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--neutral-200);">
+            <span style="color:var(--signal-400);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>Fatigue alerts — haptic + visual
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--neutral-200);">
+            <span style="color:var(--signal-400);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>Per-muscle recovery scoring
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--neutral-200);">
+            <span style="color:var(--signal-400);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>Coach-ready session reports
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--neutral-200);">
+            <span style="color:var(--signal-400);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>iOS &amp; Android
+          </div>
+        </div>
+      </div>
+      <div data-reveal data-delay="1">
+        <div class="photo-ph photo-ph--dark" style="aspect-ratio:9/16;max-width:280px;margin:0 auto;border-radius:28px;min-height:480px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-600)" stroke-width="1.5" stroke-linecap="round" class="photo-ph__icon" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span class="photo-ph__lbl">App — live session view</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── TECH SPECS ────────────────────────────────────────────────── -->
+<section class="chapter chapter--alt" id="specs">
+  <div class="chapter__inner">
+    <div data-reveal>
+      <div class="chapter-label">
+        <span class="chapter-num">05 /</span> Specifications
+      </div>
+      <h2 class="feat-h2" style="margin-bottom:0;">Every number<br>that matters.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 80px;margin-top:52px;">
+      <div data-reveal>
+        <table class="spec-table">
+          <tr><td>Sensing</td><td>Surface EMG</td></tr>
+          <tr><td>Sample rate</td><td>1,000 Hz</td></tr>
+          <tr><td>ADC resolution</td><td>24-bit</td></tr>
+          <tr><td>Latency</td><td>&lt; 20 ms</td></tr>
+          <tr><td>IMU</td><td>3-axis accel + 3-axis gyro</td></tr>
+          <tr><td>Connectivity</td><td>Bluetooth 5.3</td></tr>
+        </table>
+      </div>
+      <div data-reveal data-delay="1">
+        <table class="spec-table">
+          <tr><td>Simultaneous sensors</td><td>Up to 6</td></tr>
+          <tr><td>Battery life</td><td>9 hours continuous</td></tr>
+          <tr><td>Charging</td><td>USB-C, case included</td></tr>
+          <tr><td>Water resistance</td><td>IP54</td></tr>
+          <tr><td>Electrode type</td><td>Dry, reusable</td></tr>
+          <tr><td>Compatibility</td><td>iOS 16+ / Android 12+</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── USE CASES ─────────────────────────────────────────────────── -->
+<div class="use-cases" id="use-cases">
+  <div class="use-case use-case--train" data-reveal>
+    <div class="use-case__ph" aria-hidden="true">
+      <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="var(--signal-400)" stroke-width=".6" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    </div>
+    <div class="use-case__content">
+      <div class="use-case__tag">Training</div>
+      <h3 class="use-case__h3">Train with precision.<br>Not assumption.</h3>
+      <p class="use-case__body">Know exactly which muscles are doing the work, catch fatigue before it becomes failure, and make every rep count.</p>
+    </div>
+  </div>
+  <div class="use-case use-case--rehab" data-reveal data-delay="1">
+    <div class="use-case__ph" aria-hidden="true">
+      <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#5CB68A" stroke-width=".6" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+    <div class="use-case__content">
+      <div class="use-case__tag">Rehabilitation</div>
+      <h3 class="use-case__h3">Rehab guided<br>by real data.</h3>
+      <p class="use-case__body">Track muscle reactivation after injury, confirm symmetry is returning, and share objective progress reports with your physio.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── FINAL CTA ─────────────────────────────────────────────────── -->
+<section class="final-cta">
+  <div class="final-cta__radial" aria-hidden="true"></div>
+  <h2 class="final-cta__h2" data-reveal>
+    Feel every<br><em>fiber fire.</em>
+  </h2>
+  <p class="final-cta__sub" data-reveal data-delay="1">
+    Pre-order your Actus sensor kit. Free shipping. 30-day returns.
+  </p>
+  <div class="final-cta__actions" data-reveal data-delay="2">
+    <a href="pricing.html" class="btn btn--primary">
+      Pre-order now
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="/#contact" class="btn btn--ghost">Talk to us</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer__inner">
+    <a href="/" class="footer__logo" aria-label="Actus Biotech">
+      <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="">
+      <span class="footer__wordmark">ACTUS</span>
+    </a>
+    <div class="footer__links">
+      <a href="/">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="/#contact">Contact</a>
+      <a href="https://github.com/Actus-biotech" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/company/actus-biotech" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer__copy">
+    Copyright © 2026 Actus Biotech. All rights reserved.
+  </div>
+</footer>
+
+<script>
+  // Scroll progress bar
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  }, { passive: true });
+
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+
+  // Hero above fold — trigger immediately
+  document.querySelectorAll('.hero [data-reveal]').forEach(el =>
+    setTimeout(() => el.classList.add('is-visible'), 80));
+
+  // Nav frosted glass on scroll
+  const nav = document.getElementById('site-nav');
+  window.addEventListener('scroll', () =>
+    nav.classList.toggle('is-scrolled', window.scrollY > 40), { passive: true });
+
+  // Mobile menu
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  menuBtn.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('is-open');
+    menuBtn.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('is-open');
+    menuBtn.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }));
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 860) {
+      mobileMenu.classList.remove('is-open');
+      menuBtn.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // EMG waveform draw on scroll
+  const waveformPath = document.getElementById('waveform-path');
+  const waveObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { waveformPath.classList.add('is-drawn'); waveObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.3 });
+  waveObs.observe(document.getElementById('waveform-svg'));
+</script>
+</body>
+</html>
