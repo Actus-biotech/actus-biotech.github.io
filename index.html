@@ -748,6 +748,33 @@
     }
     .sensor-viewer__hint.is-hidden { opacity: 0; }
 
+    /* Color swatches */
+    .color-swatches {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 2px 0 18px;
+      justify-content: center;
+    }
+    .color-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--swatch-color);
+      border: 2px solid rgba(255,255,255,0.12);
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+      cursor: pointer;
+      padding: 0;
+      transition: outline-color 0.18s, transform 0.18s, border-color 0.18s;
+      flex-shrink: 0;
+    }
+    .color-swatch:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.3); }
+    .color-swatch.is-active {
+      outline-color: rgba(255,255,255,0.55);
+      border-color: rgba(255,255,255,0.25);
+    }
+
     /* Sensor spec pills */
     .spec-pills {
       display: flex;
@@ -1631,6 +1658,12 @@
               Drag to rotate
             </div>
 
+            <div class="color-swatches" id="sensor-swatches" role="group" aria-label="Sensor color options">
+              <button class="color-swatch is-active" data-color="default" style="--swatch-color: #2A2440" aria-label="Dark (default)" title="Midnight"></button>
+              <button class="color-swatch" data-color="#D8D4EC" style="--swatch-color: #E0DCF4" aria-label="Light" title="Pearl"></button>
+              <button class="color-swatch" data-color="#C83868" style="--swatch-color: #E04880" aria-label="Pink" title="Rose"></button>
+            </div>
+
             <div class="spec-pills">
               <span class="spec-pill"><strong>1kHz</strong> EMG</span>
               <span class="spec-pill"><strong>6-axis</strong> IMU</span>
@@ -2216,11 +2249,15 @@
       let autoY  = 0;
       let lastTs = null;
       let dragging = false;
+      const meshes = []; // populated on load, used by setColor
 
       new GLTFLoader().load(glbPath, gltf => {
         const obj = gltf.scene;
         obj.traverse(child => {
-          if (child.isMesh) child.geometry.computeVertexNormals();
+          if (!child.isMesh) return;
+          child.geometry.computeVertexNormals();
+          child.material = child.material.clone(); // isolate per-instance so tinting doesn't bleed
+          meshes.push({ mesh: child, origColor: child.material.color.clone() });
         });
 
         const box    = new THREE.Box3().setFromObject(obj);
@@ -2298,11 +2335,32 @@
       wrapper.addEventListener('touchend', () => {
         dragging = false; autoY = cur.y;
       });
+
+      /* Color API */
+      function setColor(hex) {
+        meshes.forEach(({ mesh, origColor }) => {
+          hex === null
+            ? mesh.material.color.copy(origColor)
+            : mesh.material.color.set(hex);
+        });
+      }
+      return { setColor };
     }
 
     /* ── Instantiate both viewers ── */
-    makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb');
-    makeViewer('hub-viewer',    'hub-canvas',    'hub-hint',    'assets/hub.glb');
+    const sensorViewer = makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb');
+    makeViewer('hub-viewer', 'hub-canvas', 'hub-hint', 'assets/hub.glb');
+
+    /* ── Sensor color swatches ── */
+    document.querySelectorAll('#sensor-swatches .color-swatch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#sensor-swatches .color-swatch')
+          .forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        const hex = btn.dataset.color === 'default' ? null : btn.dataset.color;
+        sensorViewer.setColor(hex);
+      });
+    });
   </script>
 
 </body>
