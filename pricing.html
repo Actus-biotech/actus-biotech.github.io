@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Actus Biotech — Pricing | Own the hardware, train on signal</title>
+  <meta name="description" content="One-time hardware kits with no lock-in. Upgrade to Pro for recovery intelligence whenever you're ready. Free shipping, 30-day returns.">
+  <link rel="canonical" href="https://actus.bio/pricing">
+
+  <meta property="og:title" content="Actus Biotech — Pricing">
+  <meta property="og:description" content="One-time hardware kits with no lock-in. Upgrade to Pro for recovery intelligence whenever you're ready.">
+  <meta property="og:url" content="https://actus.bio/pricing.html">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Design tokens (same as index.html) */
+    :root {
+      --ink-950: #08080E; --ink-900: #0E0D16; --ink-850: #14131E;
+      --ink-800: #1A1926; --ink-700: #22212F;
+      --neutral-0: #FFFFFF; --neutral-25: #FAFAFD; --neutral-50: #F3F2FA;
+      --neutral-100: #E7E5F4; --neutral-150: #D8D6EA; --neutral-200: #C6C4DC;
+      --neutral-300: #A7A5C2; --neutral-400: #8886A4; --neutral-500: #6A6882;
+      --neutral-600: #515064; --neutral-700: #3B3A4C; --neutral-800: #272634;
+      --neutral-900: #181620;
+      --signal-100: #F1EFFE; --signal-200: #E0DAFC; --signal-300: #C5BAFF;
+      --signal-400: #A595F5; --signal-500: #8878E8; --signal-600: #6655C8;
+      --good-500: #5CB68A; --fatigue-500: #E5787E;
+      --surface-page: var(--neutral-25); --surface-card: var(--neutral-0);
+      --surface-sunken: var(--neutral-50);
+      --text-strong: var(--neutral-900); --text-body: var(--neutral-700);
+      --text-muted: var(--neutral-500); --text-faint: var(--neutral-400);
+      --border-subtle: var(--neutral-100); --border-default: var(--neutral-150);
+      --accent-text: var(--signal-600);
+      --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+      --radius-2xl: 20px; --radius-pill: 999px;
+      --shadow-sm: 0 2px 6px rgba(20,18,40,0.07);
+      --shadow-md: 0 6px 18px rgba(20,18,40,0.09);
+      --glow-signal-md: 0 0 24px rgba(136,120,232,0.45);
+      --font-display: 'Sora', system-ui, sans-serif;
+      --font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+      --dur-fast: 140ms; --dur-base: 220ms; --dur-slow: 340ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); font-size: 16px; line-height: 1.5; color: var(--text-body); background: var(--surface-page); -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out); }
+    [data-reveal].is-visible { opacity: 1; transform: none; }
+    [data-reveal][data-delay="1"] { transition-delay: 100ms; }
+    [data-reveal][data-delay="2"] { transition-delay: 200ms; }
+    [data-reveal][data-delay="3"] { transition-delay: 300ms; }
+
+    .eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-text); }
+    .eyebrow--light { color: var(--signal-400); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 0 26px; height: 50px; border-radius: var(--radius-pill); font-family: var(--font-sans); font-size: 15px; font-weight: 600; border: none; cursor: pointer; transition: all var(--dur-base) var(--ease-standard); white-space: nowrap; text-decoration: none; }
+    .btn--primary { background: var(--signal-500); color: #fff; box-shadow: 0 4px 20px rgba(136,120,232,0.42); }
+    .btn--primary:hover { background: var(--signal-600); box-shadow: 0 6px 28px rgba(136,120,232,0.55); transform: translateY(-1px); }
+    .btn--outline { background: transparent; color: var(--text-strong); border: 1.5px solid var(--border-default); }
+    .btn--outline:hover { background: var(--surface-sunken); border-color: var(--neutral-300); transform: translateY(-1px); }
+    .btn--ghost-white { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.88); border: 1.5px solid rgba(255,255,255,0.18); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.14); transform: translateY(-1px); }
+    .btn--sm { height: 40px; padding: 0 18px; font-size: 14px; }
+    .btn--full { width: 100%; justify-content: center; }
+
+    /* NAV */
+    .nav { position: fixed; inset: 0 0 auto; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; transition: background var(--dur-slow) var(--ease-standard), border-color var(--dur-slow) var(--ease-standard); border-bottom: 1px solid transparent; }
+    .nav.is-scrolled { background: rgba(8,8,14,0.72); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border-bottom-color: rgba(255,255,255,0.07); }
+    .nav__logo { display: inline-flex; align-items: center; gap: 10px; }
+    .nav__logo img { height: 26px; }
+    .nav__wordmark { font-family: var(--font-display); font-weight: 300; font-size: 19px; letter-spacing: 0.22em; color: #fff; }
+    .nav__links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav__links a { font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.72); transition: color var(--dur-fast) var(--ease-standard); }
+    .nav__links a:hover, .nav__links a.active { color: #fff; }
+    .nav__actions { display: flex; align-items: center; gap: 14px; }
+    .nav__signin { font-size: 14.5px; font-weight: 600; color: rgba(255,255,255,0.8); transition: color var(--dur-fast) var(--ease-standard); }
+    .nav__signin:hover { color: #fff; }
+    .nav__menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 4px; gap: 5px; flex-direction: column; }
+    .nav__menu-btn span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.85); border-radius: 2px; }
+    @media (max-width: 860px) { .nav { padding: 16px 20px; } .nav__links, .nav__actions { display: none; } .nav__menu-btn { display: flex; } }
+
+    /* HERO */
+    .pricing-hero { background: var(--ink-950); color: #fff; padding: 130px 40px 60px; text-align: center; position: relative; overflow: hidden; }
+    .pricing-hero__radial { position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 700px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(136,120,232,0.15), transparent 60%); pointer-events: none; }
+    .pricing-hero__content { position: relative; max-width: 680px; margin: 0 auto; }
+    .pricing-hero__h1 { font-family: var(--font-display); font-size: clamp(36px, 5vw, 54px); font-weight: 600; letter-spacing: -0.025em; margin: 14px 0 0; line-height: 1.08; }
+    .pricing-hero__sub { font-size: 18px; color: var(--neutral-300); max-width: 520px; margin: 16px auto 0; line-height: 1.58; }
+
+    /* PLANS */
+    .plans-section { background: var(--surface-page); padding: 0 40px; }
+    .plans-grid { max-width: 1080px; margin: 0 auto; display: flex; gap: 22px; align-items: flex-start; transform: translateY(-44px); }
+    @media (max-width: 768px) { .plans-section { padding: 0 20px; } .plans-grid { flex-direction: column; transform: translateY(-28px); } }
+
+    .plan-card { flex: 1; border-radius: var(--radius-2xl); padding: 34px 28px; position: relative; }
+    .plan-card--base { background: var(--surface-card); border: 1px solid var(--border-default); box-shadow: var(--shadow-sm); color: var(--text-body); }
+    .plan-card--featured { background: linear-gradient(160deg, var(--ink-800), var(--ink-950)); border: 1px solid rgba(136,120,232,0.30); box-shadow: var(--glow-signal-md), 0 30px 70px rgba(0,0,0,0.28); color: #fff; transform: translateY(-14px); }
+    @media (max-width: 768px) { .plan-card--featured { transform: none; } }
+
+    .plan-badge { position: absolute; top: 22px; right: 22px; display: inline-flex; align-items: center; padding: 4px 12px; border-radius: var(--radius-pill); background: rgba(136,120,232,0.20); border: 1px solid rgba(136,120,232,0.35); font-size: 12px; font-weight: 600; color: var(--signal-300); letter-spacing: 0.04em; }
+    .plan-name { font-family: var(--font-display); font-size: 21px; font-weight: 600; }
+    .plan-card--base .plan-name { color: var(--text-strong); }
+    .plan-card--featured .plan-name { color: #fff; }
+    .plan-tagline { font-size: 13.5px; margin-top: 8px; min-height: 38px; line-height: 1.5; }
+    .plan-card--base .plan-tagline { color: var(--text-muted); }
+    .plan-card--featured .plan-tagline { color: var(--neutral-300); }
+    .plan-price { display: flex; align-items: baseline; gap: 6px; margin-top: 16px; }
+    .plan-price__val { font-family: var(--font-display); font-size: 42px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+    .plan-card--base .plan-price__val { color: var(--text-strong); }
+    .plan-card--featured .plan-price__val { color: #fff; }
+    .plan-price__suffix { font-size: 14px; }
+    .plan-card--base .plan-price__suffix { color: var(--text-muted); }
+    .plan-card--featured .plan-price__suffix { color: var(--neutral-300); }
+    .plan-cta { margin: 24px 0; }
+    .plan-features { display: flex; flex-direction: column; gap: 12px; }
+    .plan-feat { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+    .plan-card--base .plan-feat { color: var(--text-body); }
+    .plan-card--featured .plan-feat { color: var(--neutral-200); }
+    .plan-feat__icon { flex: 0 0 auto; margin-top: 1px; }
+    .plan-card--base .plan-feat__icon { color: var(--good-500); }
+    .plan-card--featured .plan-feat__icon { color: var(--signal-400); }
+
+    /* FAQ */
+    .faq-section { background: var(--surface-page); padding: 20px 40px 90px; }
+    .faq-inner { max-width: 760px; margin: 0 auto; }
+    .faq-h2 { font-family: var(--font-display); font-size: 30px; font-weight: 600; color: var(--text-strong); text-align: center; letter-spacing: -0.02em; margin-bottom: 30px; }
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 22px 26px; cursor: pointer; transition: border-color var(--dur-base) var(--ease-standard); }
+    .faq-item:hover { border-color: var(--border-default); }
+    .faq-q { font-family: var(--font-display); font-size: 16.5px; font-weight: 600; color: var(--text-strong); display: flex; justify-content: space-between; align-items: center; gap: 16px; user-select: none; }
+    .faq-q__icon { color: var(--text-faint); flex: 0 0 auto; transition: transform var(--dur-base) var(--ease-standard); }
+    .faq-item.open .faq-q__icon { transform: rotate(180deg); }
+    .faq-a { font-size: 14.5px; line-height: 1.68; color: var(--text-muted); max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease-out), margin-top 0.3s var(--ease-out); margin-top: 0; }
+    .faq-item.open .faq-a { max-height: 200px; margin-top: 12px; }
+
+    /* FOOTER */
+    .footer { background: var(--ink-950); color: var(--neutral-400); padding: 64px 40px 42px; position: relative; overflow: hidden; }
+    .footer__emg { position: absolute; top: 0; left: 0; width: 100%; height: 60px; opacity: 0.22; pointer-events: none; }
+    .footer__inner { max-width: 1120px; margin: 0 auto; display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+    .footer__brand { max-width: 280px; }
+    .footer__brand-logo { display: inline-flex; align-items: center; gap: 10px; }
+    .footer__brand-logo img { height: 24px; }
+    .footer__tagline { font-size: 14px; line-height: 1.62; margin-top: 18px; color: var(--neutral-400); }
+    .footer__cols { display: flex; gap: 60px; flex-wrap: wrap; }
+    .footer__col-head { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--neutral-300); font-weight: 600; margin-bottom: 16px; }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .footer__links a { font-size: 14px; color: var(--neutral-400); transition: color var(--dur-fast) var(--ease-standard); }
+    .footer__links a:hover { color: var(--neutral-200); }
+    .footer__bottom { max-width: 1120px; margin: 48px auto 0; padding-top: 22px; border-top: 1px solid var(--ink-800); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13px; color: var(--neutral-500); }
+    @media (max-width: 768px) { .footer { padding: 64px 20px 42px; } .footer__inner { flex-direction: column; } .footer__cols { gap: 36px; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="site-nav">
+    <a href="/" class="nav__logo" aria-label="Actus Biotech — home">
+      <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="">
+      <span class="nav__wordmark">ACTUS</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="/#product">Product</a></li>
+      <li><a href="/#technology">Technology</a></li>
+      <li><a href="/#how-it-works">How it works</a></li>
+      <li><a href="pricing.html" class="active">Pricing</a></li>
+    </ul>
+    <div class="nav__actions">
+      <a href="#" class="nav__signin">Sign in</a>
+      <a href="pricing.html" class="btn btn--primary btn--sm">Get Actus</a>
+    </div>
+    <button class="nav__menu-btn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="pricing-hero" aria-label="Pricing header">
+      <div class="pricing-hero__radial" aria-hidden="true"></div>
+      <div class="pricing-hero__content" data-reveal>
+        <span class="eyebrow eyebrow--light">Pricing</span>
+        <h1 class="pricing-hero__h1">Own the hardware.<br>Train on signal.</h1>
+        <p class="pricing-hero__sub">One-time kits, no lock-in. Upgrade to Pro for recovery intelligence whenever you're ready.</p>
+      </div>
+    </section>
+
+    <!-- PLANS -->
+    <section class="plans-section" aria-label="Pricing plans">
+      <div class="plans-grid">
+
+        <!-- Solo -->
+        <div class="plan-card plan-card--base" data-reveal data-delay="1">
+          <div class="plan-name">Solo</div>
+          <p class="plan-tagline">For the individual athlete dialing in their form.</p>
+          <div class="plan-price">
+            <span class="plan-price__val">$249</span>
+            <span class="plan-price__suffix">one-time</span>
+          </div>
+          <div class="plan-cta">
+            <a href="mailto:hello@actus.bio?subject=Solo kit" class="btn btn--outline btn--full">Buy Solo kit</a>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              4 EMG sensors with IMU
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Live muscle activation map
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Fatigue alerts
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Free Actus app (iOS &amp; Android)
+            </div>
+          </div>
+        </div>
+
+        <!-- Pro (featured) -->
+        <div class="plan-card plan-card--featured" data-reveal data-delay="2">
+          <div class="plan-badge">Most popular</div>
+          <div class="plan-name">Pro</div>
+          <p class="plan-tagline">Full-body coverage with recovery intelligence.</p>
+          <div class="plan-price">
+            <span class="plan-price__val">$349</span>
+            <span class="plan-price__suffix">+ $12/mo</span>
+          </div>
+          <div class="plan-cta">
+            <a href="mailto:hello@actus.bio?subject=Pro kit" class="btn btn--primary btn--full">Buy Pro kit</a>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              6 EMG sensors with IMU
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Everything in Solo
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Per-muscle recovery scoring
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Coach-ready session reports
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Priority support
+            </div>
+          </div>
+        </div>
+
+        <!-- Team -->
+        <div class="plan-card plan-card--base" data-reveal data-delay="3">
+          <div class="plan-name">Team</div>
+          <p class="plan-tagline">Multi-athlete dashboards for programs and clinics.</p>
+          <div class="plan-price">
+            <span class="plan-price__val">Custom</span>
+          </div>
+          <div class="plan-cta">
+            <a href="mailto:hello@actus.bio?subject=Team pricing" class="btn btn--outline btn--full">Talk to us</a>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Volume sensor kits
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Team activation dashboard
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Athlete load management
+            </div>
+            <div class="plan-feat">
+              <span class="plan-feat__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Dedicated success manager
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section" aria-label="Frequently asked questions">
+      <div class="faq-inner" data-reveal>
+        <h2 class="faq-h2">Questions, answered.</h2>
+        <div class="faq-list">
+
+          <div class="faq-item" role="button" tabindex="0" aria-expanded="false">
+            <div class="faq-q">
+              Do I need a subscription?
+              <span class="faq-q__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="faq-a">The hardware and app work forever with the free tier. Pro unlocks per-muscle recovery scoring and coach-ready session reports for $12/mo — cancel any time, keep your hardware.</div>
+          </div>
+
+          <div class="faq-item" role="button" tabindex="0" aria-expanded="false">
+            <div class="faq-q">
+              How does the sensor connect to my phone?
+              <span class="faq-q__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="faq-a">Each sensor pairs directly to your phone over Bluetooth. No hub or extra hardware is needed — just stick them on and open the Actus app. Multiple sensors connect simultaneously.</div>
+          </div>
+
+          <div class="faq-item" role="button" tabindex="0" aria-expanded="false">
+            <div class="faq-q">
+              How accurate is the EMG data?
+              <span class="faq-q__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="faq-a">Sensors sample at 1 kHz with clinical-grade signal conditioning — the same EMG basis used in research labs. The IMU tracks segment orientation at the same rate for full motion context.</div>
+          </div>
+
+          <div class="faq-item" role="button" tabindex="0" aria-expanded="false">
+            <div class="faq-q">
+              Can my coach or physio see my data?
+              <span class="faq-q__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="faq-a">Yes. Pro generates plain-language session reports you can share with a link or export as PDF. You can also grant your coach live-view access during a session.</div>
+          </div>
+
+          <div class="faq-item" role="button" tabindex="0" aria-expanded="false">
+            <div class="faq-q">
+              What is your return policy?
+              <span class="faq-q__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </div>
+            <div class="faq-a">30-day no-questions-asked returns on all hardware kits. Free shipping both ways. If you're not training better on signal in a month, send it back.</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <svg class="footer__emg" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points="0,30 380,30 410,30 432,10 452,50 472,30 900,30 932,30 954,16 974,44 994,30 1200,30"
+        fill="none" stroke="var(--signal-500)" stroke-width="1.5"/>
+    </svg>
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="/" class="footer__brand-logo" aria-label="Actus Biotech">
+          <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="">
+          <span class="nav__wordmark" style="font-size:17px">ACTUS</span>
+        </a>
+        <p class="footer__tagline">Real-time muscle intelligence. Wearable EMG and IMU sensors that coach your form and fatigue — rep by rep.</p>
+      </div>
+      <div class="footer__cols">
+        <div>
+          <div class="footer__col-head">Product</div>
+          <ul class="footer__links">
+            <li><a href="/">Sensors</a></li>
+            <li><a href="/">Mobile app</a></li>
+            <li><a href="/">For rehab</a></li>
+            <li><a href="/">For teams</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer__col-head">Company</div>
+          <ul class="footer__links">
+            <li><a href="/">About</a></li>
+            <li><a href="/">Careers</a></li>
+            <li><a href="/">Press</a></li>
+            <li><a href="mailto:hello@actus.bio">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer__col-head">Resources</div>
+          <ul class="footer__links">
+            <li><a href="/">The science</a></li>
+            <li><a href="/">Support</a></li>
+            <li><a href="/">Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>Copyright © 2026 Actus Biotech. All rights reserved.</span>
+      <span>Designed for athletes who train on signal.</span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.07, rootMargin: '0px 0px -36px 0px' });
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+    // Hero is above fold — trigger immediately
+    document.querySelectorAll('.pricing-hero [data-reveal]').forEach(el => setTimeout(() => el.classList.add('is-visible'), 80));
+
+    // Nav
+    const nav = document.getElementById('site-nav');
+    const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 30);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.setAttribute('aria-expanded', 'false'); });
+        if (!isOpen) { item.classList.add('open'); item.setAttribute('aria-expanded', 'true'); }
+      });
+      item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); } });
+    });
+  </script>
+</body>
+</html>

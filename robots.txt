@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://actus.bio/sitemap.xml
