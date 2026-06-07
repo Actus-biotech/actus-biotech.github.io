@@ -447,83 +447,44 @@
     .hero__stat-lbl { font-size: 12px; color: var(--neutral-500); margin-top: 5px; letter-spacing: 0.04em; }
 
     /* Hero panel */
-    .hero__panel { position: relative; }
-    .hero__device {
-      border-radius: var(--radius-xl);
-      padding: 30px;
-      background: linear-gradient(165deg, rgba(36,42,52,0.95), rgba(12,14,20,0.95));
-      border: 1px solid var(--ink-700);
-      box-shadow: 0 40px 90px rgba(0,0,0,0.55), var(--glow-signal-sm);
+    .hero__panel { position: relative; display: flex; justify-content: center; }
+    .hero__visual {
+      position: relative;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
+      justify-content: center;
+      align-items: flex-start;
     }
-    .hero__device-logo {
-      height: 90px;
-      width: auto;
-      animation: breathe 3.6s var(--ease-in-out) infinite;
+    .hero__app-frame {
+      width: 292px;
+      height: 620px;
+      flex-shrink: 0;
+      position: relative;
+      background: transparent;
     }
-    .hero__emg-svg { width: 100%; overflow: visible; }
-    .hero__emg-path {
-      fill: none;
-      stroke: var(--signal-500);
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: drop-shadow(0 0 7px rgba(136,120,232,0.6));
-      stroke-dasharray: 640;
-      stroke-dashoffset: 640;
-      animation: emg-draw 1.8s var(--ease-out) 0.3s forwards;
+    .hero__app-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent !important;
+      display: block;
+      color-scheme: normal;
     }
-    .hero__live-chip {
-      align-self: stretch;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      border-radius: var(--radius-md);
-      background: rgba(255,255,255,0.055);
-      border: 1px solid rgba(255,255,255,0.09);
-    }
-    .hero__live-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--neutral-300);
-    }
-    .hero__live-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--good-500);
-      box-shadow: var(--glow-good);
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    .hero__live-val {
-      font-family: var(--font-mono);
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--signal-400);
-    }
-    .hero__alert-chip {
+    .hero__sensor-float {
       position: absolute;
-      bottom: -18px; left: -18px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: var(--radius-pill);
-      background: rgba(250,248,255,0.94);
-      backdrop-filter: blur(16px);
-      box-shadow: var(--shadow-lg);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--neutral-800);
-      white-space: nowrap;
-      animation: float 3.2s var(--ease-in-out) infinite;
+      width: 345px;
+      height: 285px;
+      bottom: 24px;
+      left: -140px;
+      z-index: 2;
+      cursor: grab;
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,0.6));
     }
-    .hero__alert-icon { color: var(--fatigue-500); }
+    .hero__sensor-float:active { cursor: grabbing; }
+    #hero-sensor-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
     @media (max-width: 900px) {
       .hero { padding: 110px 20px 80px; }
@@ -722,7 +683,7 @@
     /* 3D Sensor / Hub Viewers */
     .sensor-viewer {
       width: 100%;
-      height: 280px;
+      height: 200px;
       flex-shrink: 0;
       cursor: grab;
       user-select: none;
@@ -1549,29 +1510,21 @@
           </div>
         </div>
 
-        <!-- Device panel -->
+        <!-- App screenshot + sensor panel -->
         <div class="hero__panel" data-reveal data-delay="2">
-          <div class="hero__device">
-            <img src="assets/logo-mark-pulse.svg" alt="Actus sensor" class="hero__device-logo">
-            <svg class="hero__emg-svg" viewBox="0 0 320 60" aria-label="Live EMG waveform">
-              <path class="hero__emg-path"
-                d="M0,30 L60,30 L80,30 L92,8 L104,52 L116,30 L136,30
-                   L148,30 L162,12 L174,48 L186,30 L210,30
-                   L224,30 L236,6 L248,54 L260,30 L290,30 L320,30"/>
-            </svg>
-            <div class="hero__live-chip">
-              <div class="hero__live-label">
-                <span class="hero__live-dot" aria-hidden="true"></span>
-                Quad L (live)
-              </div>
-              <span class="hero__live-val">82%</span>
+          <div class="hero__visual">
+            <div class="hero__app-frame">
+              <iframe
+                src="app-preview/index.html"
+                title="Actus App preview"
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin"
+                allowtransparency="true"
+              ></iframe>
             </div>
-          </div>
-          <div class="hero__alert-chip" aria-label="Fatigue alert notification">
-            <span class="hero__alert-icon" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </span>
-            Fatigue building: ease off
+            <div class="hero__sensor-float" id="hero-sensor-viewer" aria-label="Actus sensor 3D model, drag to rotate">
+              <canvas id="hero-sensor-canvas"></canvas>
+            </div>
           </div>
         </div>
 
@@ -2347,9 +2300,10 @@
       return { setColor };
     }
 
-    /* ── Instantiate both viewers ── */
+    /* ── Instantiate viewers ── */
     const sensorViewer = makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb');
-    makeViewer('hub-viewer', 'hub-canvas', 'hub-hint', 'assets/hub.glb');
+    makeViewer('hub-viewer',        'hub-canvas',    'hub-hint',    'assets/hub.glb');
+    makeViewer('hero-sensor-viewer','hero-sensor-canvas', null,     'assets/sensor.glb');
 
     /* ── Sensor color swatches ── */
     document.querySelectorAll('#sensor-swatches .color-swatch').forEach(btn => {

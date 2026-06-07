@@ -45,7 +45,7 @@ function App() {
   else if (view === 'profile') screen = <ProfileScreen />;
 
   return (
-    <IOSDevice>
+    <IOSDevice dark>
       {view === 'live'
         ? <LiveSessionScreen onEnd={() => setView('summary')} />
         : view === 'summary'
