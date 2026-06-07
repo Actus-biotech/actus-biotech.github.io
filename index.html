@@ -337,6 +337,25 @@
       overflow: hidden;
       padding: 140px 40px 110px;
     }
+    .hero__video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero__video-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(to right, rgba(8,6,18,0.82) 0%, rgba(8,6,18,0.45) 55%, rgba(8,6,18,0.25) 100%),
+        linear-gradient(to bottom, rgba(8,6,18,0.3) 0%, transparent 30%, rgba(8,6,18,0.6) 100%);
+      pointer-events: none;
+    }
     .hero__radial {
       position: absolute;
       border-radius: 50%;
@@ -347,14 +366,17 @@
       transform: translateX(-30%);
       width: 860px; height: 700px;
       background: radial-gradient(circle, rgba(136,120,232,0.16), transparent 62%);
+      z-index: 2;
     }
     .hero__radial--secondary {
       bottom: -200px; left: -80px;
       width: 500px; height: 500px;
       background: radial-gradient(circle, rgba(136,120,232,0.07), transparent 62%);
+      z-index: 2;
     }
     .hero__inner {
       position: relative;
+      z-index: 3;
       max-width: 1120px;
       margin: 0 auto;
       display: grid;
@@ -697,18 +719,18 @@
       max-width: 380px;
     }
 
-    /* 3D Sensor Viewer */
+    /* 3D Sensor / Hub Viewers */
     .sensor-viewer {
       width: 100%;
+      height: 280px;
+      flex-shrink: 0;
       cursor: grab;
       user-select: none;
       margin-bottom: 8px;
-      flex: 1;
-      min-height: 320px;
       position: relative;
     }
     .sensor-viewer:active { cursor: grabbing; }
-    #sensor-canvas {
+    #sensor-canvas, #hub-canvas {
       width: 100%;
       height: 100%;
       display: block;
@@ -748,6 +770,20 @@
       font-weight: 600;
       color: var(--signal-400);
       font-size: 12px;
+    }
+
+    /* Hub sub-section inside hardware panel */
+    .hw-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 28px 0;
+    }
+    .product-panel__subtitle {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
     }
 
     /* App panel */
@@ -1434,6 +1470,10 @@
          HERO
     ============================================================ -->
     <section class="hero" id="home" aria-label="Hero">
+      <video class="hero__video" autoplay muted loop playsinline aria-hidden="true" preload="auto">
+        <source src="assets/hero-bg.mp4" type="video/mp4">
+      </video>
+      <div class="hero__video-overlay" aria-hidden="true"></div>
       <div class="hero__radial hero__radial--main" aria-hidden="true"></div>
       <div class="hero__radial hero__radial--secondary" aria-hidden="true"></div>
       <div class="hero__inner">
@@ -1598,6 +1638,27 @@
               <span class="spec-pill">up to <strong>4</strong> sessions</span>
               <span class="spec-pill"><strong>IP54</strong> rated</span>
               <span class="spec-pill">Up to <strong>6</strong> sensors</span>
+            </div>
+
+            <!-- HUB sub-section -->
+            <div class="hw-divider"></div>
+            <h4 class="product-panel__subtitle">Actus Hub</h4>
+            <p class="product-panel__body">Charges all your sensors simultaneously and keeps them firmware-ready. Snap in after every session — no cables, no fuss.</p>
+
+            <!-- Hub 3D viewer -->
+            <div class="sensor-viewer" id="hub-viewer" aria-label="3D hub model, drag to rotate">
+              <canvas id="hub-canvas"></canvas>
+            </div>
+            <div class="sensor-viewer__hint" id="hub-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/></svg>
+              Drag to rotate
+            </div>
+
+            <div class="spec-pills">
+              <span class="spec-pill"><strong>6</strong> sensor slots</span>
+              <span class="spec-pill"><strong>USB-C</strong> power</span>
+              <span class="spec-pill">Magnetic dock</span>
+              <span class="spec-pill">Firmware OTA</span>
             </div>
           </div>
 
@@ -2099,179 +2160,149 @@
     /* 3D Sensor Viewer (Three.js) - see module script below */
   </script>
 
-  <!-- ── Three.js sensor model viewer ── -->
+  <!-- ── Three.js model viewers (sensor + hub) ── -->
   <script type="module">
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-    const wrapper = document.getElementById('sensor-viewer');
-    const canvas  = document.getElementById('sensor-canvas');
-    const hint    = document.getElementById('viewer-hint');
-    if (!wrapper || !canvas) throw new Error('sensor-viewer missing');
-
-    /* ── Renderer ── */
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping      = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.5;
-
-    /* ── Scene ── */
-    const scene = new THREE.Scene();
-
-    /* ── Camera ── */
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.0001, 100);
-    camera.position.z = 0.17;
-
-    /* ── Lights ── */
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-    const key = new THREE.DirectionalLight(0xfff5e8, 3.5);
-    key.position.set(3, 4, 5);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0x8878E8, 2.8);
-    rim.position.set(-4, -1, -3);
-    scene.add(rim);
-    const fill = new THREE.DirectionalLight(0x99ccff, 1.2);
-    fill.position.set(-2, 3, 1);
-    scene.add(fill);
-
-    /* ── Load GLB ── */
-    let sensorObj = null;
-    const loader = new GLTFLoader();
-    loader.load('assets/sensor.glb', (gltf) => {
-      const obj = gltf.scene;
-
-      // Use the GLB's embedded materials as-is; just ensure smooth normals
-      obj.traverse(child => {
-        if (!child.isMesh) return;
-        child.geometry.computeVertexNormals();
-      });
-
-      // Centre the bounding box at the pivot origin
-      const box    = new THREE.Box3().setFromObject(obj);
-      const center = box.getCenter(new THREE.Vector3());
-      const size   = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const s      = 0.042 / maxDim;
-
-      obj.position.sub(center);
-
-      const pivot = new THREE.Group();
-      pivot.scale.setScalar(s);
-      pivot.add(obj);
-      scene.add(pivot);
-      sensorObj = pivot;
-
-      // Sync cur to tgt on first frame so there is no lerp jump
-      cur.x = tgt.x;
-      cur.y = tgt.y;
-      setSize();
-    }, undefined, err => {
-      console.warn('[sensor-viewer] GLB load failed:', err);
-    });
-
-    /* ── Resize ── */
-    function setSize() {
-      const W = wrapper.clientWidth  || 400;
-      const H = wrapper.clientHeight || 320;
-      renderer.setSize(W, H, false);
-      camera.aspect = W / H;
-      camera.updateProjectionMatrix();
-    }
-    setSize();
-    new ResizeObserver(setSize).observe(wrapper);
-
-    /* ── Rotation state ── */
-    let cur      = { x: 0.25, y: 0 };
-    let tgt      = { x: 0.25, y: 0 };
-    let autoY    = 0;
-    let dragging = false;
-    let lastTs   = null;
-    let hintGone = false;
-
     function lerp(a, b, t) { return a + (b - a) * t; }
 
-    /* ── Render loop ── */
-    function tick(ts) {
+    /* ─────────────────────────────────────────────────────────────
+       makeViewer(wrapperId, canvasId, hintId, glbPath)
+       Creates a self-contained Three.js viewer for any GLB model.
+    ───────────────────────────────────────────────────────────── */
+    function makeViewer(wrapperId, canvasId, hintId, glbPath) {
+      const wrapper = document.getElementById(wrapperId);
+      const canvas  = document.getElementById(canvasId);
+      const hint    = document.getElementById(hintId);
+      if (!wrapper || !canvas) return;
+
+      /* Renderer */
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputColorSpace  = THREE.SRGBColorSpace;
+      renderer.toneMapping       = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.5;
+
+      /* Scene + Camera */
+      const scene  = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(32, 1, 0.0001, 100);
+      camera.position.z = 0.17;
+
+      /* Lights */
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+      const key = new THREE.DirectionalLight(0xfff5e8, 3.5);
+      key.position.set(3, 4, 5); scene.add(key);
+      const rim = new THREE.DirectionalLight(0x8878E8, 2.8);
+      rim.position.set(-4, -1, -3); scene.add(rim);
+      const fill = new THREE.DirectionalLight(0x99ccff, 1.2);
+      fill.position.set(-2, 3, 1); scene.add(fill);
+
+      /* Resize */
+      function setSize() {
+        const W = wrapper.clientWidth  || 400;
+        const H = wrapper.clientHeight || 320;
+        renderer.setSize(W, H, false);
+        camera.aspect = W / H;
+        camera.updateProjectionMatrix();
+      }
+      setSize();
+      new ResizeObserver(setSize).observe(wrapper);
+
+      /* Load GLB */
+      let pivot  = null;
+      let cur    = { x: 0.25, y: 0 };
+      let tgt    = { x: 0.25, y: 0 };
+      let autoY  = 0;
+      let lastTs = null;
+      let dragging = false;
+
+      new GLTFLoader().load(glbPath, gltf => {
+        const obj = gltf.scene;
+        obj.traverse(child => {
+          if (child.isMesh) child.geometry.computeVertexNormals();
+        });
+
+        const box    = new THREE.Box3().setFromObject(obj);
+        const center = box.getCenter(new THREE.Vector3());
+        const size   = box.getSize(new THREE.Vector3());
+        const s      = 0.042 / Math.max(size.x, size.y, size.z);
+
+        obj.position.sub(center);
+        const p = new THREE.Group();
+        p.scale.setScalar(s);
+        p.add(obj);
+        scene.add(p);
+        pivot = p;
+        cur.x = tgt.x; cur.y = tgt.y;  // no lerp jump on first frame
+        setSize();
+      }, undefined, err => console.warn(`[${wrapperId}] load failed:`, err));
+
+      /* Render loop */
+      function tick(ts) {
+        requestAnimationFrame(tick);
+        const dt = (pivot && lastTs !== null) ? Math.min(ts - lastTs, 50) : 0;
+        lastTs = ts;
+        if (!pivot) return;
+        if (!dragging) {
+          autoY += dt * 0.00018;
+          tgt.y  = autoY;
+          tgt.x  = 0.25 + Math.sin(autoY) * 0.06;
+        }
+        cur.x = lerp(cur.x, tgt.x, 0.055);
+        cur.y = lerp(cur.y, tgt.y, 0.055);
+        pivot.rotation.x = cur.x;
+        pivot.rotation.y = cur.y;
+        renderer.render(scene, camera);
+      }
       requestAnimationFrame(tick);
 
-      // Accumulate time only while the model is loaded, so autoY starts at 0
-      const dt = (sensorObj && lastTs !== null) ? Math.min(ts - lastTs, 50) : 0;
-      lastTs = ts;
-      if (!sensorObj) return;
-
-      if (!dragging) {
-        autoY += dt * 0.00018;          // ~35 s per full rotation, calm and slow
-        tgt.y  = autoY;
-        tgt.x  = 0.25 + Math.sin(autoY) * 0.06;
+      /* Mouse: drag only while button held */
+      let mouseDown = false, dragStart = { x:0, y:0 }, rotAtDrag = { x:0.25, y:0 };
+      let hintGone  = false;
+      function dismissHint() {
+        if (hintGone) return; hintGone = true; hint?.classList.add('is-hidden');
       }
 
-      cur.x = lerp(cur.x, tgt.x, 0.055);
-      cur.y = lerp(cur.y, tgt.y, 0.055);
-      sensorObj.rotation.x = cur.x;
-      sensorObj.rotation.y = cur.y;
-      renderer.render(scene, camera);
+      wrapper.addEventListener('mousedown', e => {
+        mouseDown = true; dragging = true;
+        dragStart = { x: e.clientX, y: e.clientY };
+        rotAtDrag = { x: cur.x, y: cur.y };
+        dismissHint(); e.preventDefault();
+      });
+      window.addEventListener('mousemove', e => {
+        if (!mouseDown) return;
+        tgt.y = rotAtDrag.y + (e.clientX - dragStart.x) * 0.008;
+        tgt.x = rotAtDrag.x - (e.clientY - dragStart.y) * 0.006;
+        autoY = tgt.y;
+      });
+      window.addEventListener('mouseup', () => {
+        if (!mouseDown) return;
+        mouseDown = false; dragging = false; autoY = cur.y;
+      });
+
+      /* Touch */
+      let t0 = { x:0, y:0 }, base = { x:0.25, y:0 };
+      wrapper.addEventListener('touchstart', e => {
+        const t = e.touches[0];
+        t0 = { x: t.clientX, y: t.clientY };
+        base = { x: cur.x, y: cur.y };
+        dragging = true; dismissHint(); e.preventDefault();
+      }, { passive: false });
+      wrapper.addEventListener('touchmove', e => {
+        const t = e.touches[0];
+        tgt.y = base.y + (t.clientX - t0.x) * 0.010;
+        tgt.x = base.x - (t.clientY - t0.y) * 0.008;
+        autoY = tgt.y; e.preventDefault();
+      }, { passive: false });
+      wrapper.addEventListener('touchend', () => {
+        dragging = false; autoY = cur.y;
+      });
     }
-    requestAnimationFrame(tick);
 
-    /* ── Helpers ── */
-    function dismissHint() {
-      if (hintGone) return;
-      hintGone = true;
-      hint?.classList.add('is-hidden');
-    }
-
-    /* ── Mouse: only rotate while button is held ── */
-    let mouseDown   = false;
-    let dragStart   = { x: 0, y: 0 };
-    let rotAtDrag   = { x: 0.25, y: 0 };
-
-    wrapper.addEventListener('mousedown', e => {
-      mouseDown   = true;
-      dragging    = true;
-      dragStart   = { x: e.clientX, y: e.clientY };
-      rotAtDrag   = { x: cur.x, y: cur.y };
-      dismissHint();
-      e.preventDefault();
-    });
-    // Listen on window so drag tracks even when cursor leaves the canvas
-    window.addEventListener('mousemove', e => {
-      if (!mouseDown) return;
-      const dx = e.clientX - dragStart.x;
-      const dy = e.clientY - dragStart.y;
-      tgt.y  = rotAtDrag.y + dx * 0.008;
-      tgt.x  = rotAtDrag.x - dy * 0.006;
-      autoY  = tgt.y;
-    });
-    window.addEventListener('mouseup', () => {
-      if (!mouseDown) return;
-      mouseDown = false;
-      dragging  = false;
-      autoY     = cur.y;
-    });
-
-    /* ── Touch ── */
-    let t0   = { x: 0, y: 0 };
-    let base = { x: 0.25, y: 0 };
-    wrapper.addEventListener('touchstart', e => {
-      const t = e.touches[0];
-      t0      = { x: t.clientX, y: t.clientY };
-      base    = { x: cur.x, y: cur.y };
-      dragging = true;
-      dismissHint();
-      e.preventDefault();
-    }, { passive: false });
-    wrapper.addEventListener('touchmove', e => {
-      const t = e.touches[0];
-      tgt.y  = base.y + (t.clientX - t0.x) * 0.010;
-      tgt.x  = base.x - (t.clientY - t0.y) * 0.008;
-      autoY  = tgt.y;
-      e.preventDefault();
-    }, { passive: false });
-    wrapper.addEventListener('touchend', () => {
-      dragging = false;
-      autoY    = cur.y;
-    });
+    /* ── Instantiate both viewers ── */
+    makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb');
+    makeViewer('hub-viewer',    'hub-canvas',    'hub-hint',    'assets/hub.glb');
   </script>
 
 </body>
