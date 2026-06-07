@@ -1,0 +1,38 @@
+/* ============================================================
+   ACTUS — MOTION
+   Calm, smooth, premium. Ease-out glides; no playful bounce.
+   The only "alive" motion is the EMG signal pulse.
+   ============================================================ */
+
+:root {
+  --dur-instant: 80ms;  /* @kind other */
+  --dur-fast:    140ms; /* @kind other */
+  --dur-base:    220ms; /* @kind other */
+  --dur-slow:    340ms; /* @kind other */
+  --dur-slower:  520ms; /* @kind other */
+
+  /* easings */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);   /* @kind other */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+  --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);/* @kind other */
+  --ease-soft:     cubic-bezier(0.4, 0.0, 0.2, 1);/* @kind other */
+
+  --transition-base: all var(--dur-base) var(--ease-standard);
+  --transition-color: color var(--dur-fast) var(--ease-standard),
+                      background-color var(--dur-fast) var(--ease-standard),
+                      border-color var(--dur-fast) var(--ease-standard);
+}
+
+/* Live EMG pulse — the signature "alive" loop */
+@keyframes actus-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+@keyframes actus-signal-glow {
+  0%, 100% { box-shadow: var(--glow-signal-sm); }
+  50%      { box-shadow: var(--glow-signal-lg); }
+}
+@keyframes actus-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}

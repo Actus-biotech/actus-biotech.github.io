@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Actus Biotech — Pricing | Own the hardware, train on signal</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="shortcut icon" href="assets/favicon.svg">
   <meta name="description" content="One-time hardware kits with no lock-in. Upgrade to Pro for recovery intelligence whenever you're ready. Free shipping, 30-day returns.">
   <link rel="canonical" href="https://actus.bio/pricing">
 
@@ -74,20 +76,30 @@
     .btn--full { width: 100%; justify-content: center; }
 
     /* NAV */
-    .nav { position: fixed; inset: 0 0 auto; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; transition: background var(--dur-slow) var(--ease-standard), border-color var(--dur-slow) var(--ease-standard); border-bottom: 1px solid transparent; }
-    .nav.is-scrolled { background: rgba(8,8,14,0.72); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border-bottom-color: rgba(255,255,255,0.07); }
-    .nav__logo { display: inline-flex; align-items: center; gap: 10px; }
+    .nav { position: fixed; inset: 0 0 auto; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; transition: background var(--dur-slow) var(--ease-standard), border-color var(--dur-slow) var(--ease-standard), backdrop-filter var(--dur-slow) var(--ease-standard); border-bottom: 1px solid transparent; }
+    .nav.is-scrolled { background: rgba(18,16,28,0.58); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); border-bottom-color: rgba(255,255,255,0.08); }
+    .nav__logo { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .nav__logo img { height: 26px; }
     .nav__wordmark { font-family: var(--font-display); font-weight: 300; font-size: 19px; letter-spacing: 0.22em; color: #fff; }
-    .nav__links { display: flex; align-items: center; gap: 32px; list-style: none; }
-    .nav__links a { font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.72); transition: color var(--dur-fast) var(--ease-standard); }
-    .nav__links a:hover, .nav__links a.active { color: #fff; }
-    .nav__actions { display: flex; align-items: center; gap: 14px; }
-    .nav__signin { font-size: 14.5px; font-weight: 600; color: rgba(255,255,255,0.8); transition: color var(--dur-fast) var(--ease-standard); }
-    .nav__signin:hover { color: #fff; }
+    .nav__links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav__links a { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.72); transition: color var(--dur-fast) var(--ease-standard); }
+    .nav__links a:hover { color: #fff; }
+    .nav__links a.active { color: #fff; font-weight: 600; }
+    .nav__actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
     .nav__menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 4px; gap: 5px; flex-direction: column; }
-    .nav__menu-btn span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.85); border-radius: 2px; }
-    @media (max-width: 860px) { .nav { padding: 16px 20px; } .nav__links, .nav__actions { display: none; } .nav__menu-btn { display: flex; } }
+    .nav__menu-btn span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.85); border-radius: 2px; transition: transform var(--dur-base) var(--ease-standard), opacity var(--dur-base) var(--ease-standard); }
+    .nav__menu-btn.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .nav__menu-btn.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav__menu-btn.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+    @media (max-width: 920px) { .nav { padding: 16px 20px; } .nav__links, .nav__actions { display: none; } .nav__menu-btn { display: flex; } }
+    .nav__mobile-menu { display: none; position: fixed; top: 57px; left: 0; right: 0; background: rgba(8,8,14,0.97); -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 8px 0 24px; z-index: 99; flex-direction: column; }
+    .nav__mobile-menu.is-open { display: flex; }
+    .nav__mobile-menu li { list-style: none; }
+    .nav__mobile-menu a { display: block; padding: 15px 24px; font-size: 17px; font-weight: 500; color: rgba(255,255,255,0.82); border-bottom: 1px solid rgba(255,255,255,0.05); transition: color var(--dur-fast), background var(--dur-fast); }
+    .nav__mobile-menu a:hover { color: #fff; background: rgba(255,255,255,0.04); }
+    .nav__mobile-menu a.active { color: #fff; font-weight: 600; }
+    .nav__mobile-cta { padding: 18px 24px 0; display: flex; flex-direction: column; gap: 10px; }
+    .nav__mobile-cta .btn { justify-content: center; }
 
     /* HERO */
     .pricing-hero { background: var(--ink-950); color: #fff; padding: 130px 40px 60px; text-align: center; position: relative; overflow: hidden; }
@@ -162,25 +174,41 @@
 <body>
 
   <!-- NAV -->
-  <nav class="nav" id="site-nav">
+  <nav class="nav" id="site-nav" aria-label="Main navigation">
     <a href="/" class="nav__logo" aria-label="Actus Biotech — home">
       <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="">
       <span class="nav__wordmark">ACTUS</span>
     </a>
     <ul class="nav__links">
+      <li><a href="/#why-actus">Why Actus</a></li>
       <li><a href="/#product">Product</a></li>
-      <li><a href="/#technology">Technology</a></li>
-      <li><a href="/#how-it-works">How it works</a></li>
-      <li><a href="pricing.html" class="active">Pricing</a></li>
+      <li><a href="/#how-it-works">How it Works</a></li>
+      <li><a href="/#mission">Mission</a></li>
+      <li><a href="/#invest">Invest</a></li>
+      <li><a href="/#contact">Contact</a></li>
     </ul>
     <div class="nav__actions">
-      <a href="#" class="nav__signin">Sign in</a>
-      <a href="pricing.html" class="btn btn--primary btn--sm">Get Actus</a>
+      <a href="pricing.html" class="btn btn--primary btn--sm active">Pricing ✓</a>
     </div>
-    <button class="nav__menu-btn" aria-label="Open menu">
+    <button class="nav__menu-btn" aria-label="Open menu" aria-expanded="false" id="menu-btn">
       <span></span><span></span><span></span>
     </button>
   </nav>
+
+  <!-- Mobile menu -->
+  <div class="nav__mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <ul>
+      <li><a href="/#why-actus">Why Actus</a></li>
+      <li><a href="/#product">Product</a></li>
+      <li><a href="/#how-it-works">How it Works</a></li>
+      <li><a href="/#mission">Mission</a></li>
+      <li><a href="/#invest">Invest</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+    <div class="nav__mobile-cta">
+      <a href="pricing.html" class="btn btn--primary">Pricing ✓</a>
+    </div>
+  </div>
 
   <main>
 
@@ -413,6 +441,34 @@
     const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 30);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('is-open');
+        menuBtn.classList.toggle('is-open', isOpen);
+        menuBtn.setAttribute('aria-expanded', String(isOpen));
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+      mobileMenu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          mobileMenu.classList.remove('is-open');
+          menuBtn.classList.remove('is-open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        });
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 920) {
+          mobileMenu.classList.remove('is-open');
+          menuBtn.classList.remove('is-open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        }
+      });
+    }
 
     // FAQ accordion
     document.querySelectorAll('.faq-item').forEach(item => {

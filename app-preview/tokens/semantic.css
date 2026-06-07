@@ -1,0 +1,82 @@
+/* ============================================================
+   ACTUS — SEMANTIC ALIASES
+   Role-based tokens. Default = serene LIGHT UI.
+   [data-theme="dark"] = immersive hardware/dark surfaces.
+   ============================================================ */
+
+:root {
+  /* surfaces */
+  --surface-page:    var(--neutral-25);
+  --surface-card:    var(--neutral-0);
+  --surface-raised:  var(--neutral-0);
+  --surface-sunken:  var(--neutral-50);
+  --surface-hover:   var(--neutral-50);
+  --surface-inverse: var(--ink-900);
+  --surface-glass:   rgba(253, 252, 255, 0.74);
+
+  /* text */
+  --text-strong:     var(--neutral-900);
+  --text-body:       var(--neutral-700);
+  --text-muted:      var(--neutral-500);
+  --text-faint:      var(--neutral-400);
+  --text-on-accent:  var(--ink-950);
+  --text-on-inverse: var(--neutral-25);
+
+  /* borders */
+  --border-subtle:   var(--neutral-100);
+  --border-default:  var(--neutral-150);
+  --border-strong:   var(--neutral-300);
+
+  /* accent (signal) */
+  --accent:          var(--signal-500);
+  --accent-hover:    var(--signal-600);
+  --accent-active:   var(--signal-700);
+  --accent-text:     var(--signal-600);
+  --accent-surface:  var(--signal-100);
+  --focus-ring:      var(--ring-signal);
+
+  /* state colors mapped to roles */
+  --state-good:      var(--good-500);
+  --state-good-surface: var(--good-100);
+  --state-caution:   var(--caution-500);
+  --state-caution-surface: var(--caution-100);
+  --state-fatigue:   var(--fatigue-500);
+  --state-fatigue-surface: var(--fatigue-100);
+  --state-rest:      var(--rest-500);
+  --state-rest-surface: var(--rest-100);
+
+  --elevation-card: var(--shadow-sm);
+  --elevation-pop:  var(--shadow-lg);
+}
+
+[data-theme="dark"] {
+  --surface-page:    var(--ink-900);
+  --surface-card:    var(--ink-850);
+  --surface-raised:  var(--ink-800);
+  --surface-sunken:  var(--ink-950);
+  --surface-hover:   var(--ink-800);
+  --surface-inverse: var(--neutral-25);
+  --surface-glass:   rgba(20, 19, 30, 0.68);
+
+  --text-strong:     var(--neutral-25);
+  --text-body:       var(--neutral-200);
+  --text-muted:      var(--neutral-400);
+  --text-faint:      var(--neutral-500);
+  --text-on-accent:  var(--ink-950);
+  --text-on-inverse: var(--ink-900);
+
+  --border-subtle:   rgba(255, 255, 255, 0.06);
+  --border-default:  var(--ink-700);
+  --border-strong:   var(--ink-600);
+
+  --accent-text:     var(--signal-400);
+  --accent-surface:  rgba(6, 195, 252, 0.12);
+
+  --state-good-surface:    rgba(47, 182, 122, 0.14);
+  --state-caution-surface: rgba(229, 161, 58, 0.14);
+  --state-fatigue-surface: rgba(232, 92, 74, 0.14);
+  --state-rest-surface:    rgba(107, 112, 214, 0.16);
+
+  --elevation-card: var(--shadow-dark-md);
+  --elevation-pop:  var(--shadow-dark-lg);
+}

@@ -1,0 +1,11 @@
+/* ============================================================
+   ACTUS — WEBFONTS
+   Display : Sora            (geometric, technical, premium)
+   UI/Body : Hanken Grotesk  (humanist, calm, highly legible)
+   Data    : JetBrains Mono  (sensor / EMG readouts)
+
+   NOTE: loaded from Google Fonts for portability. Swap these
+   for self-hosted .woff2 binaries before production if desired.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');

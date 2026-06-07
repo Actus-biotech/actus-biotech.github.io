@@ -3,52 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Actus Biotech — Train with Signal | EMG Wearable Sensor</title>
-  <meta name="description" content="Actus is a wearable EMG and IMU sensor system that measures muscle activity in real time. Place multiple sensors on any part of the body, connect to your phone, and train or rehab with intelligent biofeedback — rep by rep.">
-  <meta name="keywords" content="EMG sensor, electromyography wearable, muscle sensor biofeedback, IMU accelerometer, training rehabilitation sensor, real-time EMG">
+  <title>Actus Biotech — Informed by your body, powered by AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="shortcut icon" href="assets/favicon.svg">
+  <meta name="description" content="Actus is a wearable EMG and IMU sensor system. Real-time muscle feedback for training and rehabilitation — informed by your body, powered by AI.">
+  <meta name="keywords" content="EMG sensor, electromyography wearable, muscle sensor, biofeedback, IMU, realtime training, rehabilitation sensor">
   <link rel="canonical" href="https://actus.bio/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Actus Biotech — Train with Signal">
-  <meta property="og:description" content="Wearable EMG and IMU sensors that connect to your phone for real-time muscle biofeedback during training and rehabilitation.">
+  <meta property="og:title" content="Actus Biotech — Informed by your body, powered by AI">
+  <meta property="og:description" content="Wearable EMG and IMU sensors + AI app for real-time muscle intelligence during training and rehabilitation.">
   <meta property="og:url" content="https://actus.bio/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Actus Biotech">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Actus Biotech — Train with Signal">
-  <meta name="twitter:description" content="Wearable EMG and IMU sensors for real-time muscle biofeedback.">
+  <meta name="twitter:title" content="Actus Biotech — Informed by your body, powered by AI">
+  <meta name="twitter:description" content="Wearable EMG sensors and an AI app for real-time muscle intelligence.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- JSON-LD structured data -->
+  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Actus Biotech",
     "url": "https://actus.bio",
-    "description": "Wearable EMG and IMU sensor system for real-time muscle biofeedback during training and rehabilitation.",
+    "description": "Wearable EMG and IMU sensor system with AI app for real-time muscle intelligence during training and rehabilitation.",
     "foundingDate": "2026",
-    "sameAs": ["https://github.com/Actus-biotech"],
-    "offers": {
-      "@type": "Product",
-      "name": "Actus EMG Sensor System",
-      "description": "Multiple wearable EMG and accelerometer/IMU sensors that connect to your phone for real-time muscle activity measurement, training guidance, and rehabilitation support."
-    }
+    "sameAs": ["https://github.com/Actus-biotech","https://instagram.com/actusbiotech","https://linkedin.com/company/actus-biotech"]
   }
   </script>
 
   <style>
     /* ============================================================
-       DESIGN TOKENS — Actus Biotech Design System
+       DESIGN TOKENS
     ============================================================ */
     :root {
-      /* INK — cool purple-tinted near-blacks */
       --ink-950: #08080E;
       --ink-900: #0E0D16;
       --ink-850: #14131E;
@@ -57,7 +53,6 @@
       --ink-600: #2E2D3D;
       --ink-500: #3C3B4C;
 
-      /* NEUTRAL — lavender-tinted cool grays */
       --neutral-0:   #FFFFFF;
       --neutral-25:  #FAFAFD;
       --neutral-50:  #F3F2FA;
@@ -72,7 +67,6 @@
       --neutral-800: #272634;
       --neutral-900: #181620;
 
-      /* SIGNAL — periwinkle-violet */
       --signal-100: #F1EFFE;
       --signal-200: #E0DAFC;
       --signal-300: #C5BAFF;
@@ -82,32 +76,27 @@
       --signal-700: #4D3EA8;
       --signal-800: #372C80;
 
-      /* SEMANTIC — muscle-state botanical pastels */
-      --good-100: #E5F3EC;  --good-500: #5CB68A;
-      --caution-100: #FBF3E2; --caution-500: #E2B05C;
-      --fatigue-100: #FAE6E8; --fatigue-500: #E5787E;
-      --rest-100: #E4F2FC;  --rest-500: #5AAEDF;
+      --good-500: #5CB68A;
+      --fatigue-500: #E5787E;
+      --caution-500: #E2B05C;
 
-      /* SEMANTIC ALIASES */
-      --surface-page:    var(--neutral-25);
-      --surface-card:    var(--neutral-0);
-      --surface-sunken:  var(--neutral-50);
-      --surface-glass:   rgba(253, 252, 255, 0.74);
-      --text-strong:     var(--neutral-900);
-      --text-body:       var(--neutral-700);
-      --text-muted:      var(--neutral-500);
-      --text-faint:      var(--neutral-400);
-      --border-subtle:   var(--neutral-100);
-      --border-default:  var(--neutral-150);
-      --border-strong:   var(--neutral-300);
-      --accent-text:     var(--signal-600);
+      --surface-page:   var(--neutral-25);
+      --surface-card:   var(--neutral-0);
+      --surface-sunken: var(--neutral-50);
+      --text-strong:    var(--neutral-900);
+      --text-body:      var(--neutral-700);
+      --text-muted:     var(--neutral-500);
+      --text-faint:     var(--neutral-400);
+      --border-subtle:  var(--neutral-100);
+      --border-default: var(--neutral-150);
+      --accent-text:    var(--signal-600);
 
-      /* EFFECTS */
       --radius-md:   8px;
       --radius-lg:   12px;
       --radius-xl:   16px;
       --radius-2xl:  20px;
       --radius-pill: 999px;
+
       --shadow-sm: 0 2px 6px rgba(20,18,40,0.07);
       --shadow-md: 0 6px 18px rgba(20,18,40,0.09);
       --shadow-lg: 0 16px 40px rgba(20,18,40,0.12);
@@ -115,15 +104,12 @@
       --glow-signal-sm: 0 0 12px rgba(136,120,232,0.35);
       --glow-signal-md: 0 0 24px rgba(136,120,232,0.45);
       --glow-signal-lg: 0 0 48px rgba(136,120,232,0.40);
-      --glow-good:      0 0 20px rgba(92,182,138,0.40);
-      --glow-fatigue:   0 0 20px rgba(229,120,126,0.42);
+      --glow-good: 0 0 20px rgba(92,182,138,0.40);
 
-      /* TYPOGRAPHY */
       --font-display: 'Sora', system-ui, sans-serif;
       --font-sans:    'Hanken Grotesk', system-ui, sans-serif;
       --font-mono:    'JetBrains Mono', ui-monospace, monospace;
 
-      /* MOTION */
       --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
       --ease-standard: cubic-bezier(0.2, 0, 0, 1);
       --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
@@ -156,23 +142,17 @@
       transform: translateY(28px);
       transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
     }
-    [data-reveal].is-visible {
-      opacity: 1;
-      transform: none;
-    }
+    [data-reveal].is-visible { opacity: 1; transform: none; }
     [data-reveal][data-delay="1"] { transition-delay: 100ms; }
     [data-reveal][data-delay="2"] { transition-delay: 200ms; }
     [data-reveal][data-delay="3"] { transition-delay: 300ms; }
     [data-reveal][data-delay="4"] { transition-delay: 400ms; }
+    [data-reveal][data-delay="5"] { transition-delay: 500ms; }
 
     /* ============================================================
        LAYOUT
     ============================================================ */
-    .wrap {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 48px;
-    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 48px; }
     @media (max-width: 768px) { .wrap { padding: 0 20px; } }
 
     /* ============================================================
@@ -227,6 +207,16 @@
       border-color: rgba(255,255,255,0.32);
       transform: translateY(-1px);
     }
+    .btn--ghost-dark {
+      background: transparent;
+      color: var(--text-strong);
+      border: 1.5px solid var(--border-default);
+    }
+    .btn--ghost-dark:hover {
+      border-color: var(--border-strong, var(--neutral-300));
+      background: var(--surface-sunken);
+      transform: translateY(-1px);
+    }
     .btn--sm { height: 40px; padding: 0 18px; font-size: 14px; }
 
     /* ============================================================
@@ -247,15 +237,16 @@
       border-bottom: 1px solid transparent;
     }
     .nav.is-scrolled {
-      background: rgba(8, 8, 14, 0.72);
-      -webkit-backdrop-filter: blur(22px) saturate(160%);
-      backdrop-filter: blur(22px) saturate(160%);
-      border-bottom-color: rgba(255,255,255,0.07);
+      background: rgba(18, 16, 28, 0.58);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(24px) saturate(180%);
+      border-bottom-color: rgba(255,255,255,0.08);
     }
     .nav__logo {
       display: inline-flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
     }
     .nav__logo img { height: 26px; width: auto; }
     .nav__wordmark {
@@ -268,25 +259,17 @@
     .nav__links {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 28px;
       list-style: none;
     }
     .nav__links a {
-      font-size: 14.5px;
+      font-size: 14px;
       font-weight: 500;
       color: rgba(255,255,255,0.72);
       transition: color var(--dur-fast) var(--ease-standard);
     }
     .nav__links a:hover { color: #fff; }
-    .nav__actions { display: flex; align-items: center; gap: 14px; }
-    .nav__signin {
-      font-size: 14.5px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.8);
-      transition: color var(--dur-fast) var(--ease-standard);
-      cursor: pointer;
-    }
-    .nav__signin:hover { color: #fff; }
+    .nav__actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
     .nav__menu-btn {
       display: none;
       background: none;
@@ -302,12 +285,50 @@
       height: 2px;
       background: rgba(255,255,255,0.85);
       border-radius: 2px;
+      transition: transform var(--dur-base) var(--ease-standard),
+                  opacity var(--dur-base) var(--ease-standard);
     }
-    @media (max-width: 860px) {
+    .nav__menu-btn.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .nav__menu-btn.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav__menu-btn.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    @media (max-width: 920px) {
       .nav { padding: 16px 20px; }
       .nav__links, .nav__actions { display: none; }
       .nav__menu-btn { display: flex; }
     }
+
+    /* Mobile menu */
+    .nav__mobile-menu {
+      display: none;
+      position: fixed;
+      top: 57px; left: 0; right: 0;
+      background: rgba(8,8,14,0.97);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      backdrop-filter: blur(24px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 0 24px;
+      z-index: 99;
+      flex-direction: column;
+    }
+    .nav__mobile-menu.is-open { display: flex; }
+    .nav__mobile-menu li { list-style: none; }
+    .nav__mobile-menu a {
+      display: block;
+      padding: 15px 24px;
+      font-size: 17px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: color var(--dur-fast), background var(--dur-fast);
+    }
+    .nav__mobile-menu a:hover { color: #fff; background: rgba(255,255,255,0.04); }
+    .nav__mobile-cta {
+      padding: 18px 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .nav__mobile-cta .btn { justify-content: center; }
 
     /* ============================================================
        HERO
@@ -317,7 +338,7 @@
       background: var(--ink-950);
       color: #fff;
       overflow: hidden;
-      padding: 130px 40px 110px;
+      padding: 140px 40px 110px;
     }
     .hero__radial {
       position: absolute;
@@ -325,13 +346,14 @@
       pointer-events: none;
     }
     .hero__radial--main {
-      top: -140px; left: 50%;
-      width: 800px; height: 660px;
-      background: radial-gradient(circle, rgba(136,120,232,0.17), transparent 62%);
+      top: -160px; left: 50%;
+      transform: translateX(-30%);
+      width: 860px; height: 700px;
+      background: radial-gradient(circle, rgba(136,120,232,0.16), transparent 62%);
     }
     .hero__radial--secondary {
-      bottom: -180px; left: -80px;
-      width: 480px; height: 480px;
+      bottom: -200px; left: -80px;
+      width: 500px; height: 500px;
       background: radial-gradient(circle, rgba(136,120,232,0.07), transparent 62%);
     }
     .hero__inner {
@@ -363,46 +385,63 @@
     }
     .hero__h1 {
       font-family: var(--font-display);
-      font-size: clamp(48px, 6vw, 74px);
-      line-height: 1.02;
+      font-size: clamp(40px, 5.2vw, 68px);
+      line-height: 1.04;
       font-weight: 600;
       letter-spacing: -0.03em;
-      margin-bottom: 24px;
+      margin-bottom: 14px;
     }
     .hero__h1 em { font-style: normal; color: var(--signal-400); }
-    .hero__sub {
-      font-size: 19px;
-      line-height: 1.58;
+    .hero__tagline {
+      font-family: var(--font-display);
+      font-size: clamp(17px, 1.8vw, 21px);
+      font-weight: 400;
       color: var(--neutral-300);
-      max-width: 490px;
+      letter-spacing: -0.01em;
+      margin-bottom: 22px;
+    }
+    .hero__sub {
+      font-size: 17px;
+      line-height: 1.62;
+      color: var(--neutral-400);
+      max-width: 480px;
       margin-bottom: 36px;
     }
-    .hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 50px; }
-    .hero__stats { display: flex; gap: 36px; flex-wrap: wrap; }
+    .hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; }
+    .hero__stats {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .hero__stat {
+      padding: 14px 24px;
+      border-left: 1px solid rgba(255,255,255,0.10);
+    }
+    .hero__stat:first-child { padding-left: 0; border-left: none; }
     .hero__stat-val {
       font-family: var(--font-mono);
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 600;
       color: #fff;
       line-height: 1;
     }
-    .hero__stat-lbl { font-size: 13px; color: var(--neutral-400); margin-top: 5px; }
+    .hero__stat-lbl { font-size: 12px; color: var(--neutral-500); margin-top: 5px; letter-spacing: 0.04em; }
 
-    /* Device panel */
+    /* Hero panel */
     .hero__panel { position: relative; }
     .hero__device {
       border-radius: var(--radius-xl);
       padding: 30px;
       background: linear-gradient(165deg, rgba(36,42,52,0.95), rgba(12,14,20,0.95));
       border: 1px solid var(--ink-700);
-      box-shadow: 0 40px 90px rgba(0,0,0,0.55);
+      box-shadow: 0 40px 90px rgba(0,0,0,0.55), var(--glow-signal-sm);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 22px;
     }
     .hero__device-logo {
-      height: 100px;
+      height: 90px;
       width: auto;
       animation: breathe 3.6s var(--ease-in-out) infinite;
     }
@@ -427,8 +466,6 @@
       border-radius: var(--radius-md);
       background: rgba(255,255,255,0.055);
       border: 1px solid rgba(255,255,255,0.09);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
     }
     .hero__live-label {
       display: inline-flex;
@@ -452,14 +489,13 @@
     }
     .hero__alert-chip {
       position: absolute;
-      bottom: -20px; left: -20px;
+      bottom: -18px; left: -18px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 10px 16px;
       border-radius: var(--radius-pill);
       background: rgba(250,248,255,0.94);
-      -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px);
       box-shadow: var(--shadow-lg);
       font-size: 13px;
@@ -475,68 +511,23 @@
       .hero__inner { grid-template-columns: 1fr; }
       .hero__panel { display: none; }
       .hero__sub { max-width: 100%; }
+      .hero__stat { padding: 12px 16px; }
     }
 
     /* ============================================================
-       TRUST BAR
+       WHY ACTUS
     ============================================================ */
-    .trust {
-      background: var(--surface-page);
-      padding: 30px 40px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-    .trust__inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 48px;
-      flex-wrap: wrap;
-    }
-    .trust__label {
-      font-size: 12px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      font-weight: 600;
-    }
-    .trust__name {
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--neutral-300);
-    }
-
-    /* ============================================================
-       MANIFESTO
-    ============================================================ */
-    .manifesto {
+    .why {
       background: var(--surface-card);
       padding: 96px 40px;
-      text-align: center;
+      border-top: 1px solid var(--border-subtle);
       border-bottom: 1px solid var(--border-subtle);
     }
-    .manifesto__inner { max-width: 820px; margin: 0 auto; }
-    .manifesto__h2 {
-      font-family: var(--font-display);
-      font-size: clamp(26px, 3.5vw, 40px);
-      font-weight: 600;
-      line-height: 1.22;
-      letter-spacing: -0.015em;
-      color: var(--text-strong);
-      margin-top: 18px;
+    .why__header {
+      max-width: 580px;
+      margin-bottom: 52px;
     }
-    .manifesto__h2 .dim { color: var(--text-faint); }
-    .manifesto__h2 .accent { color: var(--accent-text); }
-
-    /* ============================================================
-       FEATURES
-    ============================================================ */
-    .features { background: var(--surface-page); padding: 90px 40px; }
-    .features__header { max-width: 600px; margin-bottom: 44px; }
-    .features__h2 {
+    .why__h2 {
       font-family: var(--font-display);
       font-size: clamp(28px, 3.5vw, 42px);
       font-weight: 600;
@@ -545,44 +536,328 @@
       color: var(--text-strong);
       margin-top: 14px;
     }
-    .features__grid {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 22px;
+    .why__sub {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      margin-top: 14px;
+      max-width: 520px;
     }
-    @media (max-width: 768px) { .features__grid { grid-template-columns: 1fr; } }
+    .why__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 960px) { .why__grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .why__grid { grid-template-columns: 1fr; } }
 
-    .feat-card {
-      background: var(--surface-card);
+    .why-card {
+      background: var(--surface-page);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-2xl);
-      padding: 30px;
+      padding: 32px;
       box-shadow: var(--shadow-sm);
-      transition: box-shadow var(--dur-slow) var(--ease-standard), transform var(--dur-slow) var(--ease-standard);
+      transition: box-shadow var(--dur-slow) var(--ease-standard),
+                  transform var(--dur-slow) var(--ease-standard),
+                  border-color var(--dur-slow) var(--ease-standard);
     }
-    .feat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-    .feat-card__icon {
-      width: 50px; height: 50px;
+    .why-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: var(--border-default);
+    }
+    .why-card__num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--accent-text);
+      margin-bottom: 18px;
+    }
+    .why-card__icon {
+      width: 48px; height: 48px;
       border-radius: var(--radius-md);
-      background: var(--surface-sunken);
+      background: var(--signal-100);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
+      color: var(--signal-600);
     }
-    .feat-card__h3 {
+    .why-card__h3 {
       font-family: var(--font-display);
       font-size: 20px;
       font-weight: 600;
       color: var(--text-strong);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      line-height: 1.25;
     }
-    .feat-card__body { font-size: 14.5px; line-height: 1.68; color: var(--text-muted); }
+    .why-card__body {
+      font-size: 14.5px;
+      line-height: 1.70;
+      color: var(--text-muted);
+    }
 
     /* ============================================================
-       COMPARISON
+       PRODUCT
     ============================================================ */
-    .comparison { background: var(--surface-page); padding: 90px 40px; }
+    .product-section {
+      background: var(--ink-950);
+      color: #fff;
+      padding: 100px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-section__radial {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .product-section__radial--a {
+      top: -120px; right: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(136,120,232,0.12), transparent 62%);
+    }
+    .product-section__radial--b {
+      bottom: -150px; left: 10%;
+      width: 500px; height: 400px;
+      background: radial-gradient(circle, rgba(136,120,232,0.07), transparent 62%);
+    }
+    .product-section__header {
+      position: relative;
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .product-section__h2 {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 4vw, 50px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.08;
+      margin-top: 14px;
+    }
+    .product-section__h2 span { color: var(--signal-400); }
+    .product-section__sub {
+      font-size: 17px;
+      color: var(--neutral-400);
+      margin-top: 14px;
+      line-height: 1.6;
+    }
+    .product-panels {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) { .product-panels { grid-template-columns: 1fr; } }
+
+    /* Sensor panel */
+    .product-panel {
+      border-radius: var(--radius-2xl);
+      background: linear-gradient(160deg, var(--ink-800), var(--ink-950));
+      border: 1px solid rgba(136,120,232,0.18);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-panel__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      align-self: flex-start;
+    }
+    .product-panel__badge--hw {
+      background: rgba(92,182,138,0.15);
+      color: var(--good-500);
+      border: 1px solid rgba(92,182,138,0.25);
+    }
+    .product-panel__badge--sw {
+      background: rgba(136,120,232,0.15);
+      color: var(--signal-400);
+      border: 1px solid rgba(136,120,232,0.25);
+    }
+    .product-panel__title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .product-panel__body {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--neutral-400);
+      margin-bottom: 28px;
+      max-width: 380px;
+    }
+
+    /* 3D Sensor Viewer */
+    .sensor-viewer {
+      width: 100%;
+      cursor: grab;
+      user-select: none;
+      margin-bottom: 8px;
+      flex: 1;
+      min-height: 320px;
+      position: relative;
+    }
+    .sensor-viewer:active { cursor: grabbing; }
+    #sensor-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .sensor-viewer__hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--neutral-600);
+      justify-content: center;
+      margin-top: 4px;
+      margin-bottom: 20px;
+      transition: opacity var(--dur-slow);
+    }
+    .sensor-viewer__hint.is-hidden { opacity: 0; }
+
+    /* Sensor spec pills */
+    .spec-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .spec-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.09);
+      font-size: 12.5px;
+      color: var(--neutral-300);
+    }
+    .spec-pill strong {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--signal-400);
+      font-size: 12px;
+    }
+
+    /* App panel */
+    .app-screens-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 28px;
+    }
+    .app-screens {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      flex: 1;
+    }
+    .app-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .app-screen__frame {
+      aspect-ratio: 9/18;
+      border-radius: 18px;
+      background: linear-gradient(160deg, var(--ink-700), var(--ink-950));
+      border: 1px solid rgba(136,120,232,0.20);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .app-screen__frame::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 36%;
+      height: 22px;
+      background: rgba(0,0,0,0.6);
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .app-screen__icon { color: var(--neutral-600); }
+    .app-screen__label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--neutral-500);
+      text-align: center;
+    }
+
+    /* App iframe embed */
+    .app-embed {
+      width: 100%;
+      height: 680px;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .app-embed iframe {
+      width: 100%;
+      height: 680px;
+      border: none;
+      display: block;
+      background: transparent;
+    }
+
+    .app-interact-hint {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--neutral-500);
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+
+    /* App feature list */
+    .app-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+    }
+    .app-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: var(--neutral-300);
+    }
+    .app-feature__check {
+      color: var(--signal-400);
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       DIFFERENCE / COMPARISON
+    ============================================================ */
+    .comparison {
+      background: var(--surface-page);
+      padding: 96px 40px;
+    }
     .comparison__header {
       text-align: center;
       max-width: 560px;
@@ -597,6 +872,12 @@
       color: var(--text-strong);
       margin-top: 14px;
     }
+    .comparison__sub {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
     .comparison__grid {
       max-width: 980px;
       margin: 0 auto;
@@ -610,11 +891,11 @@
       border-radius: var(--radius-2xl);
       padding: 34px 30px;
     }
-    .comp-col--guess {
+    .comp-col--before {
       background: var(--neutral-50);
       border: 1px solid var(--border-default);
     }
-    .comp-col--signal {
+    .comp-col--after {
       background: linear-gradient(160deg, var(--ink-800), var(--ink-950));
       border: 1px solid rgba(136,120,232,0.28);
       box-shadow: var(--glow-signal-md);
@@ -624,30 +905,34 @@
       letter-spacing: 0.06em; text-transform: uppercase;
       margin-bottom: 22px;
     }
-    .comp-col--guess .comp-col__label { color: var(--text-faint); }
-    .comp-col--signal .comp-col__label { color: var(--signal-400); }
+    .comp-col--before .comp-col__label { color: var(--text-faint); }
+    .comp-col--after  .comp-col__label { color: var(--signal-400); }
     .comp-items { display: flex; flex-direction: column; gap: 16px; }
     .comp-item { display: flex; align-items: center; gap: 12px; font-size: 15.5px; }
-    .comp-col--guess .comp-item { color: var(--text-muted); }
-    .comp-col--signal .comp-item { color: var(--neutral-100); }
+    .comp-col--before .comp-item { color: var(--text-muted); }
+    .comp-col--after  .comp-item { color: var(--neutral-100); }
     .comp-icon {
       width: 26px; height: 26px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      flex: 0 0 auto;
+      flex-shrink: 0;
     }
-    .comp-col--guess .comp-icon { background: var(--neutral-150); }
-    .comp-col--signal .comp-icon { background: rgba(136,120,232,0.16); }
+    .comp-col--before .comp-icon { background: var(--neutral-150); }
+    .comp-col--after  .comp-icon { background: rgba(136,120,232,0.16); }
 
     /* ============================================================
        HOW IT WORKS
     ============================================================ */
     .how {
       background: var(--surface-card);
-      padding: 90px 40px;
+      padding: 96px 40px;
       border-top: 1px solid var(--border-subtle);
     }
-    .how__header { text-align: center; max-width: 560px; margin: 0 auto 52px; }
+    .how__header {
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 52px;
+    }
     .how__h2 {
       font-family: var(--font-display);
       font-size: clamp(28px, 3.5vw, 42px);
@@ -659,137 +944,45 @@
     }
     .how__grid {
       display: grid;
-      grid-template-columns: repeat(3,1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 28px;
     }
     @media (max-width: 768px) { .how__grid { grid-template-columns: 1fr; } }
 
-    .how__step-num {
-      font-family: var(--font-mono);
-      font-size: 14px; font-weight: 600;
-      color: var(--accent-text);
-      margin-top: 22px;
-    }
-    .how__step-h3 {
-      font-family: var(--font-display);
-      font-size: 20px; font-weight: 600;
-      color: var(--text-strong);
-      margin: 8px 0;
-    }
-    .how__step-body { font-size: 14.5px; line-height: 1.68; color: var(--text-muted); }
-
-    /* Photo placeholder */
-    .photo-ph {
+    .how__photo {
       width: 100%;
+      aspect-ratio: 4/3;
       border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--neutral-50), var(--neutral-100));
+      border: 1.5px dashed var(--border-default);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      min-height: 200px;
+      gap: 8px;
+      margin-bottom: 22px;
     }
-    .photo-ph--light {
-      background: linear-gradient(160deg, var(--neutral-50), var(--neutral-100));
-      border: 1.5px dashed var(--border-default);
-    }
-    .photo-ph--dark {
-      background: linear-gradient(160deg, var(--ink-800), var(--ink-950));
-      border: 1.5px dashed rgba(136,120,232,0.22);
-    }
-    .photo-ph__lbl {
-      font-size: 11.5px;
+    .how__photo-lbl {
+      font-size: 11px;
       letter-spacing: 0.10em;
       text-transform: uppercase;
       font-weight: 600;
+      color: var(--text-faint);
     }
-    .photo-ph--light .photo-ph__lbl { color: var(--text-faint); }
-    .photo-ph--dark .photo-ph__lbl { color: var(--neutral-500); }
-    .photo-ph--ratio-4x3 { aspect-ratio: 4/3; }
-    .photo-ph--ratio-portrait { aspect-ratio: 9/16; }
-
-    /* ============================================================
-       SHOWCASE
-    ============================================================ */
-    .showcase {
-      background: var(--ink-950);
-      color: #fff;
-      padding: 94px 40px;
-      position: relative;
-      overflow: hidden;
-    }
-    .showcase__radial {
-      position: absolute;
-      right: 42%; top: 18%;
-      width: 520px; height: 520px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(136,120,232,0.11), transparent 62%);
-      pointer-events: none;
-    }
-    .showcase__inner {
-      position: relative;
-      max-width: 1120px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: 60px;
-      align-items: center;
-    }
-    @media (max-width: 900px) { .showcase__inner { grid-template-columns: 1fr; } }
-
-    .showcase__app { max-width: 280px; margin: 0 auto; }
-    .showcase__h2 {
-      font-family: var(--font-display);
-      font-size: clamp(26px, 3.5vw, 42px);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin: 16px 0 18px;
-    }
-    .showcase__body {
-      font-size: 17px;
-      line-height: 1.62;
-      color: var(--neutral-300);
-      max-width: 440px;
-      margin-bottom: 28px;
-    }
-    .showcase__bullets {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 24px;
-    }
-    .showcase__bullet {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14.5px;
-      color: var(--neutral-200);
-    }
-    .showcase__check { color: var(--signal-400); flex: 0 0 auto; }
-
-    /* ============================================================
-       METRICS
-    ============================================================ */
-    .metrics { background: var(--surface-page); padding: 72px 40px; }
-    .metrics__grid {
-      max-width: 1120px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 24px;
-    }
-    @media (max-width: 768px) { .metrics__grid { grid-template-columns: repeat(2,1fr); } }
-
-    .metric { text-align: center; }
-    .metric__val {
+    .how__step-num {
       font-family: var(--font-mono);
-      font-size: clamp(32px, 4vw, 46px);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-text);
+    }
+    .how__step-h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
       font-weight: 600;
       color: var(--text-strong);
-      letter-spacing: -0.02em;
-      line-height: 1;
+      margin: 8px 0;
     }
-    .metric__lbl { font-size: 14px; color: var(--text-muted); margin-top: 7px; }
+    .how__step-body { font-size: 14.5px; line-height: 1.68; color: var(--text-muted); }
 
     /* ============================================================
        MISSION
@@ -797,7 +990,7 @@
     .mission {
       background: var(--ink-950);
       color: #fff;
-      padding: 90px 40px;
+      padding: 100px 40px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -806,149 +999,144 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%,-50%);
-      width: 620px; height: 300px;
+      width: 700px; height: 340px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(136,120,232,0.10), transparent 62%);
+      background: radial-gradient(circle, rgba(136,120,232,0.11), transparent 62%);
       pointer-events: none;
     }
-    .mission__inner { max-width: 760px; margin: 0 auto; position: relative; }
-    .mission__logo { height: 44px; margin: 0 auto 26px; opacity: 0.92; }
+    .mission__inner {
+      max-width: 780px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .mission__logo { height: 44px; margin: 0 auto 28px; opacity: 0.9; }
     .mission__quote {
       font-family: var(--font-display);
       font-size: clamp(20px, 2.5vw, 28px);
       font-weight: 300;
       font-style: italic;
-      line-height: 1.42;
+      line-height: 1.48;
       color: var(--neutral-100);
       letter-spacing: 0.01em;
+      margin-bottom: 24px;
     }
-    .mission__label {
-      font-size: 12px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--neutral-500);
-      margin-top: 22px;
-    }
-
-    /* ============================================================
-       CTA
-    ============================================================ */
-    .cta-wrap {
-      background: var(--surface-card);
-      padding: 40px 40px 96px;
-    }
-    .cta-card {
-      max-width: 1120px;
-      margin: 0 auto;
-      border-radius: var(--radius-2xl);
-      padding: 66px 48px;
-      background: linear-gradient(140deg, var(--ink-850), var(--ink-950));
-      color: #fff;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-    }
-    .cta-card__radial {
-      position: absolute;
-      top: -80px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 320px;
-      background: radial-gradient(circle, rgba(136,120,232,0.18), transparent 60%);
-      pointer-events: none;
-    }
-    .cta-card__content { position: relative; }
-    .cta-card__h2 {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.08;
-    }
-    .cta-card__sub {
-      font-size: 18px;
-      color: var(--neutral-300);
-      max-width: 480px;
-      margin: 16px auto 0;
-      line-height: 1.55;
-    }
-    .cta-card__actions {
+    .mission__taglines {
       display: flex;
-      gap: 14px;
-      justify-content: center;
-      margin-top: 34px;
-      flex-wrap: wrap;
-    }
-
-    /* ============================================================
-       FOOTER
-    ============================================================ */
-    .footer {
-      background: var(--ink-950);
-      color: var(--neutral-400);
-      padding: 64px 40px 42px;
-      position: relative;
-      overflow: hidden;
-    }
-    .footer__emg {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 60px;
-      opacity: 0.22;
-      pointer-events: none;
-    }
-    .footer__inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .footer__brand { max-width: 280px; }
-    .footer__brand-logo {
-      display: inline-flex;
+      flex-direction: column;
+      gap: 8px;
       align-items: center;
-      gap: 10px;
     }
-    .footer__brand-logo img { height: 24px; }
-    .footer__tagline {
-      font-size: 14px;
-      line-height: 1.62;
-      margin-top: 18px;
-      color: var(--neutral-400);
-    }
-    .footer__cols { display: flex; gap: 60px; flex-wrap: wrap; }
-    .footer__col-head {
-      font-size: 12px;
+    .mission__tag {
+      font-size: 13px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--neutral-300);
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
-    .footer__links a {
-      font-size: 14px;
-      color: var(--neutral-400);
-      transition: color var(--dur-fast) var(--ease-standard);
-    }
-    .footer__links a:hover { color: var(--neutral-200); }
-    .footer__bottom {
-      max-width: 1120px;
-      margin: 48px auto 0;
-      padding-top: 22px;
-      border-top: 1px solid var(--ink-800);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      font-size: 13px;
       color: var(--neutral-500);
     }
-    @media (max-width: 768px) {
-      .footer { padding: 64px 20px 42px; }
-      .footer__inner { flex-direction: column; }
-      .footer__cols { gap: 36px; }
+    .mission__tag strong {
+      color: var(--signal-400);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       INVEST
+    ============================================================ */
+    .invest {
+      background: var(--ink-900);
+      color: #fff;
+      padding: 100px 40px;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(136,120,232,0.15);
+    }
+    .invest__radial {
+      position: absolute;
+      top: -120px; right: -60px;
+      width: 560px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(136,120,232,0.14), transparent 62%);
+      pointer-events: none;
+    }
+    .invest__inner {
+      position: relative;
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .invest__inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+    .invest__h2 {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.08;
+      margin-top: 16px;
+      margin-bottom: 20px;
+    }
+    .invest__h2 span { color: var(--signal-400); }
+    .invest__body {
+      font-size: 16px;
+      line-height: 1.68;
+      color: var(--neutral-400);
+      max-width: 480px;
+      margin-bottom: 36px;
+    }
+    .invest__actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .invest__points {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .invest__point {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 22px 24px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .invest__point-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      background: rgba(136,120,232,0.15);
+      border: 1px solid rgba(136,120,232,0.20);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--signal-400);
+      margin-top: 1px;
+    }
+    .invest__point-h3 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .invest__point-body {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--neutral-500);
+    }
+    .invest__stage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(136,120,232,0.12);
+      border: 1px solid rgba(136,120,232,0.22);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--signal-400);
     }
 
     /* ============================================================
@@ -956,7 +1144,7 @@
     ============================================================ */
     .contact {
       background: var(--surface-page);
-      padding: 90px 40px;
+      padding: 96px 40px;
       border-top: 1px solid var(--border-subtle);
     }
     .contact__inner {
@@ -968,7 +1156,6 @@
       align-items: start;
     }
     @media (max-width: 768px) {
-      .contact { padding: 72px 20px; }
       .contact__inner { grid-template-columns: 1fr; gap: 48px; }
     }
     .contact__h2 {
@@ -1010,10 +1197,8 @@
       border: 1px solid var(--border-subtle);
       display: flex; align-items: center; justify-content: center;
       color: var(--text-muted);
-      flex: 0 0 auto;
-      transition: background var(--dur-base) var(--ease-standard),
-                  border-color var(--dur-base) var(--ease-standard),
-                  color var(--dur-base) var(--ease-standard);
+      flex-shrink: 0;
+      transition: background var(--dur-base), border-color var(--dur-base), color var(--dur-base);
     }
     .contact__link:hover .contact__link-icon {
       background: var(--signal-100);
@@ -1035,6 +1220,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
+    @media (max-width: 500px) { .social__grid { grid-template-columns: 1fr; } }
+
     .social__card {
       display: flex;
       align-items: center;
@@ -1044,9 +1231,7 @@
       background: var(--surface-card);
       border: 1px solid var(--border-subtle);
       box-shadow: var(--shadow-sm);
-      transition: box-shadow var(--dur-slow) var(--ease-standard),
-                  transform var(--dur-slow) var(--ease-standard),
-                  border-color var(--dur-slow) var(--ease-standard);
+      transition: box-shadow var(--dur-slow), transform var(--dur-slow), border-color var(--dur-slow);
       text-decoration: none;
     }
     .social__card:hover {
@@ -1058,7 +1243,7 @@
       width: 40px; height: 40px;
       border-radius: var(--radius-md);
       display: flex; align-items: center; justify-content: center;
-      flex: 0 0 auto;
+      flex-shrink: 0;
       font-size: 20px;
     }
     .social__card-name {
@@ -1074,122 +1259,107 @@
     }
 
     /* ============================================================
-       MOBILE MENU
+       FOOTER
     ============================================================ */
-    .nav__mobile-menu {
-      display: none;
-      position: fixed;
-      top: 57px; left: 0; right: 0;
-      background: rgba(8, 8, 14, 0.97);
-      -webkit-backdrop-filter: blur(24px) saturate(160%);
-      backdrop-filter: blur(24px) saturate(160%);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 8px 0 24px;
-      z-index: 99;
-      flex-direction: column;
+    .footer {
+      background: var(--ink-950);
+      color: var(--neutral-400);
+      padding: 64px 40px 42px;
+      position: relative;
+      overflow: hidden;
     }
-    .nav__mobile-menu.is-open { display: flex; }
-    .nav__mobile-menu li { list-style: none; }
-    .nav__mobile-menu a {
-      display: block;
-      padding: 15px 24px;
-      font-size: 17px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.82);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      transition: color var(--dur-fast) var(--ease-standard),
-                  background var(--dur-fast) var(--ease-standard);
+    .footer__emg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 60px;
+      opacity: 0.20;
+      pointer-events: none;
     }
-    .nav__mobile-menu a:hover { color: #fff; background: rgba(255,255,255,0.04); }
-    .nav__mobile-menu li:last-child a { border-bottom: none; }
-    .nav__mobile-cta {
-      padding: 18px 24px 0;
+    .footer__inner {
+      max-width: 1120px;
+      margin: 0 auto;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .footer__brand { max-width: 280px; }
+    .footer__brand-logo {
+      display: inline-flex;
+      align-items: center;
       gap: 10px;
     }
-    .nav__mobile-cta .btn { justify-content: center; }
-    /* Hamburger → X animation */
-    .nav__menu-btn span {
-      transition: transform var(--dur-base) var(--ease-standard),
-                  opacity var(--dur-base) var(--ease-standard);
+    .footer__brand-logo img { height: 24px; }
+    .footer__tagline {
+      font-size: 14px;
+      line-height: 1.62;
+      margin-top: 18px;
+      color: var(--neutral-400);
     }
-    .nav__menu-btn.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-    .nav__menu-btn.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .nav__menu-btn.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .footer__cols { display: flex; gap: 60px; flex-wrap: wrap; }
+    .footer__col-head {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--neutral-300);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .footer__links a {
+      font-size: 14px;
+      color: var(--neutral-400);
+      transition: color var(--dur-fast);
+    }
+    .footer__links a:hover { color: var(--neutral-200); }
+    .footer__bottom {
+      max-width: 1120px;
+      margin: 48px auto 0;
+      padding-top: 22px;
+      border-top: 1px solid var(--ink-800);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--neutral-500);
+    }
+    @media (max-width: 768px) {
+      .footer { padding: 64px 20px 42px; }
+      .footer__inner { flex-direction: column; }
+      .footer__cols { gap: 36px; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; }
+    }
 
     /* ============================================================
-       RESPONSIVE — tablet ≤ 960px
+       RESPONSIVE — sections
     ============================================================ */
     @media (max-width: 960px) {
-      .features__grid { grid-template-columns: repeat(2, 1fr); }
-      .how__grid { grid-template-columns: repeat(2, 1fr); }
-      .features { padding: 72px 32px; }
+      .why { padding: 72px 32px; }
+      .product-section { padding: 72px 32px; }
       .comparison { padding: 72px 32px; }
       .how { padding: 72px 32px; }
-      .metrics { padding: 60px 32px; }
+      .mission { padding: 72px 32px; }
+      .invest { padding: 72px 32px; }
       .contact { padding: 72px 32px; }
-      .cta-wrap { padding: 32px 32px 80px; }
     }
-
-    /* ============================================================
-       RESPONSIVE — mobile ≤ 640px
-    ============================================================ */
     @media (max-width: 640px) {
-      /* Section padding — all go to 20px horizontal */
-      .trust        { padding: 24px 20px; }
-      .manifesto    { padding: 60px 20px; }
-      .features     { padding: 60px 20px; }
-      .comparison   { padding: 60px 20px; }
-      .how          { padding: 60px 20px; }
-      .showcase     { padding: 60px 20px; }
-      .metrics      { padding: 52px 20px; }
-      .mission      { padding: 60px 20px; }
-      .cta-wrap     { padding: 24px 20px 64px; }
-      .contact      { padding: 60px 20px; }
-
-      /* CTA card inner */
-      .cta-card { padding: 44px 24px; border-radius: var(--radius-xl); }
-
-      /* Hero */
       .hero { padding: 96px 20px 64px; }
-      .hero__h1 { font-size: clamp(38px, 10vw, 52px); }
-      .hero__sub { font-size: 17px; }
-      .hero__stats { gap: 22px; }
-      .hero__stat-val { font-size: 24px; }
-      .hero__ctas { gap: 10px; }
+      .hero__h1 { font-size: clamp(34px, 9vw, 48px); }
+      .hero__stats { gap: 0; }
+      .hero__stat { padding: 12px 14px; }
+      .hero__stat-val { font-size: 22px; }
       .hero__ctas .btn { flex: 1; justify-content: center; }
-
-      /* Trust bar */
-      .trust__inner { gap: 20px 32px; }
-
-      /* Grids → single column */
-      .features__grid   { grid-template-columns: 1fr; }
-      .comparison__grid { grid-template-columns: 1fr; }
-      .how__grid        { grid-template-columns: 1fr; }
-      .showcase__bullets { grid-template-columns: 1fr; }
-      .social__grid     { grid-template-columns: 1fr; }
-
-      /* Showcase */
-      .showcase__inner { gap: 36px; }
-      .showcase__body { font-size: 15px; }
-
-      /* Metrics — keep 2-col */
-      .metrics__grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-      .metric__val { font-size: 32px; }
-
-      /* Manifesto */
-      .manifesto__h2 { font-size: clamp(22px, 6vw, 32px); }
-
-      /* Footer bottom — stack vertically */
-      .footer__bottom { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .footer__bottom > div { order: -1; } /* social icons above copyright */
-
-      /* Misc */
-      .how__step-h3 { font-size: 18px; }
-      .feat-card { padding: 24px 20px; }
-      .comp-col { padding: 26px 22px; }
+      .why { padding: 60px 20px; }
+      .product-section { padding: 60px 20px; }
+      .comparison { padding: 60px 20px; }
+      .how { padding: 60px 20px; }
+      .mission { padding: 60px 20px; }
+      .invest { padding: 60px 20px; }
+      .contact { padding: 60px 20px; }
       .comp-item { font-size: 14.5px; }
+      .comp-col { padding: 26px 22px; }
+      .app-screens { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     }
 
     /* ============================================================
@@ -1197,23 +1367,28 @@
     ============================================================ */
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.7); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
     }
     @keyframes breathe {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.045); }
+      50%       { transform: scale(1.045); }
     }
     @keyframes emg-draw {
       to { stroke-dashoffset: 0; }
     }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
+      50%       { transform: translateY(-7px); }
     }
-
-    /* SVG inline icons */
-    .icon { display: inline-flex; align-items: center; justify-content: center; }
   </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -1226,15 +1401,15 @@
       <span class="nav__wordmark">ACTUS</span>
     </a>
     <ul class="nav__links">
-      <li><a href="product.html">Sensor</a></li>
-      <li><a href="#technology">Technology</a></li>
-      <li><a href="#how-it-works">How it works</a></li>
-      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="#why-actus">Why Actus</a></li>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#how-it-works">How it Works</a></li>
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#invest">Invest</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav__actions">
-      <a href="#" class="nav__signin">Sign in</a>
-      <a href="pricing.html" class="btn btn--primary btn--sm">Get Actus</a>
+      <a href="pricing.html" class="btn btn--primary btn--sm">Pricing →</a>
     </div>
     <button class="nav__menu-btn" aria-label="Open menu" aria-expanded="false" id="menu-btn">
       <span></span><span></span><span></span>
@@ -1244,14 +1419,15 @@
   <!-- Mobile menu -->
   <div class="nav__mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
     <ul>
-      <li><a href="product.html">Sensor</a></li>
-      <li><a href="#technology">Technology</a></li>
-      <li><a href="#how-it-works">How it works</a></li>
-      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="#why-actus">Why Actus</a></li>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#how-it-works">How it Works</a></li>
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#invest">Invest</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav__mobile-cta">
-      <a href="pricing.html" class="btn btn--primary">Get Actus →</a>
+      <a href="pricing.html" class="btn btn--primary">Pricing →</a>
     </div>
   </div>
 
@@ -1260,24 +1436,26 @@
     <!-- ============================================================
          HERO
     ============================================================ -->
-    <section class="hero" id="product" aria-label="Hero">
+    <section class="hero" id="home" aria-label="Hero">
       <div class="hero__radial hero__radial--main" aria-hidden="true"></div>
       <div class="hero__radial hero__radial--secondary" aria-hidden="true"></div>
       <div class="hero__inner">
 
-        <!-- Copy -->
         <div>
           <div class="hero__badge" data-reveal>
             <span class="hero__badge-dot" aria-hidden="true"></span>
-            Real-time EMG biowearable
+            Realtime EMG biowearable
           </div>
           <h1 class="hero__h1" data-reveal data-delay="1">
-            Train with<br><em>signal.</em>
+            Informed by your body,<br><em>powered by AI.</em>
           </h1>
-          <p class="hero__sub" data-reveal data-delay="2">
-            Wearable sensors read every muscle as you move. Place multiple sensors on any part of the body — Actus turns raw EMG and motion data into calm, real-time guidance on your form and fatigue, rep by rep.
+          <p class="hero__tagline" data-reveal data-delay="2">
+            Take control of your fitness journey.
           </p>
-          <div class="hero__ctas" data-reveal data-delay="3">
+          <p class="hero__sub" data-reveal data-delay="3">
+            Wearable EMG sensors read every muscle as you move. Place multiple sensors on any part of the body — Actus turns raw signal into real-time guidance on form, fatigue, and recovery, rep by rep.
+          </p>
+          <div class="hero__ctas" data-reveal data-delay="4">
             <a href="pricing.html" class="btn btn--primary">
               Get Actus
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1287,107 +1465,95 @@
               How it works
             </a>
           </div>
-          <div class="hero__stats" data-reveal data-delay="4">
-            <div>
-              <div class="hero__stat-val">6+</div>
-              <div class="hero__stat-lbl">EMG sensors</div>
-            </div>
-            <div>
+          <div class="hero__stats" data-reveal data-delay="5">
+            <div class="hero__stat">
               <div class="hero__stat-val">1&nbsp;kHz</div>
-              <div class="hero__stat-lbl">sample rate</div>
+              <div class="hero__stat-lbl">Sample rate</div>
             </div>
-            <div>
+            <div class="hero__stat">
               <div class="hero__stat-val">&lt;20ms</div>
-              <div class="hero__stat-lbl">latency</div>
+              <div class="hero__stat-lbl">Latency</div>
+            </div>
+            <div class="hero__stat">
+              <div class="hero__stat-val">6+</div>
+              <div class="hero__stat-lbl">Sensors</div>
+            </div>
+            <div class="hero__stat">
+              <div class="hero__stat-val">9h</div>
+              <div class="hero__stat-lbl">Battery</div>
             </div>
           </div>
         </div>
 
         <!-- Device panel -->
-        <div class="hero__panel" aria-hidden="true">
+        <div class="hero__panel" data-reveal data-delay="2">
           <div class="hero__device">
             <img src="assets/logo-mark-pulse.svg" alt="Actus sensor" class="hero__device-logo">
-            <svg class="hero__emg-svg" viewBox="0 0 420 90" aria-hidden="true">
-              <polyline class="hero__emg-path"
-                points="0,45 140,45 158,45 172,18 188,45 198,70 214,8 228,82 242,45 268,45 284,45 298,30 312,60 328,45 420,45"/>
+            <svg class="hero__emg-svg" viewBox="0 0 320 60" aria-label="Live EMG waveform">
+              <path class="hero__emg-path"
+                d="M0,30 L60,30 L80,30 L92,8 L104,52 L116,30 L136,30
+                   L148,30 L162,12 L174,48 L186,30 L210,30
+                   L224,30 L236,6 L248,54 L260,30 L290,30 L320,30"/>
             </svg>
             <div class="hero__live-chip">
-              <span class="hero__live-label">
-                <span class="hero__live-dot"></span>
-                Left quad · optimal
-              </span>
-              <span class="hero__live-val">84%</span>
+              <div class="hero__live-label">
+                <span class="hero__live-dot" aria-hidden="true"></span>
+                Quad L — live
+              </div>
+              <span class="hero__live-val">82%</span>
             </div>
           </div>
-          <div class="hero__alert-chip">
-            <span class="hero__alert-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="hero__alert-chip" aria-label="Fatigue alert notification">
+            <span class="hero__alert-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </span>
-            Fatigue alert · R calf
+            Fatigue building — ease off
           </div>
         </div>
+
       </div>
     </section>
 
     <!-- ============================================================
-         TRUST BAR
+         WHY ACTUS
     ============================================================ -->
-    <section class="trust" aria-label="Trusted by">
-      <div class="trust__inner">
-        <span class="trust__label">Trusted by elite programs</span>
-        <span class="trust__name">ALTITUDE</span>
-        <span class="trust__name">KINETIX</span>
-        <span class="trust__name">PRO·LAB</span>
-        <span class="trust__name">VANGUARD FC</span>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         MANIFESTO
-    ============================================================ -->
-    <section class="manifesto" aria-label="Our philosophy">
-      <div class="manifesto__inner" data-reveal>
-        <span class="eyebrow">The Actus idea</span>
-        <h2 class="manifesto__h2">
-          Most training is a <span class="dim">guess.</span><br>
-          Actus makes every rep <span class="accent">measurable.</span>
-        </h2>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         FEATURES
-    ============================================================ -->
-    <section class="features" id="technology" aria-label="Features">
+    <section class="why" id="why-actus" aria-label="Why Actus">
       <div class="wrap">
-        <div class="features__header" data-reveal>
+        <div class="why__header" data-reveal>
           <span class="eyebrow">Why Actus</span>
-          <h2 class="features__h2">Coaching that lives<br>in your muscles.</h2>
+          <h2 class="why__h2">Science meets intelligence,<br>on every rep.</h2>
+          <p class="why__sub">Most training is still based on guesswork. Actus gives you clinical-grade muscle data — and the AI to act on it.</p>
         </div>
-        <div class="features__grid">
+        <div class="why__grid">
 
-          <div class="feat-card" data-reveal data-delay="1">
-            <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--signal-500)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          <div class="why-card" data-reveal data-delay="1">
+            <div class="why-card__num">01</div>
+            <div class="why-card__icon" aria-hidden="true">
+              <!-- Waveform / realtime icon -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
-            <h3 class="feat-card__h3">Real-time form</h3>
-            <p class="feat-card__body">See which muscles are firing — and which are compensating — the instant you move. Fix imbalances before they become habits.</p>
+            <h3 class="why-card__h3">Realtime Informed Feedback</h3>
+            <p class="why-card__body">Know exactly which muscles are firing, how hard, and whether your form is degrading — all while you move. Actus delivers per-muscle feedback on activation and fatigue in under 20 ms, so every rep is informed, not assumed.</p>
           </div>
 
-          <div class="feat-card" data-reveal data-delay="2">
-            <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--fatigue-500)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="why-card" data-reveal data-delay="2">
+            <div class="why-card__num">02</div>
+            <div class="why-card__icon" aria-hidden="true">
+              <!-- Shield / recovery icon -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
-            <h3 class="feat-card__h3">Fatigue alerts</h3>
-            <p class="feat-card__body">A gentle haptic and on-screen cue the moment a muscle nears its limit — so you stop a rep short of breakdown, not after.</p>
+            <h3 class="why-card__h3">Recovery Tracking &amp; Injury Prevention</h3>
+            <p class="why-card__body">Measure how your muscles recover between sessions. Actus detects compensation patterns and muscle imbalances before they escalate into injury — essential for athletes returning from rehab and those pushing performance limits.</p>
           </div>
 
-          <div class="feat-card" data-reveal data-delay="3">
-            <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--good-500)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <div class="why-card" data-reveal data-delay="3">
+            <div class="why-card__num">03</div>
+            <div class="why-card__icon" aria-hidden="true">
+              <!-- Target / optimize icon -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
             </div>
-            <h3 class="feat-card__h3">Smarter recovery</h3>
-            <p class="feat-card__body">Per-muscle recovery scoring tells you exactly what is ready to train tomorrow — and what still needs a day of rest.</p>
+            <h3 class="why-card__h3">Optimizing Personalized Workout Programs</h3>
+            <p class="why-card__body">Every session generates objective data that the Actus AI uses to adapt your training — progressive overload grounded in what your muscles actually tolerated, not generic progression tables. Train smarter, build faster.</p>
           </div>
 
         </div>
@@ -1395,72 +1561,211 @@
     </section>
 
     <!-- ============================================================
-         COMPARISON
+         PRODUCT
     ============================================================ -->
-    <section class="comparison" aria-label="Actus vs guesswork">
+    <section class="product-section" id="product" aria-label="The Actus system">
+      <div class="product-section__radial product-section__radial--a" aria-hidden="true"></div>
+      <div class="product-section__radial product-section__radial--b" aria-hidden="true"></div>
+
+      <div class="wrap">
+        <div class="product-section__header" data-reveal>
+          <span class="eyebrow eyebrow--light">The System</span>
+          <h2 class="product-section__h2">Two products.<br><span>One platform.</span></h2>
+          <p class="product-section__sub">The sensor captures what your body is doing.<br>The app tells you what it means — and what to do next.</p>
+        </div>
+
+        <div class="product-panels">
+
+          <!-- SENSOR PANEL -->
+          <div class="product-panel" data-reveal>
+            <div class="product-panel__badge product-panel__badge--hw" aria-label="Hardware product">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+              Hardware
+            </div>
+            <h3 class="product-panel__title">Actus Sensor</h3>
+            <p class="product-panel__body">A clinical-grade EMG and 6-axis IMU sensor you place on any muscle. Up to 6 sensors per session, streaming raw signal to your phone at 1,000 times per second.</p>
+
+            <!-- Three.js OBJ viewer -->
+            <div class="sensor-viewer" id="sensor-viewer" aria-label="3D sensor model — drag to rotate">
+              <canvas id="sensor-canvas"></canvas>
+            </div>
+            <div class="sensor-viewer__hint" id="viewer-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/></svg>
+              Drag to rotate
+            </div>
+
+            <div class="spec-pills">
+              <span class="spec-pill"><strong>1kHz</strong> EMG</span>
+              <span class="spec-pill"><strong>6-axis</strong> IMU</span>
+              <span class="spec-pill"><strong>&lt;20ms</strong> latency</span>
+              <span class="spec-pill"><strong>9h</strong> battery</span>
+              <span class="spec-pill"><strong>IP54</strong> rated</span>
+              <span class="spec-pill">Up to <strong>6</strong> sensors</span>
+            </div>
+          </div>
+
+          <!-- APP PANEL -->
+          <div class="product-panel" data-reveal data-delay="1">
+            <div class="product-panel__badge product-panel__badge--sw" aria-label="Software product">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              Software
+            </div>
+            <h3 class="product-panel__title">Actus App</h3>
+            <p class="product-panel__body">Free for iOS and Android. The app receives raw signal from your sensors and translates it in real time — showing a live muscle map, catching fatigue before it hurts, and building your recovery score.</p>
+
+            <!-- Live app preview — interactive sketch from Actus Design System -->
+            <div class="app-screens-wrap">
+              <div class="app-embed">
+                <iframe
+                  src="app-preview/index.html"
+                  title="Actus App — interactive preview"
+                  loading="lazy"
+                  sandbox="allow-scripts allow-same-origin"
+                  allowtransparency="true"
+                ></iframe>
+              </div>
+              <div class="app-interact-hint">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 11a2 2 0 0 1 4 0v3a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8 2 2 0 0 1 4 0"/></svg>
+                Interactive — tap anywhere to explore the app
+              </div>
+            </div>
+
+            <div class="app-features">
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                iOS &amp; Android
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Live muscle map
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Fatigue alerts
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Recovery scoring
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                AI program optimizer
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Coach reports
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Rehab tracking
+              </div>
+              <div class="app-feature">
+                <span class="app-feature__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Free to download
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE DIFFERENCE WE MAKE
+    ============================================================ -->
+    <section class="comparison" id="difference" aria-label="The difference we make">
       <div class="wrap">
         <div class="comparison__header" data-reveal>
-          <span class="eyebrow">The difference</span>
-          <h2 class="comparison__h2">Stop training in the dark.</h2>
+          <span class="eyebrow">The difference we make</span>
+          <h2 class="comparison__h2">Training on feel<br>vs. training on signal.</h2>
+          <p class="comparison__sub">Most athletes train blind. Actus changes what information you have access to — and what decisions you can make because of it.</p>
         </div>
         <div class="comparison__grid">
 
-          <div class="comp-col comp-col--guess" data-reveal>
-            <div class="comp-col__label">The guesswork</div>
+          <div class="comp-col comp-col--before" data-reveal>
+            <div class="comp-col__label">Without Actus</div>
             <div class="comp-items">
               <div class="comp-item">
-                <span class="comp-icon">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-500)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span class="comp-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-400)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </span>
-                Guessing which muscle is working
+                Train entirely by feel
               </div>
               <div class="comp-item">
-                <span class="comp-icon">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-500)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span class="comp-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-400)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </span>
-                Overtraining blind to fatigue
+                Guess when fatigue peaks
               </div>
               <div class="comp-item">
-                <span class="comp-icon">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-500)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span class="comp-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-400)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </span>
-                Left/right imbalances you never feel
+                Miss imbalances until injury
               </div>
               <div class="comp-item">
-                <span class="comp-icon">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-500)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span class="comp-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-400)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </span>
-                Recovery entirely by gut feel
+                Recovery by gut feeling
+              </div>
+              <div class="comp-item">
+                <span class="comp-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-400)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </span>
+                Generic progression plans
               </div>
             </div>
           </div>
 
-          <div class="comp-col comp-col--signal" data-reveal data-delay="1">
-            <div class="comp-col__label">Training on signal</div>
+          <div class="comp-col comp-col--after" data-reveal data-delay="1">
+            <div class="comp-col__label">With Actus</div>
             <div class="comp-items">
               <div class="comp-item">
-                <span class="comp-icon">
+                <span class="comp-icon" aria-hidden="true">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--signal-400)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
                 See every muscle fire, live
               </div>
               <div class="comp-item">
-                <span class="comp-icon">
+                <span class="comp-icon" aria-hidden="true">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--signal-400)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
                 Haptic alerts before fatigue hits
               </div>
               <div class="comp-item">
-                <span class="comp-icon">
+                <span class="comp-icon" aria-hidden="true">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--signal-400)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
-                Catch imbalances the instant they show
+                Catch compensation patterns early
               </div>
               <div class="comp-item">
-                <span class="comp-icon">
+                <span class="comp-icon" aria-hidden="true">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--signal-400)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
-                Measured, per-muscle recovery data
+                Measured per-muscle recovery
+              </div>
+              <div class="comp-item">
+                <span class="comp-icon" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--signal-400)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                AI-optimized personal program
               </div>
             </div>
           </div>
@@ -1481,108 +1786,35 @@
         <div class="how__grid">
 
           <div data-reveal data-delay="1">
-            <div class="photo-ph photo-ph--light photo-ph--ratio-4x3" aria-label="Sensor placement photo — coming soon">
+            <div class="how__photo" aria-label="Sensor placement — photo coming soon">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-300)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <span class="photo-ph__lbl">Sensor on skin</span>
+              <span class="how__photo-lbl">Sensor on skin</span>
             </div>
             <div class="how__step-num">01</div>
             <h3 class="how__step-h3">Place the sensors</h3>
-            <p class="how__step-body">Featherweight EMG sensors attach to target muscles in seconds. Place multiple sensors on any part of the body — quads, hamstrings, calves, shoulders, arms — for full-body coverage.</p>
+            <p class="how__step-body">Featherweight EMG sensors attach to target muscles in seconds. Place up to 6 sensors anywhere on the body — quads, hamstrings, shoulders, arms — for complete muscle coverage.</p>
           </div>
 
           <div data-reveal data-delay="2">
-            <div class="photo-ph photo-ph--light photo-ph--ratio-4x3" aria-label="Sensor with IMU photo — coming soon">
+            <div class="how__photo" aria-label="Sensor streaming — photo coming soon">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-300)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <span class="photo-ph__lbl">Actus sensor + IMU</span>
+              <span class="how__photo-lbl">Wireless stream</span>
             </div>
             <div class="how__step-num">02</div>
             <h3 class="how__step-h3">Connect to your phone</h3>
-            <p class="how__step-body">Each sensor streams EMG and accelerometer/IMU data to your phone at 1 kHz with sub-20 ms latency — no hub, no wires, no complicated setup.</p>
+            <p class="how__step-body">Sensors stream EMG and 6-axis IMU data wirelessly to the Actus app at 1 kHz with sub-20 ms latency. No hub, no wires, no complicated setup — just open the app and train.</p>
           </div>
 
           <div data-reveal data-delay="3">
-            <div class="photo-ph photo-ph--light photo-ph--ratio-4x3" aria-label="App screenshot — coming soon">
+            <div class="how__photo" aria-label="App in use — screenshot coming soon">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-300)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <span class="photo-ph__lbl">App in hand</span>
+              <span class="how__photo-lbl">App guidance</span>
             </div>
             <div class="how__step-num">03</div>
             <h3 class="how__step-h3">Read your signal</h3>
-            <p class="how__step-body">The Actus app translates raw data into calm, glanceable guidance — what to push, what to ease, and what to recover — rep by rep, muscle by muscle.</p>
+            <p class="how__step-body">The Actus app and AI translate raw data into calm, glanceable guidance — what muscles to push, what to protect, and how to recover — rep by rep, session by session.</p>
           </div>
 
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         SHOWCASE
-    ============================================================ -->
-    <section class="showcase" aria-label="The app">
-      <div class="showcase__radial" aria-hidden="true"></div>
-      <div class="showcase__inner">
-
-        <div data-reveal>
-          <div class="photo-ph photo-ph--dark photo-ph--ratio-portrait showcase__app" aria-label="App live session screenshot — coming soon" style="border-radius: var(--radius-2xl);">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-600)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            <span class="photo-ph__lbl">App — live session</span>
-          </div>
-        </div>
-
-        <div data-reveal data-delay="1">
-          <span class="eyebrow eyebrow--light">The app</span>
-          <h2 class="showcase__h2">Your whole body,<br>on one calm screen.</h2>
-          <p class="showcase__body">No raw graphs to decode. Actus shows a living muscle map and tells you — in plain language — what to push, what to ease, and what to recover.</p>
-          <div class="showcase__bullets">
-            <div class="showcase__bullet">
-              <span class="showcase__check">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              Live per-muscle activation map
-            </div>
-            <div class="showcase__bullet">
-              <span class="showcase__check">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              Haptic fatigue alerts
-            </div>
-            <div class="showcase__bullet">
-              <span class="showcase__check">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              Per-muscle recovery scoring
-            </div>
-            <div class="showcase__bullet">
-              <span class="showcase__check">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              Coach-ready session reports
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ============================================================
-         METRICS
-    ============================================================ -->
-    <section class="metrics" aria-label="Key metrics">
-      <div class="metrics__grid">
-        <div class="metric" data-reveal>
-          <div class="metric__val">6+</div>
-          <div class="metric__lbl">sensors per session</div>
-        </div>
-        <div class="metric" data-reveal data-delay="1">
-          <div class="metric__val">1&nbsp;kHz</div>
-          <div class="metric__lbl">sampling rate</div>
-        </div>
-        <div class="metric" data-reveal data-delay="2">
-          <div class="metric__val">&lt;20ms</div>
-          <div class="metric__lbl">real-time latency</div>
-        </div>
-        <div class="metric" data-reveal data-delay="3">
-          <div class="metric__val">360°</div>
-          <div class="metric__lbl">body coverage</div>
         </div>
       </div>
     </section>
@@ -1590,48 +1822,92 @@
     <!-- ============================================================
          MISSION
     ============================================================ -->
-    <section class="mission" aria-label="Our mission">
+    <section class="mission" id="mission" aria-label="Our mission">
       <div class="mission__radial" aria-hidden="true"></div>
       <div class="mission__inner" data-reveal>
         <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="Actus" class="mission__logo">
         <p class="mission__quote">
           "To take the guesswork out of training —<br>one muscle fiber at a time."
         </p>
-        <div class="mission__label">Our mission</div>
+        <div class="mission__taglines">
+          <div class="mission__tag"><strong>Informed by your body, powered by AI.</strong></div>
+          <div class="mission__tag">Take control of your fitness journey.</div>
+        </div>
       </div>
     </section>
 
     <!-- ============================================================
-         CTA
+         INVEST
     ============================================================ -->
-    <section class="cta-wrap" aria-label="Call to action">
-      <div class="cta-card" data-reveal>
-        <div class="cta-card__radial" aria-hidden="true"></div>
-        <div class="cta-card__content">
-          <h2 class="cta-card__h2">Feel every fiber fire.</h2>
-          <p class="cta-card__sub">Start training on signal. Free shipping and a 30-day return window on all kits.</p>
-          <div class="cta-card__actions">
-            <a href="pricing.html" class="btn btn--primary">
-              Get Actus
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <section class="invest" id="invest" aria-label="Invest in Actus">
+      <div class="invest__radial" aria-hidden="true"></div>
+      <div class="invest__inner">
+
+        <div data-reveal>
+          <div class="invest__stage-badge">
+            <span class="hero__badge-dot" style="animation: pulse-dot 2.4s infinite;" aria-hidden="true"></span>
+            Seed Stage
+          </div>
+          <h2 class="invest__h2">Back the future of<br><span>human performance.</span></h2>
+          <p class="invest__body">We're building the technology that will change how athletes, patients, and coaches understand the human body. Actus is raising its seed round to bring clinical-grade muscle intelligence from the lab to everyday training and rehabilitation.</p>
+          <div class="invest__actions">
+            <a href="mailto:hello@actus.bio?subject=Investment%20Inquiry" class="btn btn--primary">
+              Investor Inquiries
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
-            <a href="mailto:hello@actus.bio" class="btn btn--ghost-white">Book a demo</a>
+            <a href="#contact" class="btn btn--ghost-white">Talk to the team</a>
           </div>
         </div>
+
+        <div data-reveal data-delay="1">
+          <div class="invest__points">
+
+            <div class="invest__point">
+              <div class="invest__point-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div>
+                <div class="invest__point-h3">Massive untapped market</div>
+                <div class="invest__point-body">Millions of athletes, physiotherapists, and sports scientists lack access to real-time, objective muscle data. Actus makes it wearable, affordable, and actionable.</div>
+              </div>
+            </div>
+
+            <div class="invest__point">
+              <div class="invest__point-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div>
+                <div class="invest__point-h3">Deep technical moat</div>
+                <div class="invest__point-body">Clinical-grade EMG hardware, sub-20ms wireless streaming, multi-sensor body coverage, and an AI engine trained on real muscle physiology — built from the ground up.</div>
+              </div>
+            </div>
+
+            <div class="invest__point">
+              <div class="invest__point-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div>
+                <div class="invest__point-h3">Dual market — training &amp; rehab</div>
+                <div class="invest__point-body">Two high-value verticals: performance athletes optimizing training, and rehabilitation patients requiring objective recovery measurement. One platform serves both.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- ============================================================
          CONTACT
     ============================================================ -->
-    <section class="contact" id="contact" aria-label="Contact">
+    <section class="contact" id="contact" aria-label="Get in touch">
       <div class="contact__inner">
 
-        <!-- Left: get in touch -->
         <div data-reveal>
           <span class="eyebrow">Get in touch</span>
           <h2 class="contact__h2">We'd love to hear from you.</h2>
-          <p class="contact__body">Whether you're an athlete, physio, coach, or researcher — reach out and we'll get back to you within one business day.</p>
+          <p class="contact__body">Whether you're an athlete, physio, coach, researcher, or potential partner — reach out and we'll get back to you within one business day.</p>
           <div class="contact__links">
             <a href="mailto:hello@actus.bio" class="contact__link">
               <span class="contact__link-icon">
@@ -1654,12 +1930,11 @@
           </div>
         </div>
 
-        <!-- Right: social media -->
         <div data-reveal data-delay="1">
           <div class="social__label">Follow us</div>
           <div class="social__grid">
 
-            <a href="https://instagram.com/actusbiotech" class="social__card" target="_blank" rel="noopener" aria-label="Instagram">
+            <a href="https://instagram.com/actusbiotech" class="social__card" target="_blank" rel="noopener" aria-label="Instagram @actusbiotech">
               <div class="social__card-icon" style="background: linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>
               </div>
@@ -1669,7 +1944,7 @@
               </div>
             </a>
 
-            <a href="https://linkedin.com/company/actus-biotech" class="social__card" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <a href="https://linkedin.com/company/actus-biotech" class="social__card" target="_blank" rel="noopener" aria-label="LinkedIn — Actus Biotech">
               <div class="social__card-icon" style="background: #0A66C2;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
               </div>
@@ -1679,7 +1954,7 @@
               </div>
             </a>
 
-            <a href="https://x.com/actusbiotech" class="social__card" target="_blank" rel="noopener" aria-label="X / Twitter">
+            <a href="https://x.com/actusbiotech" class="social__card" target="_blank" rel="noopener" aria-label="X / Twitter @actusbiotech">
               <div class="social__card-icon" style="background: #000;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.857L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </div>
@@ -1689,7 +1964,7 @@
               </div>
             </a>
 
-            <a href="https://github.com/Actus-biotech" class="social__card" target="_blank" rel="noopener" aria-label="GitHub">
+            <a href="https://github.com/Actus-biotech" class="social__card" target="_blank" rel="noopener" aria-label="GitHub — Actus-biotech">
               <div class="social__card-icon" style="background: #24292F;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
               </div>
@@ -1721,34 +1996,33 @@
           <img src="assets/logo-mark-pulse-mono-darkbg.svg" alt="">
           <span class="nav__wordmark" style="font-size:17px">ACTUS</span>
         </a>
-        <p class="footer__tagline">Real-time muscle intelligence. Wearable EMG and IMU sensors that coach your form and fatigue — rep by rep.</p>
+        <p class="footer__tagline">Informed by your body, powered by AI. Wearable EMG + IMU sensors and an AI app for real-time muscle intelligence.</p>
       </div>
       <div class="footer__cols">
         <div>
-          <div class="footer__col-head">Product</div>
+          <div class="footer__col-head">Explore</div>
           <ul class="footer__links">
-            <li><a href="#">Sensors</a></li>
-            <li><a href="#">Mobile app</a></li>
-            <li><a href="#">For rehab</a></li>
-            <li><a href="#">For teams</a></li>
+            <li><a href="#why-actus">Why Actus</a></li>
+            <li><a href="#product">Product</a></li>
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#mission">Mission</a></li>
           </ul>
         </div>
         <div>
           <div class="footer__col-head">Company</div>
           <ul class="footer__links">
-            <li><a href="#">About</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Press</a></li>
+            <li><a href="#invest">Invest</a></li>
             <li><a href="mailto:hello@actus.bio">Contact</a></li>
+            <li><a href="mailto:research@actus.bio">Research</a></li>
+            <li><a href="mailto:teams@actus.bio">Teams</a></li>
           </ul>
         </div>
         <div>
-          <div class="footer__col-head">Resources</div>
+          <div class="footer__col-head">Legal</div>
           <ul class="footer__links">
-            <li><a href="#">The science</a></li>
-            <li><a href="#">Support</a></li>
-            <li><a href="#">Developers</a></li>
             <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
           </ul>
         </div>
       </div>
@@ -1762,7 +2036,7 @@
         <a href="https://linkedin.com/company/actus-biotech" target="_blank" rel="noopener" aria-label="LinkedIn" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
         </a>
-        <a href="https://x.com/actusbiotech" target="_blank" rel="noopener" aria-label="X / Twitter" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
+        <a href="https://x.com/actusbiotech" target="_blank" rel="noopener" aria-label="X" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.857L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </a>
         <a href="https://github.com/Actus-biotech" target="_blank" rel="noopener" aria-label="GitHub" style="color:var(--neutral-500);transition:color 140ms;display:flex;" onmouseover="this.style.color='var(--neutral-200)'" onmouseout="this.style.color='var(--neutral-500)'">
@@ -1776,7 +2050,7 @@
        JS
   ============================================================ -->
   <script>
-    // Scroll reveal via IntersectionObserver
+    /* ── Scroll reveal ── */
     const revealEls = document.querySelectorAll('[data-reveal]');
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
@@ -1785,21 +2059,21 @@
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.07, rootMargin: '0px 0px -36px 0px' });
+    }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
     revealEls.forEach(el => io.observe(el));
 
-    // Trigger hero elements immediately (they're above the fold)
+    // Hero elements visible immediately
     document.querySelectorAll('.hero [data-reveal]').forEach(el => {
       setTimeout(() => el.classList.add('is-visible'), 80);
     });
 
-    // Nav frosted-glass on scroll
+    /* ── Nav frosted glass ── */
     const nav = document.getElementById('site-nav');
     const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 30);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 
-    // Mobile menu
+    /* ── Mobile menu ── */
     const menuBtn = document.getElementById('menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
     menuBtn.addEventListener('click', () => {
@@ -1808,7 +2082,6 @@
       menuBtn.setAttribute('aria-expanded', String(isOpen));
       document.body.style.overflow = isOpen ? 'hidden' : '';
     });
-    // Close on any link click
     mobileMenu.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         mobileMenu.classList.remove('is-open');
@@ -1817,15 +2090,183 @@
         document.body.style.overflow = '';
       });
     });
-    // Close on resize back to desktop
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 860) {
+      if (window.innerWidth > 920) {
         mobileMenu.classList.remove('is-open');
         menuBtn.classList.remove('is-open');
         menuBtn.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       }
     });
+
+    /* ── 3D Sensor Viewer (Three.js) — see module script below ── */
   </script>
+
+  <!-- ── Three.js sensor model viewer ── -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OBJLoader }  from 'three/addons/loaders/OBJLoader.js';
+
+    const wrapper = document.getElementById('sensor-viewer');
+    const canvas  = document.getElementById('sensor-canvas');
+    const hint    = document.getElementById('viewer-hint');
+    if (!wrapper || !canvas) throw new Error('sensor-viewer missing');
+
+    /* ── Renderer ── */
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping      = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.5;
+
+    /* ── Scene ── */
+    const scene  = new THREE.Scene();
+
+    /* ── Camera ── */
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.0001, 100);
+    camera.position.z = 0.17;
+
+    /* ── Lights ── */
+    // Soft ambient base
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    // Key light — warm white from top-right-front
+    const key = new THREE.DirectionalLight(0xfff5e8, 3.5);
+    key.position.set(3, 4, 5);
+    scene.add(key);
+    // Brand-purple rim from back-left
+    const rim = new THREE.DirectionalLight(0x8878E8, 2.8);
+    rim.position.set(-4, -1, -3);
+    scene.add(rim);
+    // Cool fill from top-left
+    const fill = new THREE.DirectionalLight(0x99ccff, 1.2);
+    fill.position.set(-2, 3, 1);
+    scene.add(fill);
+
+    /* ── Load OBJ ── */
+    let sensorObj = null;
+    const loader = new OBJLoader();
+    loader.load('assets/sensor.obj', (obj) => {
+      obj.traverse(child => {
+        if (!child.isMesh) return;
+        const geo = child.geometry;
+        // Smooth normals (the file's flat normals look faceted)
+        geo.computeVertexNormals();
+        const hasVC = !!geo.attributes.color;
+        child.material = new THREE.MeshStandardMaterial({
+          vertexColors : hasVC,
+          color        : hasVC ? 0xffffff : 0x888888,
+          roughness    : 0.38,
+          metalness    : 0.72,
+        });
+        child.material.needsUpdate = true;
+      });
+
+      // Compute bounding box before any transforms (world == local at this point)
+      const box    = new THREE.Box3().setFromObject(obj);
+      const center = box.getCenter(new THREE.Vector3());
+      const size   = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const s      = 0.042 / maxDim;   // target display size (smaller than before)
+
+      // Move obj so its bbox center sits at the pivot's local origin.
+      // This must happen BEFORE wrapping in the pivot so that rotating
+      // the pivot spins the device around its own centre, not a corner.
+      obj.position.sub(center);
+
+      // Wrap in a pivot group: scale lives here, rotation lives here.
+      // obj is unscaled inside; the pivot applies scale uniformly around (0,0,0).
+      const pivot = new THREE.Group();
+      pivot.scale.setScalar(s);
+      pivot.add(obj);
+
+      scene.add(pivot);
+      sensorObj = pivot;
+      setSize();   // set correct aspect now that obj is loaded
+    }, undefined, (err) => {
+      console.warn('[sensor-viewer] OBJ load failed:', err);
+    });
+
+    /* ── Resize ── */
+    function setSize() {
+      const W = wrapper.clientWidth  || 400;
+      const H = wrapper.clientHeight || 320;
+      renderer.setSize(W, H, false);
+      camera.aspect = W / H;
+      camera.updateProjectionMatrix();
+    }
+    setSize();
+    new ResizeObserver(setSize).observe(wrapper);
+
+    /* ── Rotation state ── */
+    let cur   = { x:  0.25, y: 0 };
+    let tgt   = { x:  0.25, y: 0 };
+    let autoY = 0;
+    let dragging = false, hintGone = false;
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    /* ── Render loop ── */
+    function tick(ts) {
+      requestAnimationFrame(tick);
+      if (!sensorObj) return;
+
+      if (!dragging) {
+        autoY    = ts * 0.00024;           // ~one full rotation per 26 s
+        tgt.y    = autoY;
+        tgt.x    = 0.25 + Math.sin(autoY) * 0.07;
+      }
+      cur.x = lerp(cur.x, tgt.x, 0.055);
+      cur.y = lerp(cur.y, tgt.y, 0.055);
+      sensorObj.rotation.x = cur.x;
+      sensorObj.rotation.y = cur.y;
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(tick);
+
+    /* ── Interaction helpers ── */
+    function dismissHint() {
+      if (hintGone) return;
+      hintGone = true;
+      hint?.classList.add('is-hidden');
+    }
+
+    /* Mouse */
+    wrapper.addEventListener('mousemove', e => {
+      const r  = wrapper.getBoundingClientRect();
+      const nx = (e.clientX - r.left)  / r.width  - 0.5;  // –0.5 … 0.5
+      const ny = (e.clientY - r.top)   / r.height - 0.5;
+      dragging = true;
+      tgt.y    = autoY + nx * 1.4;
+      tgt.x    = 0.25  - ny * 0.7;
+      dismissHint();
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      dragging = false;
+      autoY    = cur.y;
+    });
+
+    /* Touch */
+    let t0 = { x: 0, y: 0 }, base = { x: 0.25, y: 0 };
+    wrapper.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      t0   = { x: t.clientX, y: t.clientY };
+      base = { x: cur.x, y: cur.y };
+      dragging = true;
+      dismissHint();
+      e.preventDefault();
+    }, { passive: false });
+    wrapper.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      tgt.y = base.y + (t.clientX - t0.x) * 0.013;
+      tgt.x = base.x - (t.clientY - t0.y) * 0.010;
+      autoY = tgt.y;
+      e.preventDefault();
+    }, { passive: false });
+    wrapper.addEventListener('touchend', () => {
+      dragging = false;
+      autoY = cur.y;
+    });
+  </script>
+
 </body>
 </html>

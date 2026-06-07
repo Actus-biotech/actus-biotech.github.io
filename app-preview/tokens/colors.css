@@ -1,0 +1,73 @@
+/* ============================================================
+   ACTUS — COLOR TOKENS
+   Periwinkle-violet signal (Western University purple, pasteled)
+   · botanical pastel muscle-state hues · lavender-tinted neutrals
+   · cool-purple ink darks.
+
+   Philosophy: Nature-journal clarity — minimal, scientific, premium.
+   Every hue is desaturated enough to never shout, vivid enough
+   to carry meaning. Dark text on light fills throughout.
+   ============================================================ */
+
+:root {
+  /* --- INK · hardware near-blacks (cool purple-tinted) --- */
+  --ink-950: #08080E;
+  --ink-900: #0E0D16;
+  --ink-850: #14131E;
+  --ink-800: #1A1926;
+  --ink-700: #22212F;
+  --ink-600: #2E2D3D;
+  --ink-500: #3C3B4C;
+
+  /* --- NEUTRAL · lavender-tinted cool grays (serene light UI) --- */
+  --neutral-0:   #FFFFFF;
+  --neutral-25:  #FAFAFD;
+  --neutral-50:  #F3F2FA;
+  --neutral-100: #E7E5F4;
+  --neutral-150: #D8D6EA;
+  --neutral-200: #C6C4DC;
+  --neutral-300: #A7A5C2;
+  --neutral-400: #8886A4;
+  --neutral-500: #6A6882;
+  --neutral-600: #515064;
+  --neutral-700: #3B3A4C;
+  --neutral-800: #272634;
+  --neutral-900: #181620;
+
+  /* --- SIGNAL · periwinkle-violet (Western University purple, pasteled) --- */
+  --signal-100: #F1EFFE;
+  --signal-200: #E0DAFC;
+  --signal-300: #C5BAFF;
+  --signal-400: #A595F5;
+  --signal-500: #8878E8;  /* core · periwinkle-violet */
+  --signal-600: #6655C8;  /* AA text on light */
+  --signal-700: #4D3EA8;
+  --signal-800: #372C80;
+
+  /* --- SEMANTIC HUES · botanical pastels, muscle-state coded ---
+     Dark text on light fills — the pastel look.              */
+
+  /* Optimal engagement — sage green */
+  --good-100: #E5F3EC;
+  --good-400: #80C9A2;
+  --good-500: #5CB68A;
+  --good-600: #3E9169;
+
+  /* Elevated load — warm butter */
+  --caution-100: #FBF3E2;
+  --caution-400: #EBC880;
+  --caution-500: #E2B05C;
+  --caution-600: #BD8B32;
+
+  /* Fatigue / overexertion — dusty rose */
+  --fatigue-100: #FAE6E8;
+  --fatigue-400: #F09898;
+  --fatigue-500: #E5787E;
+  --fatigue-600: #C05060;
+
+  /* Recovery / rest — soft sky */
+  --rest-100: #E4F2FC;
+  --rest-400: #80C5EC;
+  --rest-500: #5AAEDF;
+  --rest-600: #3888BC;
+}

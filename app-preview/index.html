@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actus — Live Session</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  body {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; padding: 0; box-sizing: border-box;
+    font-family: var(--font-sans);
+    background: transparent;
+  }
+  #stage { transform-origin: center center; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="_ds_bundle.js"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="kit-util.jsx"></script>
+<script type="text/babel" src="AppShell.jsx"></script>
+<script type="text/babel" src="TodayScreen.jsx"></script>
+<script type="text/babel" src="LiveSessionScreen.jsx"></script>
+<script type="text/babel" src="SummaryScreen.jsx"></script>
+<script type="text/babel" src="SensorsScreen.jsx"></script>
+<script type="text/babel" src="MiscScreens.jsx"></script>
+</head>
+<body>
+<div id="stage"><div id="root"></div></div>
+<script type="text/babel">
+function App() {
+  const { IOSDevice, AppShell, TodayScreen, LiveSessionScreen, SummaryScreen, SensorsScreen, InsightsScreen, ProfileScreen } = window;
+  // Start on home (today) screen
+  const [view, setView] = React.useState('today');
+  const tabbed = ['today', 'sensors', 'insights', 'profile'].includes(view);
+
+  let screen;
+  if (view === 'today') screen = <TodayScreen onStart={() => setView('live')} />;
+  else if (view === 'sensors') screen = <SensorsScreen />;
+  else if (view === 'insights') screen = <InsightsScreen />;
+  else if (view === 'profile') screen = <ProfileScreen />;
+
+  return (
+    <IOSDevice>
+      {view === 'live'
+        ? <LiveSessionScreen onEnd={() => setView('summary')} />
+        : view === 'summary'
+          ? <SummaryScreen onDone={() => setView('today')} />
+          : <AppShell tab={view} setTab={setView}>{screen}</AppShell>}
+    </IOSDevice>
+  );
+}
+
+function fit() {
+  const stage = document.getElementById('stage');
+  const padV = 80;  /* room for the iPhone drop shadow top/bottom */
+  const padH = 40;  /* room for the side shadow glow */
+  const s = Math.min(1, (window.innerHeight - padV) / 874, (window.innerWidth - padH) / 402);
+  stage.style.transform = `scale(${s})`;
+}
+window.addEventListener('resize', fit);
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+setTimeout(fit, 50);
+</script>
+</body>
+</html>

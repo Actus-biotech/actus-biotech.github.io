@@ -1,0 +1,52 @@
+/* ============================================================
+   ACTUS — TYPOGRAPHY TOKENS
+   ============================================================ */
+
+:root {
+  /* --- families --- */
+  --font-display: 'Sora', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-sans:    'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* --- weights --- */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* --- type scale (px, 1.250 major-third-ish, tuned) --- */
+  --text-2xs: 11px;
+  --text-xs:  12px;
+  --text-sm:  14px;
+  --text-md:  16px;   /* base body */
+  --text-lg:  18px;
+  --text-xl:  22px;
+  --text-2xl: 28px;
+  --text-3xl: 36px;
+  --text-4xl: 48px;
+  --text-5xl: 64px;
+  --text-6xl: 84px;
+
+  /* --- line heights --- */
+  --leading-tight:   1.08;
+  --leading-snug:    1.22;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  /* --- letter spacing --- */
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide:   0.04em;
+  --tracking-wider:  0.08em;
+  --tracking-caps:   0.16em;  /* the ACTUS wordmark / eyebrow look */
+
+  /* --- semantic roles --- */
+  --display-font:   var(--font-display);
+  --display-weight: var(--weight-semibold);
+  --heading-font:   var(--font-display);
+  --body-font:      var(--font-sans);
+  --eyebrow-tracking: var(--tracking-wider);
+  --data-font:      var(--font-mono);
+}
