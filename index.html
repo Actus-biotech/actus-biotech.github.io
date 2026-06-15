@@ -2133,7 +2133,7 @@
        makeViewer(wrapperId, canvasId, hintId, glbPath)
        Creates a self-contained Three.js viewer for any GLB model.
     ───────────────────────────────────────────────────────────── */
-    function makeViewer(wrapperId, canvasId, hintId, glbPath) {
+    function makeViewer(wrapperId, canvasId, hintId, glbPath, scaleMult = 1.0) {
       const wrapper = document.getElementById(wrapperId);
       const canvas  = document.getElementById(canvasId);
       const hint    = document.getElementById(hintId);
@@ -2192,7 +2192,7 @@
         const box    = new THREE.Box3().setFromObject(obj);
         const center = box.getCenter(new THREE.Vector3());
         const size   = box.getSize(new THREE.Vector3());
-        const s      = 0.042 / Math.max(size.x, size.y, size.z);
+        const s      = (0.042 * scaleMult) / Math.max(size.x, size.y, size.z);
 
         obj.position.sub(center);
         const p = new THREE.Group();
@@ -2277,8 +2277,8 @@
     }
 
     /* ── Instantiate viewers ── */
-    const sensorViewer = makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb');
-    makeViewer('hub-viewer',        'hub-canvas',    'hub-hint',    'assets/hub.glb');
+    const sensorViewer = makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb', 1.5);
+    makeViewer('hub-viewer',        'hub-canvas',    'hub-hint',    'assets/hub.glb?v=2', 1.5);
     // makeViewer('hero-sensor-viewer','hero-sensor-canvas', null, 'assets/sensor.glb'); // hero panel hidden
 
     /* ── Sensor color swatches ── */
