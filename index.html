@@ -377,12 +377,13 @@
     .hero__inner {
       position: relative;
       z-index: 3;
-      max-width: 1120px;
+      max-width: 780px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1fr;
       gap: 60px;
       align-items: center;
+      text-align: center;
     }
     .hero__badge {
       display: inline-flex;
@@ -426,11 +427,12 @@
       max-width: 480px;
       margin-bottom: 36px;
     }
-    .hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; }
+    .hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; justify-content: center; }
     .hero__stats {
       display: flex;
       gap: 0;
       flex-wrap: wrap;
+      justify-content: center;
     }
     .hero__stat {
       padding: 14px 24px;
@@ -1505,23 +1507,6 @@
           </div>
         </div>
 
-        <!-- App screenshot + sensor panel -->
-        <div class="hero__panel" data-reveal data-delay="2">
-          <div class="hero__visual">
-            <div class="hero__app-frame">
-              <iframe
-                src="app-preview/index.html"
-                title="Actus App preview"
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin"
-                allowtransparency="true"
-              ></iframe>
-            </div>
-            <div class="hero__sensor-float" id="hero-sensor-viewer" aria-label="Actus sensor 3D model, drag to rotate">
-              <canvas id="hero-sensor-canvas"></canvas>
-            </div>
-          </div>
-        </div>
 
       </div>
     </section>
@@ -2294,7 +2279,7 @@
     /* ── Instantiate viewers ── */
     const sensorViewer = makeViewer('sensor-viewer', 'sensor-canvas', 'viewer-hint', 'assets/sensor.glb');
     makeViewer('hub-viewer',        'hub-canvas',    'hub-hint',    'assets/hub.glb');
-    makeViewer('hero-sensor-viewer','hero-sensor-canvas', null,     'assets/sensor.glb');
+    // makeViewer('hero-sensor-viewer','hero-sensor-canvas', null, 'assets/sensor.glb'); // hero panel hidden
 
     /* ── Sensor color swatches ── */
     document.querySelectorAll('#sensor-swatches .color-swatch').forEach(btn => {
