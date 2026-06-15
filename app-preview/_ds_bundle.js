@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":3,"namespace":"ActusBiotechDesignSystem_e79e78","components":[{"name":"Avatar","sourcePath":"components/core/Avatar.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"IconButton","sourcePath":"components/core/IconButton.jsx"},{"name":"ActivationRing","sourcePath":"components/data/ActivationRing.jsx"},{"name":"Metric","sourcePath":"components/data/Metric.jsx"},{"name":"SignalMeter","sourcePath":"components/data/SignalMeter.jsx"},{"name":"StatusDot","sourcePath":"components/data/StatusDot.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"SegmentedControl","sourcePath":"components/forms/SegmentedControl.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/core/Avatar.jsx":"803f515440b5","components/core/Badge.jsx":"ec4e57ea36e4","components/core/Button.jsx":"148fe5873e54","components/core/Card.jsx":"a0eacc7f70be","components/core/IconButton.jsx":"c24f8b7bd5af","components/data/ActivationRing.jsx":"5d8b69004c80","components/data/Metric.jsx":"382286a7f34b","components/data/SignalMeter.jsx":"f96a99be3be2","components/data/StatusDot.jsx":"70b945cf5fa6","components/forms/Input.jsx":"c590ddb509c1","components/forms/SegmentedControl.jsx":"4d543cb0ff2a","components/forms/Switch.jsx":"cf94097bccc7","ui_kits/mobile_app/AppShell.jsx":"f96653e0be61","ui_kits/mobile_app/LiveSessionScreen.jsx":"10cdf45991f2","ui_kits/mobile_app/MiscScreens.jsx":"a7bfd1ced0ca","ui_kits/mobile_app/SensorsScreen.jsx":"0d54b9ca8de8","ui_kits/mobile_app/SummaryScreen.jsx":"70cf98d0e71b","ui_kits/mobile_app/TodayScreen.jsx":"e3f026b4f231","ui_kits/mobile_app/ios-frame.jsx":"be3343be4b51","ui_kits/mobile_app/kit-util.jsx":"05a3c5e4c32c","ui_kits/website/HomePage.jsx":"1e73ffcaf600","ui_kits/website/PricingPage.jsx":"6f911546d1c0","ui_kits/website/SiteChrome.jsx":"e7f73b75049b","ui_kits/website/site-util.jsx":"34f1d836b42e"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":3,"namespace":"ActusBiotechDesignSystem_e79e78","components":[{"name":"Avatar","sourcePath":"components/core/Avatar.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"IconButton","sourcePath":"components/core/IconButton.jsx"},{"name":"ActivationRing","sourcePath":"components/data/ActivationRing.jsx"},{"name":"Metric","sourcePath":"components/data/Metric.jsx"},{"name":"SignalMeter","sourcePath":"components/data/SignalMeter.jsx"},{"name":"StatusDot","sourcePath":"components/data/StatusDot.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"SegmentedControl","sourcePath":"components/forms/SegmentedControl.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"}],"sourceHashes":{"components/core/Avatar.jsx":"803f515440b5","components/core/Badge.jsx":"ec4e57ea36e4","components/core/Button.jsx":"148fe5873e54","components/core/Card.jsx":"a0eacc7f70be","components/core/IconButton.jsx":"c24f8b7bd5af","components/data/ActivationRing.jsx":"5d8b69004c80","components/data/Metric.jsx":"382286a7f34b","components/data/SignalMeter.jsx":"f96a99be3be2","components/data/StatusDot.jsx":"70b945cf5fa6","components/forms/Input.jsx":"c590ddb509c1","components/forms/SegmentedControl.jsx":"4d543cb0ff2a","components/forms/Switch.jsx":"cf94097bccc7","tweaks-panel.jsx":"6591467622ed","ui_kits/mobile_app/AppShell.jsx":"717b85786d22","ui_kits/mobile_app/ExercisesScreen.jsx":"0650c410445d","ui_kits/mobile_app/HistoryScreen.jsx":"90aec750ea6f","ui_kits/mobile_app/InsightScreen.jsx":"57368d21ba94","ui_kits/mobile_app/LiveSessionScreen.jsx":"42cd284d4a0e","ui_kits/mobile_app/MuscleMapView.jsx":"37b9920397d4","ui_kits/mobile_app/SensorDetailSheet.jsx":"25f8b6ca0c97","ui_kits/mobile_app/SensorsScreen.jsx":"ef16575cfda2","ui_kits/mobile_app/SessionsScreen.jsx":"a94c2a1c7419","ui_kits/mobile_app/ios-frame.jsx":"be3343be4b51","ui_kits/mobile_app/kit-util.jsx":"05a3c5e4c32c","ui_kits/mobile_app/tweaks-panel.jsx":"6591467622ed","ui_kits/website/HomePage.jsx":"1e73ffcaf600","ui_kits/website/PricingPage.jsx":"6f911546d1c0","ui_kits/website/SiteChrome.jsx":"e7f73b75049b","ui_kits/website/site-util.jsx":"34f1d836b42e"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -763,42 +763,704 @@ function Switch({
 Object.assign(__ds_scope, { Switch });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/forms/Switch.jsx", error: String((e && e.message) || e) }); }
 
+// tweaks-panel.jsx
+try { (() => {
+// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
+
+/* BEGIN USAGE */
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+// Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
+//   TweakToggle, TweakRadio, TweakSelect, TweakText, TweakNumber, TweakColor, TweakButton.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// TweakRadio is the segmented control for 2–3 short options (auto-falls-back to
+// TweakSelect past ~16/~10 chars per label); reach for TweakSelect directly when
+// options are many or long. For color tweaks always curate 3-4 options rather than
+// a free picker; an option can also be a whole 2–5 color palette (the stored value
+// is the array). The Tweak* controls are a floor, not a ceiling — build custom
+// controls inside the panel if a tweak calls for UI they don't cover.
+/* END USAGE */
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null ? keyOrEdits : {
+      [keyOrEdits]: val
+    };
+    setValues(prev => ({
+      ...prev,
+      ...edits
+    }));
+    window.parent.postMessage({
+      type: '__edit_mode_set_keys',
+      edits
+    }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', {
+      detail: edits
+    }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({
+  title = 'Tweaks',
+  children
+}) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({
+    x: 16,
+    y: 16
+  });
+  const PAD = 16;
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth,
+      h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y))
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+  React.useEffect(() => {
+    const onMsg = e => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({
+      type: '__edit_mode_available'
+    }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({
+      type: '__edit_mode_dismissed'
+    }, '*');
+  };
+  const onDragStart = e => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX,
+      sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = ev => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy)
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+  if (!open) return null;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("style", null, __TWEAKS_STYLE), /*#__PURE__*/React.createElement("div", {
+    ref: dragRef,
+    className: "twk-panel",
+    "data-omelette-chrome": "",
+    style: {
+      right: offsetRef.current.x,
+      bottom: offsetRef.current.y
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-hd",
+    onMouseDown: onDragStart
+  }, /*#__PURE__*/React.createElement("b", null, title), /*#__PURE__*/React.createElement("button", {
+    className: "twk-x",
+    "aria-label": "Close tweaks",
+    onMouseDown: e => e.stopPropagation(),
+    onClick: dismiss
+  }, "\u2715")), /*#__PURE__*/React.createElement("div", {
+    className: "twk-body"
+  }, children)));
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({
+  label,
+  children
+}) {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "twk-sect"
+  }, label), children);
+}
+function TweakRow({
+  label,
+  value,
+  children,
+  inline = false
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: inline ? 'twk-row twk-row-h' : 'twk-row'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label), value != null && /*#__PURE__*/React.createElement("span", {
+    className: "twk-val"
+  }, value)), children);
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({
+  label,
+  value,
+  min = 0,
+  max = 100,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label,
+    value: `${value}${unit}`
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    className: "twk-slider",
+    min: min,
+    max: max,
+    step: step,
+    value: value,
+    onChange: e => onChange(Number(e.target.value))
+  }));
+}
+function TweakToggle({
+  label,
+  value,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-row twk-row-h"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "twk-toggle",
+    "data-on": value ? '1' : '0',
+    role: "switch",
+    "aria-checked": !!value,
+    onClick: () => onChange(!value)
+  }, /*#__PURE__*/React.createElement("i", null)));
+}
+function TweakRadio({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = o => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({
+    2: 16,
+    3: 10
+  }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = s => {
+      const m = options.find(o => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return /*#__PURE__*/React.createElement(TweakSelect, {
+      label: label,
+      value: value,
+      options: options,
+      onChange: s => onChange(resolve(s))
+    });
+  }
+  const opts = options.map(o => typeof o === 'object' ? o : {
+    value: o,
+    label: o
+  });
+  const idx = Math.max(0, opts.findIndex(o => o.value === value));
+  const n = opts.length;
+  const segAt = clientX => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor((clientX - r.left - 2) / inner * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+  const onPointerDown = e => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = ev => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    ref: trackRef,
+    role: "radiogroup",
+    onPointerDown: onPointerDown,
+    className: dragging ? 'twk-seg dragging' : 'twk-seg'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-seg-thumb",
+    style: {
+      left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+      width: `calc((100% - 4px) / ${n})`
+    }
+  }), opts.map(o => /*#__PURE__*/React.createElement("button", {
+    key: o.value,
+    type: "button",
+    role: "radio",
+    "aria-checked": o.value === value
+  }, o.label))));
+}
+function TweakSelect({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "twk-field",
+    value: value,
+    onChange: e => onChange(e.target.value)
+  }, options.map(o => {
+    const v = typeof o === 'object' ? o.value : o;
+    const l = typeof o === 'object' ? o.label : o;
+    return /*#__PURE__*/React.createElement("option", {
+      key: v,
+      value: v
+    }, l);
+  })));
+}
+function TweakText({
+  label,
+  value,
+  placeholder,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "twk-field",
+    type: "text",
+    value: value,
+    placeholder: placeholder,
+    onChange: e => onChange(e.target.value)
+  }));
+}
+function TweakNumber({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  const clamp = n => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({
+    x: 0,
+    val: 0
+  });
+  const onScrubStart = e => {
+    e.preventDefault();
+    startRef.current = {
+      x: e.clientX,
+      val: value
+    };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = ev => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-num"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-lbl",
+    onPointerDown: onScrubStart
+  }, label), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: value,
+    min: min,
+    max: max,
+    step: step,
+    onChange: e => onChange(clamp(Number(e.target.value)))
+  }), unit && /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-unit"
+  }, unit));
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = n >> 16 & 255,
+    g = n >> 8 & 255,
+    b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+const __TwkCheck = ({
+  light
+}) => /*#__PURE__*/React.createElement("svg", {
+  viewBox: "0 0 14 14",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M3 7.2 5.8 10 11 4.2",
+  fill: "none",
+  strokeWidth: "2.2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  stroke: light ? 'rgba(0,0,0,.78)' : '#fff'
+}));
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  if (!options || !options.length) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "twk-row twk-row-h"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "twk-lbl"
+    }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("input", {
+      type: "color",
+      className: "twk-swatch",
+      value: value,
+      onChange: e => onChange(e.target.value)
+    }));
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = o => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-chips",
+    role: "radiogroup"
+  }, options.map((o, i) => {
+    const colors = Array.isArray(o) ? o : [o];
+    const [hero, ...rest] = colors;
+    const sup = rest.slice(0, 4);
+    const on = key(o) === cur;
+    return /*#__PURE__*/React.createElement("button", {
+      key: i,
+      type: "button",
+      className: "twk-chip",
+      role: "radio",
+      "aria-checked": on,
+      "data-on": on ? '1' : '0',
+      "aria-label": colors.join(', '),
+      title: colors.join(' · '),
+      style: {
+        background: hero
+      },
+      onClick: () => onChange(o)
+    }, sup.length > 0 && /*#__PURE__*/React.createElement("span", null, sup.map((c, j) => /*#__PURE__*/React.createElement("i", {
+      key: j,
+      style: {
+        background: c
+      }
+    }))), on && /*#__PURE__*/React.createElement(__TwkCheck, {
+      light: __twkIsLight(hero)
+    }));
+  })));
+}
+function TweakButton({
+  label,
+  onClick,
+  secondary = false
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: secondary ? 'twk-btn secondary' : 'twk-btn',
+    onClick: onClick
+  }, label);
+}
+Object.assign(window, {
+  useTweaks,
+  TweaksPanel,
+  TweakSection,
+  TweakRow,
+  TweakSlider,
+  TweakToggle,
+  TweakRadio,
+  TweakSelect,
+  TweakText,
+  TweakNumber,
+  TweakColor,
+  TweakButton
+});
+})(); } catch (e) { __ds_ns.__errors.push({ path: "tweaks-panel.jsx", error: String((e && e.message) || e) }); }
+
 // ui_kits/mobile_app/AppShell.jsx
 try { (() => {
-// AppShell — Actus mobile: status-bar-safe layout + branded bottom tab bar.
-const {
-  IconButton
-} = window.DS;
+// AppShell — Actus mobile: 5-tab bar (Insight · Sensors · Sessions · Exercises · History)
 function TabBar({
   tab,
   setTab
 }) {
   const Icon = window.Icon;
   const items = [{
-    id: 'today',
-    label: 'Today',
-    icon: 'house'
-  }, {
     id: 'sensors',
     label: 'Sensors',
     icon: 'radio'
   }, {
-    id: 'live',
-    label: 'Live',
-    icon: 'activity',
+    id: 'sessions',
+    label: 'Sessions',
+    icon: 'dumbbell'
+  }, {
+    id: 'insight',
+    label: 'Insight',
+    icon: 'sparkles',
     center: true
   }, {
-    id: 'insights',
-    label: 'Insights',
-    icon: 'chart-spline'
+    id: 'exercises',
+    label: 'Exercises',
+    icon: 'search'
   }, {
-    id: 'profile',
-    label: 'Profile',
-    icon: 'user-round'
+    id: 'history',
+    label: 'History',
+    icon: 'chart-bar'
   }];
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      flex: '0 0 auto',
       position: 'absolute',
       left: 0,
       right: 0,
@@ -811,38 +1473,48 @@ function TabBar({
       WebkitBackdropFilter: 'blur(22px) saturate(180%)',
       backdropFilter: 'blur(22px) saturate(180%)',
       borderTop: '1px solid var(--border-subtle)',
-      padding: '10px 8px 26px',
-      boxShadow: '0 -8px 30px rgba(14,18,22,0.06)'
+      padding: '10px 4px 26px',
+      boxShadow: '0 -8px 30px rgba(20,18,40,0.06)'
     }
   }, items.map(it => {
+    const active = tab === it.id;
     if (it.center) {
-      const active = tab === 'live';
       return /*#__PURE__*/React.createElement("button", {
         key: it.id,
-        onClick: () => setTab('live'),
+        onClick: () => setTab(it.id),
         style: {
-          border: 'none',
+          border: '3.5px solid var(--surface-card)',
           cursor: 'pointer',
-          background: 'var(--accent)',
-          width: 58,
-          height: 58,
+          background: active ? 'var(--signal-500)' : 'var(--signal-600)',
+          width: 56,
+          height: 56,
           borderRadius: '50%',
-          marginTop: -28,
+          marginTop: -22,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--text-on-accent)',
-          boxShadow: 'var(--glow-signal-md)',
-          border: '4px solid var(--surface-card)'
+          gap: 3,
+          color: '#fff',
+          boxShadow: active ? 'var(--glow-signal-md)' : 'var(--glow-signal-sm)',
+          transition: 'all .2s',
+          flexShrink: 0
         }
       }, /*#__PURE__*/React.createElement(Icon, {
         name: it.icon,
-        size: 24,
-        strokeWidth: 2.4
-      }));
+        size: 22,
+        strokeWidth: 2.4,
+        color: "#fff"
+      }), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: '.01em',
+          color: '#fff',
+          lineHeight: 1
+        }
+      }, it.label));
     }
-    const active = tab === it.id;
     return /*#__PURE__*/React.createElement("button", {
       key: it.id,
       onClick: () => setTab(it.id),
@@ -855,16 +1527,16 @@ function TabBar({
         alignItems: 'center',
         gap: 4,
         color: active ? 'var(--accent-text)' : 'var(--text-faint)',
-        width: 56,
+        width: 58,
         padding: '4px 0'
       }
     }, /*#__PURE__*/React.createElement(Icon, {
       name: it.icon,
-      size: 22,
+      size: 21,
       strokeWidth: active ? 2.4 : 2
     }), /*#__PURE__*/React.createElement("span", {
       style: {
-        fontSize: 10.5,
+        fontSize: 10,
         fontWeight: active ? 700 : 500,
         letterSpacing: '.01em'
       }
@@ -874,93 +1546,1179 @@ function TabBar({
 function AppShell({
   tab,
   setTab,
-  dark = false,
-  children
+  children,
+  overlay
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
       height: '100%',
       position: 'relative',
       background: 'var(--surface-page)'
-    },
-    "data-theme": dark ? 'dark' : undefined
+    }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       height: '100%',
-      overflow: 'auto',
+      overflowY: 'auto',
       paddingTop: 54,
       paddingBottom: 96
     }
   }, children), /*#__PURE__*/React.createElement(TabBar, {
     tab: tab,
     setTab: setTab
-  }));
+  }), overlay);
 }
 window.AppShell = AppShell;
 window.TabBar = TabBar;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/AppShell.jsx", error: String((e && e.message) || e) }); }
 
-// ui_kits/mobile_app/LiveSessionScreen.jsx
+// ui_kits/mobile_app/ExercisesScreen.jsx
 try { (() => {
-// LiveSessionScreen — full-screen dark "focus" mode with the live muscle map.
-function MuscleMap({
-  muscles,
-  selected,
-  onSelect
-}) {
+// ExercisesScreen — searchable exercise database with muscle map filter
+function ExercisesScreen() {
+  const Icon = window.Icon;
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const [search, setSearch] = React.useState('');
+  const [category, setCategory] = React.useState('All');
+  const [muscleFilter, setMuscleFilter] = React.useState(null);
+  const allExercises = [{
+    id: 1,
+    name: 'Back Squat',
+    muscles: ['lquad', 'rquad', 'lham', 'rham', 'lglute', 'rglute'],
+    category: 'Compound',
+    equipment: 'Barbell'
+  }, {
+    id: 2,
+    name: 'Romanian Deadlift',
+    muscles: ['lham', 'rham', 'lglute', 'rglute', 'lower-back'],
+    category: 'Compound',
+    equipment: 'Barbell'
+  }, {
+    id: 3,
+    name: 'Bench Press',
+    muscles: ['chest', 'lshoulder', 'rshoulder'],
+    category: 'Compound',
+    equipment: 'Barbell'
+  }, {
+    id: 4,
+    name: 'Pull-Up',
+    muscles: ['llat', 'rlat', 'traps', 'lbicep', 'rbicep'],
+    category: 'Compound',
+    equipment: 'Bodyweight'
+  }, {
+    id: 5,
+    name: 'Leg Press',
+    muscles: ['lquad', 'rquad', 'lglute', 'rglute'],
+    category: 'Compound',
+    equipment: 'Machine'
+  }, {
+    id: 6,
+    name: 'Standing Calf Raise',
+    muscles: ['lcalf', 'rcalf'],
+    category: 'Isolation',
+    equipment: 'Machine'
+  }, {
+    id: 7,
+    name: 'Plank',
+    muscles: ['abs', 'lower-back'],
+    category: 'Core',
+    equipment: 'Bodyweight'
+  }, {
+    id: 8,
+    name: 'Lateral Raise',
+    muscles: ['lshoulder', 'rshoulder', 'traps'],
+    category: 'Isolation',
+    equipment: 'Dumbbells'
+  }, {
+    id: 9,
+    name: 'Bicep Curl',
+    muscles: ['lbicep', 'rbicep'],
+    category: 'Isolation',
+    equipment: 'Dumbbells'
+  }, {
+    id: 10,
+    name: 'Hip Thrust',
+    muscles: ['lglute', 'rglute', 'lham', 'rham'],
+    category: 'Compound',
+    equipment: 'Barbell'
+  }, {
+    id: 11,
+    name: 'Bulgarian Split Squat',
+    muscles: ['lquad', 'rquad', 'lglute', 'rglute'],
+    category: 'Compound',
+    equipment: 'Dumbbells'
+  }, {
+    id: 12,
+    name: 'Overhead Press',
+    muscles: ['lshoulder', 'rshoulder', 'traps'],
+    category: 'Compound',
+    equipment: 'Barbell'
+  }, {
+    id: 13,
+    name: 'Cable Row',
+    muscles: ['llat', 'rlat', 'traps', 'lbicep', 'rbicep'],
+    category: 'Compound',
+    equipment: 'Cable'
+  }, {
+    id: 14,
+    name: 'Deadlift',
+    muscles: ['lham', 'rham', 'lglute', 'rglute', 'lower-back', 'traps'],
+    category: 'Compound',
+    equipment: 'Barbell'
+  }];
+  const filtered = allExercises.filter(e => {
+    const mS = e.name.toLowerCase().includes(search.toLowerCase());
+    const mC = category === 'All' || e.category === category;
+    const mM = !muscleFilter || e.muscles.includes(muscleFilter);
+    return mS && mC && mM;
+  });
+  const mapMuscles = MUSCLE_DEFS.map(m => ({
+    ...m,
+    value: filtered.some(e => e.muscles.includes(m.id)) ? 65 : 0,
+    tone: muscleFilter === m.id ? 'signal' : 'good'
+  }));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '8px 20px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 24,
+      fontWeight: 600,
+      color: 'var(--text-strong)',
+      letterSpacing: '-.02em',
+      marginBottom: 13
+    }
+  }, "Exercises"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 9,
+      background: 'var(--surface-card)',
+      borderRadius: 'var(--radius-md)',
+      padding: '9px 13px',
+      marginBottom: 14,
+      border: '1px solid var(--border-subtle)'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "search",
+    size: 16,
+    color: "var(--text-muted)"
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: search,
+    onChange: e => setSearch(e.target.value),
+    placeholder: "Search exercises\u2026",
+    style: {
+      flex: 1,
+      border: 'none',
+      background: 'transparent',
+      fontSize: 14,
+      color: 'var(--text-strong)',
+      outline: 'none'
+    }
+  }), search && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSearch(''),
+    style: {
+      border: 'none',
+      background: 'none',
+      cursor: 'pointer',
+      color: 'var(--text-muted)',
+      padding: 0
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "x",
+    size: 14
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 9
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-muted)',
+      fontWeight: 600,
+      letterSpacing: '.1em',
+      textTransform: 'uppercase'
+    }
+  }, "Filter by muscle"), muscleFilter && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setMuscleFilter(null),
+    style: {
+      border: 'none',
+      background: 'none',
+      cursor: 'pointer',
+      color: 'var(--signal-600)',
+      fontSize: 11.5,
+      fontWeight: 700
+    }
+  }, "Clear")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(MuscleMapView, {
+    gender: "female",
+    muscles: mapMuscles,
+    selected: muscleFilter,
+    onSelect: id => setMuscleFilter(id === muscleFilter ? null : id),
+    view: "both",
+    height: 158
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 7,
+      marginBottom: 13,
+      flexWrap: 'wrap'
+    }
+  }, ['All', 'Compound', 'Isolation', 'Core'].map(c => /*#__PURE__*/React.createElement("button", {
+    key: c,
+    onClick: () => setCategory(c),
+    style: {
+      border: '1px solid',
+      cursor: 'pointer',
+      padding: '4px 11px',
+      borderRadius: 'var(--radius-pill)',
+      fontSize: 12,
+      fontWeight: 600,
+      borderColor: category === c ? 'var(--signal-400)' : 'var(--border-default)',
+      background: category === c ? 'var(--signal-100)' : 'transparent',
+      color: category === c ? 'var(--signal-700)' : 'var(--text-muted)'
+    }
+  }, c))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: 'var(--text-muted)',
+      marginBottom: 8
+    }
+  }, filtered.length, " exercise", filtered.length !== 1 ? 's' : ''), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 'var(--radius-lg)',
+      overflow: 'hidden',
+      border: '1px solid var(--border-subtle)'
+    }
+  }, filtered.map((ex, i) => /*#__PURE__*/React.createElement("div", {
+    key: ex.id,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      borderTop: i ? '1px solid var(--border-subtle)' : 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 36,
+      height: 36,
+      borderRadius: 'var(--radius-sm)',
+      background: 'var(--surface-sunken)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'var(--accent-text)',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "dumbbell",
+    size: 16
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      fontWeight: 600,
+      color: 'var(--text-strong)'
+    }
+  }, ex.name), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: 'var(--text-muted)',
+      marginTop: 2
+    }
+  }, ex.equipment, " \xB7 ", ex.muscles.length, " muscle groups")), /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron-right",
+    size: 16,
+    color: "var(--text-faint)"
+  }))), filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '28px 20px',
+      textAlign: 'center',
+      background: 'var(--surface-card)',
+      color: 'var(--text-muted)',
+      fontSize: 13.5
+    }
+  }, "No exercises match your search.")));
+}
+window.ExercisesScreen = ExercisesScreen;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/ExercisesScreen.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/mobile_app/HistoryScreen.jsx
+try { (() => {
+// HistoryScreen — workout history with training load chart, EMG breakdown + muscle map
+function HistoryScreen() {
+  const {
+    Card,
+    Metric,
+    SignalMeter,
+    SegmentedControl
+  } = window.DS;
+  const Icon = window.Icon;
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const [range, setRange] = React.useState('week');
+  const [expanded, setExpanded] = React.useState(0);
+  const sessions = [{
+    id: 0,
+    name: 'Lower Body · Strength',
+    date: 'Today · 9:54 AM',
+    duration: '42:10',
+    balance: 96,
+    peakLoad: 96,
+    muscles: [{
+      id: 'lquad',
+      value: 88,
+      tone: 'caution'
+    }, {
+      id: 'rquad',
+      value: 92,
+      tone: 'fatigue'
+    }, {
+      id: 'lham',
+      value: 74,
+      tone: 'good'
+    }, {
+      id: 'rham',
+      value: 68,
+      tone: 'good'
+    }, {
+      id: 'lcalf',
+      value: 70,
+      tone: 'good'
+    }, {
+      id: 'rcalf',
+      value: 96,
+      tone: 'fatigue'
+    }, {
+      id: 'lglute',
+      value: 55,
+      tone: 'good'
+    }, {
+      id: 'rglute',
+      value: 60,
+      tone: 'good'
+    }]
+  }, {
+    id: 1,
+    name: 'Sprint intervals',
+    date: 'Yesterday · 7:45 AM',
+    duration: '31:20',
+    balance: 91,
+    peakLoad: 88,
+    muscles: [{
+      id: 'lquad',
+      value: 80,
+      tone: 'caution'
+    }, {
+      id: 'rquad',
+      value: 88,
+      tone: 'caution'
+    }, {
+      id: 'lcalf',
+      value: 76,
+      tone: 'good'
+    }, {
+      id: 'rcalf',
+      value: 84,
+      tone: 'caution'
+    }, {
+      id: 'lglute',
+      value: 60,
+      tone: 'good'
+    }, {
+      id: 'rglute',
+      value: 64,
+      tone: 'good'
+    }]
+  }, {
+    id: 2,
+    name: 'Recovery flow',
+    date: 'Mon · 7:00 AM',
+    duration: '26:00',
+    balance: 99,
+    peakLoad: 42,
+    muscles: [{
+      id: 'abs',
+      value: 35,
+      tone: 'good'
+    }, {
+      id: 'lower-back',
+      value: 28,
+      tone: 'rest'
+    }, {
+      id: 'lshoulder',
+      value: 22,
+      tone: 'rest'
+    }, {
+      id: 'rshoulder',
+      value: 24,
+      tone: 'rest'
+    }]
+  }];
+  const loadData = [{
+    d: 'M',
+    v: 26,
+    tone: 'rest'
+  }, {
+    d: 'T',
+    v: 0,
+    tone: 'rest'
+  }, {
+    d: 'W',
+    v: 88,
+    tone: 'caution'
+  }, {
+    d: 'T',
+    v: 91,
+    tone: 'fatigue'
+  }, {
+    d: 'F',
+    v: 0,
+    tone: 'rest'
+  }, {
+    d: 'S',
+    v: 0,
+    tone: 'rest'
+  }, {
+    d: 'S',
+    v: 0,
+    tone: 'rest'
+  }];
   const toneColor = {
     good: 'var(--good-500)',
     caution: 'var(--caution-500)',
     fatigue: 'var(--fatigue-500)',
-    rest: 'var(--rest-500)',
-    signal: 'var(--signal-500)'
+    rest: 'var(--neutral-150)'
   };
   return /*#__PURE__*/React.createElement("div", {
     style: {
+      padding: '8px 20px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 24,
+      fontWeight: 600,
+      color: 'var(--text-strong)',
+      letterSpacing: '-.02em'
+    }
+  }, "History"), /*#__PURE__*/React.createElement(SegmentedControl, {
+    size: "sm",
+    value: range,
+    onChange: setRange,
+    options: [{
+      value: 'week',
+      label: 'Week'
+    }, {
+      value: 'month',
+      label: 'Month'
+    }]
+  })), /*#__PURE__*/React.createElement(Card, {
+    style: {
+      padding: 17,
+      marginBottom: 15
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'baseline',
+      justifyContent: 'space-between',
+      marginBottom: 13
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      font: '600 10px/1 var(--font-sans)',
+      letterSpacing: '.12em',
+      textTransform: 'uppercase',
+      color: 'var(--text-muted)'
+    }
+  }, "Training load"), /*#__PURE__*/React.createElement(Metric, {
+    label: "",
+    value: "358",
+    unit: "lu",
+    size: 17
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      gap: 5,
+      height: 90
+    }
+  }, loadData.map((b, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      flex: 1,
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 5
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      width: '100%',
+      maxWidth: 22,
+      margin: '0 auto',
+      display: 'flex',
+      alignItems: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: '100%',
+      height: `${Math.max(b.v, 4)}%`,
+      background: toneColor[b.tone],
+      borderRadius: 4
+    }
+  })), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: 'var(--text-faint)',
+      fontWeight: 600
+    }
+  }, b.d))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10
+    }
+  }, sessions.map(s => {
+    const isExp = expanded === s.id;
+    const fullMuscles = MUSCLE_DEFS.map(md => ({
+      ...md,
+      ...(s.muscles.find(m => m.id === md.id) || {
+        value: 0,
+        tone: 'rest'
+      })
+    }));
+    return /*#__PURE__*/React.createElement(Card, {
+      key: s.id,
+      style: {
+        padding: 0,
+        overflow: 'hidden'
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => setExpanded(isExp ? null : s.id),
+      style: {
+        width: '100%',
+        border: 'none',
+        background: 'none',
+        cursor: 'pointer',
+        padding: '13px 15px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        textAlign: 'left'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 38,
+        height: 38,
+        borderRadius: 'var(--radius-sm)',
+        background: 'var(--accent-surface)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'var(--accent-text)',
+        flexShrink: 0
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "dumbbell",
+      size: 17
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 600,
+        color: 'var(--text-strong)',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+      }
+    }, s.name), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11.5,
+        color: 'var(--text-muted)',
+        marginTop: 2
+      }
+    }, s.date, " \xB7 ", s.duration)), /*#__PURE__*/React.createElement(Icon, {
+      name: isExp ? 'chevron-up' : 'chevron-down',
+      size: 16,
+      color: "var(--text-faint)"
+    })), isExp && /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderTop: '1px solid var(--border-subtle)',
+        padding: 14
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        gap: 14,
+        marginBottom: 14
+      }
+    }, /*#__PURE__*/React.createElement(Metric, {
+      label: "Balance",
+      value: s.balance,
+      unit: "%",
+      tone: s.balance >= 95 ? 'good' : 'caution',
+      size: 20
+    }), /*#__PURE__*/React.createElement(Metric, {
+      label: "Peak load",
+      value: s.peakLoad,
+      unit: "%",
+      tone: s.peakLoad >= 90 ? 'fatigue' : 'caution',
+      size: 20
+    }), /*#__PURE__*/React.createElement(Metric, {
+      label: "Duration",
+      value: s.duration,
+      size: 20
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: 12
+      }
+    }, /*#__PURE__*/React.createElement(MuscleMapView, {
+      gender: "female",
+      muscles: fullMuscles,
+      view: "both",
+      height: 185
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 9
+      }
+    }, s.muscles.sort((a, b) => b.value - a.value).map(m => /*#__PURE__*/React.createElement(SignalMeter, {
+      key: m.id,
+      label: MUSCLE_DEFS.find(md => md.id === m.id)?.name || m.id,
+      value: m.value,
+      tone: m.tone
+    })))));
+  })));
+}
+window.HistoryScreen = HistoryScreen;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/HistoryScreen.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/mobile_app/InsightScreen.jsx
+try { (() => {
+// InsightScreen — home: readiness ring, AI insights, body map, AI coach chat
+const MUSCLE_LABEL_TO_ID = {
+  'R. Calf': 'rcalf',
+  'L. Calf': 'lcalf',
+  'R. Quad': 'rquad',
+  'L. Quad': 'lquad',
+  'R. Ham': 'rham',
+  'L. Ham': 'lham'
+};
+function InsightScreen({
+  tweaks = {}
+}) {
+  const {
+    Card,
+    ActivationRing,
+    Badge,
+    Avatar,
+    Metric,
+    SignalMeter
+  } = window.DS;
+  const Icon = window.Icon;
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const [subTab, setSubTab] = React.useState('overview');
+  const gender = 'female';
+  const cautionId = MUSCLE_LABEL_TO_ID[tweaks.cautionMuscle] || 'rcalf';
+  const fatigueId = MUSCLE_LABEL_TO_ID[tweaks.fatigueMuscle] || 'rquad';
+  const readiness = tweaks.readiness !== undefined ? tweaks.readiness : 78;
+  const baseValues = {
+    lquad: 88,
+    rquad: 92,
+    lham: 72,
+    rham: 68,
+    lglute: 55,
+    rglute: 60,
+    lcalf: 70,
+    rcalf: 91,
+    abs: 44,
+    chest: 28,
+    lshoulder: 22,
+    rshoulder: 24,
+    traps: 30,
+    llat: 32,
+    rlat: 34
+  };
+  const weeklyMuscles = MUSCLE_DEFS.map(m => {
+    const value = baseValues[m.id] || 10;
+    const tone = m.id === fatigueId ? 'fatigue' : m.id === cautionId ? 'caution' : value > 50 ? 'good' : 'rest';
+    return {
+      ...m,
+      value,
+      tone
+    };
+  });
+  const readinessLabel = readiness >= 80 ? 'Primed to train' : readiness >= 60 ? 'Ready to train' : 'Take it easy today';
+  const readinessNote = readiness >= 80 ? 'Legs fully recovered. Strength block ahead.' : readiness >= 60 ? 'Mostly recovered. Moderate session advised.' : 'High accumulated load. Prioritise recovery.';
+  const insights = [{
+    tone: 'fatigue',
+    icon: 'triangle-alert',
+    title: 'Right side dominance',
+    body: 'Right quad & calf are ~8% more active than left. Add unilateral work to correct imbalance.'
+  }, {
+    tone: 'caution',
+    icon: 'activity',
+    title: 'Calf recovery lag',
+    body: 'Right calf has been elevated for 3 consecutive sessions. Consider 48 h rest before next leg day.'
+  }, {
+    tone: 'good',
+    icon: 'sparkles',
+    title: 'Quad symmetry improving',
+    body: 'L/R quad balance improved 88 % → 96 % over 2 weeks. Your corrective work is paying off.'
+  }];
+  const bgMap = {
+    good: 'var(--good-100)',
+    caution: 'var(--caution-100)',
+    fatigue: 'var(--fatigue-100)'
+  };
+  const colMap = {
+    good: 'var(--good-600)',
+    caution: 'var(--caution-600)',
+    fatigue: 'var(--fatigue-600)'
+  };
+  const subTabs = [['overview', 'Overview'], ['body', 'Body Map'], ['coach', 'Coach']];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '8px 20px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      font: '600 11px/1 var(--font-sans)',
+      letterSpacing: '.12em',
+      textTransform: 'uppercase',
+      color: 'var(--text-muted)'
+    }
+  }, "Sat \xB7 Jun 14"), /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 22,
+      fontWeight: 600,
+      color: 'var(--text-strong)',
+      marginTop: 5,
+      letterSpacing: '-.02em'
+    }
+  }, "Good morning, Mara")), /*#__PURE__*/React.createElement(Avatar, {
+    name: "Mara Okonkwo",
+    size: 42,
+    ring: true,
+    status: "good"
+  })), /*#__PURE__*/React.createElement("div", {
+    "data-theme": "dark",
+    style: {
+      background: 'var(--ink-900)',
+      borderRadius: 'var(--radius-xl)',
+      padding: 18,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 18,
       position: 'relative',
-      width: 220,
-      height: 332,
-      margin: '0 auto'
+      overflow: 'hidden',
+      boxShadow: 'var(--shadow-lg)',
+      marginBottom: 16
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
-      top: 0,
-      left: 93,
-      width: 34,
-      height: 34,
+      right: -40,
+      top: -40,
+      width: 150,
+      height: 150,
       borderRadius: '50%',
-      background: 'var(--ink-700)'
+      background: 'radial-gradient(circle, rgba(136,120,232,0.22), transparent 70%)',
+      pointerEvents: 'none'
     }
-  }), muscles.map(m => {
-    const active = m.value > 40;
-    const col = toneColor[m.tone];
-    const isSel = selected === m.id;
-    return /*#__PURE__*/React.createElement("button", {
-      key: m.id,
-      onClick: () => onSelect(m.id),
-      title: m.name,
-      style: {
-        position: 'absolute',
-        top: m.t,
-        left: m.l,
-        width: m.w,
-        height: m.h,
-        borderRadius: m.r || 14,
-        border: 'none',
-        cursor: 'pointer',
-        padding: 0,
-        background: active ? col : 'var(--ink-700)',
-        opacity: active ? 0.35 + 0.65 * (m.value / 100) : 0.5,
-        boxShadow: isSel ? `0 0 0 2.5px #fff` : m.tone === 'fatigue' && active ? `0 0 14px ${col}` : 'none',
-        transition: 'all .3s var(--ease-standard)',
-        animation: m.tone === 'fatigue' && active ? 'actus-pulse 1.2s var(--ease-in-out) infinite' : 'none'
-      }
-    });
-  }));
+  }), /*#__PURE__*/React.createElement(ActivationRing, {
+    value: readiness,
+    tone: "signal",
+    glow: true,
+    size: 88,
+    thickness: 8,
+    label: "Ready"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      font: '600 10px/1 var(--font-sans)',
+      letterSpacing: '.14em',
+      textTransform: 'uppercase',
+      color: 'var(--signal-400)'
+    }
+  }, "Today's readiness"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 17,
+      fontWeight: 600,
+      color: '#fff',
+      marginTop: 6
+    }
+  }, readinessLabel), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 12,
+      color: 'var(--neutral-300)',
+      marginTop: 4,
+      lineHeight: 1.5,
+      maxWidth: 148
+    }
+  }, readinessNote))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      background: 'var(--surface-sunken)',
+      borderRadius: 'var(--radius-md)',
+      padding: 3,
+      marginBottom: 16
+    }
+  }, subTabs.map(([id, label]) => /*#__PURE__*/React.createElement("button", {
+    key: id,
+    onClick: () => setSubTab(id),
+    style: {
+      flex: 1,
+      border: 'none',
+      cursor: 'pointer',
+      padding: '7px 0',
+      borderRadius: 'calc(var(--radius-md) - 2px)',
+      background: subTab === id ? 'var(--surface-card)' : 'transparent',
+      color: subTab === id ? 'var(--text-strong)' : 'var(--text-muted)',
+      fontWeight: subTab === id ? 700 : 500,
+      fontSize: 12.5,
+      boxShadow: subTab === id ? 'var(--shadow-sm)' : 'none',
+      transition: 'all .2s'
+    }
+  }, label))), subTab === 'overview' && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10
+    }
+  }, insights.map((ins, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      padding: '12px 14px',
+      borderRadius: 'var(--radius-lg)',
+      background: bgMap[ins.tone],
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: colMap[ins.tone],
+      marginTop: 1,
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: ins.icon,
+    size: 16
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 700,
+      color: 'var(--ink-800)',
+      marginBottom: 3
+    }
+  }, ins.title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: 'var(--ink-700)',
+      lineHeight: 1.5
+    }
+  }, ins.body)))), /*#__PURE__*/React.createElement(Card, {
+    style: {
+      padding: 14,
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 11
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      fontWeight: 700,
+      color: 'var(--text-strong)'
+    }
+  }, "Profile"), /*#__PURE__*/React.createElement(Badge, {
+    tone: "signal"
+  }, "Pro")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement(Metric, {
+    label: "Height",
+    value: "171",
+    unit: "cm",
+    size: 20
+  }), /*#__PURE__*/React.createElement(Metric, {
+    label: "Weight",
+    value: "63",
+    unit: "kg",
+    size: 20
+  }), /*#__PURE__*/React.createElement(Metric, {
+    label: "Goal",
+    value: "Power",
+    size: 13
+  })))), subTab === 'body' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 11
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11.5,
+      color: 'var(--text-muted)',
+      fontWeight: 600,
+      letterSpacing: '.06em',
+      textTransform: 'uppercase'
+    }
+  }, "Weekly training load")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement(MuscleMapView, {
+    gender: gender,
+    muscles: weeklyMuscles,
+    view: "both",
+    height: 270
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10,
+      flexWrap: 'wrap',
+      justifyContent: 'center'
+    }
+  }, [['good-500', 'Optimal'], ['caution-500', 'Elevated'], ['fatigue-500', 'Overloaded'], ['neutral-300', 'Under-trained']].map(([c, l]) => /*#__PURE__*/React.createElement("div", {
+    key: l,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 5
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 9,
+      height: 9,
+      borderRadius: '50%',
+      background: `var(--${c})`
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-muted)'
+    }
+  }, l))))), subTab === 'coach' && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 9,
+      alignItems: 'flex-start'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '50%',
+      background: 'var(--signal-100)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'var(--signal-600)',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--surface-card)',
+      borderRadius: '0 var(--radius-lg) var(--radius-lg) var(--radius-lg)',
+      padding: '11px 13px',
+      flex: 1,
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: 'var(--text-body)',
+      lineHeight: 1.55
+    }
+  }, "Good morning Mara! Based on your EMG data this week, I recommend prioritizing ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: 'var(--text-strong)'
+    }
+  }, "unilateral leg work"), " today \u2014 right calf fatigue suggests left-side compensation. A Bulgarian split squat session would help."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: 'var(--text-muted)',
+      marginTop: 7
+    }
+  }, "Actus Coach \xB7 7:42 AM"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--signal-500)',
+      borderRadius: 'var(--radius-lg) 0 var(--radius-lg) var(--radius-lg)',
+      padding: '11px 13px',
+      maxWidth: '78%'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: '#fff',
+      lineHeight: 1.5
+    }
+  }, "What weight should I use for the split squat?"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 9,
+      alignItems: 'flex-start'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '50%',
+      background: 'var(--signal-100)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'var(--signal-600)',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--surface-card)',
+      borderRadius: '0 var(--radius-lg) var(--radius-lg) var(--radius-lg)',
+      padding: '11px 13px',
+      flex: 1,
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: 'var(--text-body)',
+      lineHeight: 1.55
+    }
+  }, "Start at ~50 kg (50% squat max), 3\xD710 each side. If L/R EMG imbalance stays under 5%, progress +5 kg next session."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: 'var(--text-muted)',
+      marginTop: 7
+    }
+  }, "Actus Coach \xB7 7:44 AM"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 9,
+      alignItems: 'center',
+      background: 'var(--surface-card)',
+      borderRadius: 'var(--radius-lg)',
+      padding: '9px 13px',
+      border: '1px solid var(--border-subtle)',
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    placeholder: "Ask your coach\u2026",
+    style: {
+      flex: 1,
+      border: 'none',
+      background: 'transparent',
+      fontSize: 13.5,
+      color: 'var(--text-strong)',
+      outline: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    style: {
+      width: 28,
+      height: 28,
+      borderRadius: 'var(--radius-sm)',
+      background: 'var(--signal-500)',
+      border: 'none',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "arrow-up",
+    size: 14,
+    color: "#fff"
+  })))));
 }
+window.InsightScreen = InsightScreen;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/InsightScreen.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/mobile_app/LiveSessionScreen.jsx
+try { (() => {
+// LiveSessionScreen — full-screen dark focus: exercise list + real-time EMG + muscle map toggle
 function LiveSessionScreen({
-  onEnd
+  session,
+  onEnd,
+  tweaks = {}
 }) {
   const {
     SignalMeter,
@@ -970,102 +2728,74 @@ function LiveSessionScreen({
     Button
   } = window.DS;
   const Icon = window.Icon;
-  const muscles = [{
-    id: 'ldelt',
-    name: 'Left delt',
-    t: 44,
-    l: 40,
-    w: 40,
-    h: 26,
-    value: 28,
-    tone: 'rest'
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const [mapMode, setMapMode] = React.useState(false);
+  const [selectedMuscle, setSelectedMuscle] = React.useState('rcalf');
+  const [elapsed, setElapsed] = React.useState(0);
+  const LABEL_TO_ID = {
+    'R. Calf': 'rcalf',
+    'L. Calf': 'lcalf',
+    'R. Quad': 'rquad',
+    'L. Quad': 'lquad',
+    'R. Ham': 'rham',
+    'L. Ham': 'lham'
+  };
+  const fatigueId = LABEL_TO_ID[tweaks.fatigueMuscle] || 'rquad';
+  const cautionId = LABEL_TO_ID[tweaks.cautionMuscle] || 'rcalf';
+  const fatigueDef = MUSCLE_DEFS.find(m => m.id === fatigueId);
+  const fatigueName = fatigueDef?.name || 'R. Quad';
+  React.useEffect(() => {
+    const t = setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const fmt = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  const exercises = session?.exercises || [{
+    name: 'Back Squat',
+    sets: 4,
+    reps: '5',
+    currentSet: 2,
+    status: 'active'
   }, {
-    id: 'rdelt',
-    name: 'Right delt',
-    t: 44,
-    l: 140,
-    w: 40,
-    h: 26,
-    value: 30,
-    tone: 'rest'
+    name: 'Romanian Deadlift',
+    sets: 3,
+    reps: '8',
+    currentSet: 0,
+    status: 'pending'
   }, {
-    id: 'chest',
-    name: 'Chest',
-    t: 52,
-    l: 68,
-    w: 84,
-    h: 40,
-    r: 18,
-    value: 24,
-    tone: 'rest'
+    name: 'Leg Press',
+    sets: 3,
+    reps: '12',
+    currentSet: 0,
+    status: 'pending'
   }, {
-    id: 'lbi',
-    name: 'Left arm',
-    t: 80,
-    l: 28,
-    w: 22,
-    h: 58,
-    value: 20,
-    tone: 'rest'
-  }, {
-    id: 'rbi',
-    name: 'Right arm',
-    t: 80,
-    l: 170,
-    w: 22,
-    h: 58,
-    value: 22,
-    tone: 'rest'
-  }, {
-    id: 'core',
-    name: 'Core',
-    t: 98,
-    l: 78,
-    w: 64,
-    h: 54,
-    r: 16,
-    value: 66,
-    tone: 'good'
-  }, {
-    id: 'lquad',
-    name: 'Left quad',
-    t: 160,
-    l: 70,
-    w: 34,
-    h: 78,
-    value: 88,
-    tone: 'good'
-  }, {
-    id: 'rquad',
-    name: 'Right quad',
-    t: 160,
-    l: 116,
-    w: 34,
-    h: 78,
-    value: 92,
-    tone: 'caution'
-  }, {
-    id: 'lcalf',
-    name: 'Left calf',
-    t: 246,
-    l: 73,
-    w: 28,
-    h: 62,
-    value: 74,
-    tone: 'good'
-  }, {
-    id: 'rcalf',
-    name: 'Right calf',
-    t: 246,
-    l: 119,
-    w: 28,
-    h: 62,
-    value: 96,
-    tone: 'fatigue'
+    name: 'Calf Raise',
+    sets: 3,
+    reps: '15',
+    currentSet: 0,
+    status: 'pending'
   }];
-  const [selected, setSelected] = React.useState('rcalf');
-  const sel = muscles.find(m => m.id === selected);
-  const top = [...muscles].filter(m => m.value > 40).sort((a, b) => b.value - a.value).slice(0, 4);
+  const liveData = {
+    lquad: 72,
+    rquad: 88,
+    lham: 54,
+    rham: 48,
+    lglute: 40,
+    rglute: 44,
+    lcalf: 66,
+    rcalf: 94
+  };
+  const liveMuscles = MUSCLE_DEFS.map(m => {
+    const value = liveData[m.id] || 10;
+    const tone = m.id === fatigueId ? 'fatigue' : m.id === cautionId ? 'caution' : value > 40 ? 'good' : 'rest';
+    return {
+      ...m,
+      value,
+      tone
+    };
+  });
+  const activeMuscles = liveMuscles.filter(m => (m.value || 0) > 40).sort((a, b) => b.value - a.value).slice(0, 5);
+  const sel = liveMuscles.find(m => m.id === selectedMuscle);
   return /*#__PURE__*/React.createElement("div", {
     "data-theme": "dark",
     style: {
@@ -1073,20 +2803,20 @@ function LiveSessionScreen({
       display: 'flex',
       flexDirection: 'column',
       background: 'var(--ink-950)',
-      color: 'var(--text-body)'
+      color: '#fff'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
-      overflow: 'auto',
-      padding: '60px 20px 20px'
+      overflowY: 'auto',
+      padding: '60px 20px 16px'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginBottom: 14
+      marginBottom: 10
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1100,100 +2830,209 @@ function LiveSessionScreen({
   }, "LIVE"), /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: 'var(--font-mono)',
-      fontSize: 26,
+      fontSize: 24,
       fontWeight: 600,
       color: '#fff',
-      fontVariantNumeric: 'tabular-nums',
       letterSpacing: '-.02em'
     }
-  }, "12:48")), /*#__PURE__*/React.createElement("div", {
+  }, fmt(elapsed))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      gap: 8
+      gap: 8,
+      alignItems: 'center'
     }
-  }, /*#__PURE__*/React.createElement(IconButton, {
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setMapMode(m => !m),
+    style: {
+      border: 'none',
+      cursor: 'pointer',
+      padding: '5px 11px',
+      borderRadius: 'var(--radius-sm)',
+      background: mapMode ? 'var(--signal-600)' : 'var(--ink-700)',
+      color: '#fff',
+      fontSize: 12,
+      fontWeight: 600,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 5
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: mapMode ? 'list' : 'scan',
+    size: 14,
+    color: "#fff"
+  }), mapMode ? 'Exercises' : 'Map'), /*#__PURE__*/React.createElement(IconButton, {
     label: "Pause",
     variant: "outline"
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "pause",
-    size: 20
+    size: 18
   })))), /*#__PURE__*/React.createElement("div", {
     style: {
-      font: '600 12px/1 var(--font-sans)',
+      font: '600 10px/1 var(--font-sans)',
       letterSpacing: '.14em',
       textTransform: 'uppercase',
       color: 'var(--signal-400)',
-      marginBottom: 2
+      marginBottom: 14
     }
-  }, "Lower body \xB7 strength"), /*#__PURE__*/React.createElement("div", {
+  }, session?.name || 'Lower Body · Strength'), mapMode && /*#__PURE__*/React.createElement("div", {
     style: {
-      margin: '10px 0 6px'
+      marginBottom: 14
     }
-  }, /*#__PURE__*/React.createElement(MuscleMap, {
-    muscles: muscles,
-    selected: selected,
-    onSelect: setSelected
-  })), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      padding: '0 4px',
-      marginBottom: 14
+      justifyContent: 'center',
+      marginBottom: 12,
+      background: 'var(--ink-850)',
+      borderRadius: 'var(--radius-lg)',
+      padding: 12
+    }
+  }, /*#__PURE__*/React.createElement(MuscleMapView, {
+    gender: "female",
+    muscles: liveMuscles,
+    selected: selectedMuscle,
+    onSelect: setSelectedMuscle,
+    view: "both",
+    height: 230,
+    style: {
+      background: '#F8F7FF'
+    }
+  })), sel && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 18,
+      padding: '0 4px'
     }
   }, /*#__PURE__*/React.createElement(Metric, {
     label: sel.name,
     value: sel.value,
     unit: "%",
-    tone: sel.tone === 'fatigue' ? 'fatigue' : sel.tone === 'caution' ? 'default' : 'signal',
-    size: 40
+    tone: sel.tone === 'fatigue' ? 'fatigue' : 'signal',
+    size: 34
   }), /*#__PURE__*/React.createElement(Metric, {
     label: "Composite",
-    value: "71",
+    value: "74",
     unit: "%",
-    size: 40
-  })), /*#__PURE__*/React.createElement("div", {
+    size: 34
+  }))), !mapMode && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      font: '600 10px/1 var(--font-sans)',
+      letterSpacing: '.12em',
+      textTransform: 'uppercase',
+      color: 'var(--neutral-500)',
+      marginBottom: 8
+    }
+  }, "Exercises"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      padding: '12px 14px',
-      borderRadius: 'var(--radius-lg)',
-      background: 'var(--state-fatigue-surface)',
-      border: '1px solid rgba(232,92,74,0.4)',
-      marginBottom: 16
+      flexDirection: 'column',
+      gap: 7
+    }
+  }, exercises.map((ex, i) => {
+    const active = ex.status === 'active';
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 11,
+        padding: '12px 13px',
+        borderRadius: 'var(--radius-md)',
+        background: active ? 'var(--ink-700)' : 'var(--ink-850)',
+        border: `1px solid ${active ? 'var(--signal-600)' : 'transparent'}`,
+        transition: 'all .2s'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 26,
+        height: 26,
+        borderRadius: 'var(--radius-xs)',
+        flexShrink: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: active ? 'var(--signal-500)' : 'var(--ink-600)',
+        fontSize: 11,
+        fontWeight: 700,
+        color: active ? '#fff' : 'var(--neutral-500)'
+      }
+    }, i + 1), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: active ? 700 : 500,
+        color: active ? '#fff' : 'var(--neutral-500)'
+      }
+    }, ex.name), active && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: 'var(--signal-400)',
+        marginTop: 2,
+        fontFamily: 'var(--font-mono)'
+      }
+    }, "Set ", ex.currentSet, " of ", ex.sets, " \xB7 ", ex.reps, " reps")), !active && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11.5,
+        color: 'var(--neutral-600)',
+        fontFamily: 'var(--font-mono)'
+      }
+    }, ex.sets, "\xD7", ex.reps));
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: 10,
+      padding: '11px 13px',
+      borderRadius: 'var(--radius-md)',
+      background: 'rgba(229,120,126,0.13)',
+      border: '1px solid rgba(229,120,126,0.35)',
+      marginBottom: 14
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       color: 'var(--fatigue-400)',
-      display: 'flex'
+      marginTop: 1,
+      flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "triangle-alert",
-    size: 20
-  })), /*#__PURE__*/React.createElement("div", {
+    size: 17
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      fontWeight: 600,
+      fontSize: 13,
+      fontWeight: 700,
       color: '#fff'
     }
-  }, "Right calf nearing fatigue"), /*#__PURE__*/React.createElement("div", {
+  }, fatigueName, " approaching fatigue"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 12.5,
-      color: 'var(--neutral-300)',
+      fontSize: 11.5,
+      color: 'var(--neutral-400)',
       marginTop: 2
     }
-  }, "Ease off or switch sides to recover."))), /*#__PURE__*/React.createElement("div", {
+  }, "Ease off or switch to left side."))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      font: '600 10px/1 var(--font-sans)',
+      letterSpacing: '.12em',
+      textTransform: 'uppercase',
+      color: 'var(--neutral-500)',
+      marginBottom: 9
+    }
+  }, "Active sensors"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 13
+      gap: 10
     }
-  }, top.map(m => /*#__PURE__*/React.createElement(SignalMeter, {
+  }, activeMuscles.map(m => /*#__PURE__*/React.createElement(SignalMeter, {
     key: m.id,
     label: m.name,
     value: m.value,
@@ -1201,8 +3040,8 @@ function LiveSessionScreen({
     live: m.tone === 'fatigue'
   })))), /*#__PURE__*/React.createElement("div", {
     style: {
-      flex: '0 0 auto',
-      padding: '12px 20px 30px',
+      flexShrink: 0,
+      padding: '11px 20px 28px',
       background: 'var(--ink-900)',
       borderTop: '1px solid var(--border-default)'
     }
@@ -1212,7 +3051,7 @@ function LiveSessionScreen({
     size: "lg",
     leadingIcon: /*#__PURE__*/React.createElement(Icon, {
       name: "square",
-      size: 16
+      size: 15
     }),
     onClick: onEnd
   }, "End session")));
@@ -1220,236 +3059,636 @@ function LiveSessionScreen({
 window.LiveSessionScreen = LiveSessionScreen;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/LiveSessionScreen.jsx", error: String((e && e.message) || e) }); }
 
-// ui_kits/mobile_app/MiscScreens.jsx
+// ui_kits/mobile_app/MuscleMapView.jsx
 try { (() => {
-// InsightsScreen + ProfileScreen.
-function InsightsScreen() {
-  const {
-    Card,
-    SegmentedControl,
-    Metric,
-    SignalMeter,
-    Badge
-  } = window.DS;
-  const Icon = window.Icon;
-  const [range, setRange] = React.useState('week');
-  const load = [{
-    d: 'M',
-    v: 52,
-    tone: 'good'
-  }, {
-    d: 'T',
-    v: 78,
-    tone: 'good'
-  }, {
-    d: 'W',
-    v: 34,
-    tone: 'rest'
-  }, {
-    d: 'T',
-    v: 88,
-    tone: 'caution'
-  }, {
-    d: 'F',
-    v: 64,
-    tone: 'good'
-  }, {
-    d: 'S',
-    v: 0,
-    tone: 'rest'
-  }, {
-    d: 'S',
-    v: 42,
-    tone: 'good'
-  }];
-  const toneColor = {
-    good: 'var(--good-500)',
-    caution: 'var(--caution-500)',
-    fatigue: 'var(--fatigue-500)',
-    rest: 'var(--neutral-200)'
+// MuscleMapView — anatomy images with colored muscle overlays (mix-blend-mode: color)
+// Each activated muscle is colored by an elliptical overlay that tints the anatomical region.
+
+const MALE_IMG = '../../assets/muscle-map-male.jpg';
+const FEMALE_IMG = '../../assets/muscle-map-female.jpg';
+const MAP_TONE_COLOR = {
+  good: 'var(--good-500)',
+  caution: 'var(--caution-500)',
+  fatigue: 'var(--fatigue-500)',
+  rest: 'var(--rest-400)',
+  signal: 'var(--signal-500)'
+};
+
+// x, y = center % of full square image; w, h = size % of full image
+// Front figure: x ≈ 0–50   Back figure: x ≈ 50–100
+const MUSCLE_DEFS = [{
+  id: 'chest',
+  name: 'Chest',
+  mapView: 'front',
+  x: 25,
+  y: 30,
+  w: 16,
+  h: 10
+}, {
+  id: 'lshoulder',
+  name: 'L. Shoulder',
+  mapView: 'front',
+  x: 17,
+  y: 24,
+  w: 9,
+  h: 8
+}, {
+  id: 'rshoulder',
+  name: 'R. Shoulder',
+  mapView: 'front',
+  x: 33,
+  y: 24,
+  w: 9,
+  h: 8
+}, {
+  id: 'lbicep',
+  name: 'L. Bicep',
+  mapView: 'front',
+  x: 13,
+  y: 41,
+  w: 5,
+  h: 12
+}, {
+  id: 'rbicep',
+  name: 'R. Bicep',
+  mapView: 'front',
+  x: 37,
+  y: 41,
+  w: 5,
+  h: 12
+}, {
+  id: 'abs',
+  name: 'Abs',
+  mapView: 'front',
+  x: 25,
+  y: 50,
+  w: 10,
+  h: 14
+}, {
+  id: 'lquad',
+  name: 'L. Quad',
+  mapView: 'front',
+  x: 20,
+  y: 65,
+  w: 8,
+  h: 20
+}, {
+  id: 'rquad',
+  name: 'R. Quad',
+  mapView: 'front',
+  x: 30,
+  y: 65,
+  w: 8,
+  h: 20
+}, {
+  id: 'lcalf',
+  name: 'L. Calf',
+  mapView: 'front',
+  x: 20,
+  y: 83,
+  w: 5,
+  h: 12
+}, {
+  id: 'rcalf',
+  name: 'R. Calf',
+  mapView: 'front',
+  x: 30,
+  y: 83,
+  w: 5,
+  h: 12
+}, {
+  id: 'traps',
+  name: 'Traps',
+  mapView: 'back',
+  x: 75,
+  y: 22,
+  w: 16,
+  h: 6
+}, {
+  id: 'llat',
+  name: 'L. Lat',
+  mapView: 'back',
+  x: 68,
+  y: 35,
+  w: 8,
+  h: 16
+}, {
+  id: 'rlat',
+  name: 'R. Lat',
+  mapView: 'back',
+  x: 82,
+  y: 35,
+  w: 8,
+  h: 16
+}, {
+  id: 'lower-back',
+  name: 'Lower Back',
+  mapView: 'back',
+  x: 75,
+  y: 44,
+  w: 12,
+  h: 8
+}, {
+  id: 'lglute',
+  name: 'L. Glute',
+  mapView: 'back',
+  x: 69,
+  y: 54,
+  w: 10,
+  h: 12
+}, {
+  id: 'rglute',
+  name: 'R. Glute',
+  mapView: 'back',
+  x: 81,
+  y: 54,
+  w: 10,
+  h: 12
+}, {
+  id: 'lham',
+  name: 'L. Hamstring',
+  mapView: 'back',
+  x: 70,
+  y: 65,
+  w: 7,
+  h: 18
+}, {
+  id: 'rham',
+  name: 'R. Hamstring',
+  mapView: 'back',
+  x: 80,
+  y: 65,
+  w: 7,
+  h: 18
+}];
+function MuscleMapView({
+  gender = 'male',
+  muscles = [],
+  selected,
+  onSelect,
+  view = 'both',
+  height = 220,
+  style = {}
+}) {
+  const img = gender === 'female' ? FEMALE_IMG : MALE_IMG;
+  const containerW = view === 'both' ? height : height * 0.5;
+  // Blur scales with container size so thumbnails stay crisp
+  const blur = Math.max(2, Math.round(height * 0.024));
+  const imgStyle = view === 'back' ? {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: '200%',
+    height: '100%',
+    objectFit: 'fill'
+  } : view === 'front' ? {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '200%',
+    height: '100%',
+    objectFit: 'fill'
+  } : {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'fill'
   };
+
+  // Convert full-image % → container %
+  const toX = mx => view === 'both' ? mx : view === 'front' ? mx * 2 : (mx - 50) * 2;
+  const toW = mw => view === 'both' ? mw : mw * 2;
+  const visible = view === 'both' ? muscles : muscles.filter(m => m.mapView === view);
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: '8px 20px 24px'
+      position: 'relative',
+      width: containerW,
+      height,
+      overflow: 'hidden',
+      borderRadius: 'var(--radius-lg)',
+      background: '#FAFAFE',
+      flexShrink: 0,
+      isolation: 'isolate',
+      ...style
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: "Muscle anatomy",
+    draggable: false,
+    style: imgStyle
+  }), visible.map(m => {
+    const val = m.value || 0;
+    const active = val > 15;
+    const isSel = selected === m.id;
+    const col = MAP_TONE_COLOR[m.tone] || 'var(--signal-400)';
+    const cx = toX(m.x);
+    const sw = toW(m.w || 8);
+    const sh = m.h || 10;
+    // Opacity reflects activation intensity; selected = always full
+    const opacity = isSel ? active ? 0.97 : 0.55 : active ? 0.52 + 0.43 * (val / 100) : 0;
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: m.id
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        position: 'absolute',
+        left: `${cx}%`,
+        top: `${m.y}%`,
+        transform: 'translate(-50%,-50%)',
+        width: `${sw}%`,
+        height: `${sh}%`,
+        borderRadius: '50%',
+        background: active || isSel ? col : 'transparent',
+        opacity,
+        filter: `blur(${blur}px)`,
+        mixBlendMode: 'color',
+        pointerEvents: 'none',
+        transition: 'opacity .35s ease, background .35s ease'
+      }
+    }), isSel && /*#__PURE__*/React.createElement("div", {
+      style: {
+        position: 'absolute',
+        left: `${cx}%`,
+        top: `${m.y}%`,
+        transform: 'translate(-50%,-50%)',
+        width: `${sw + 2}%`,
+        height: `${sh + 2}%`,
+        borderRadius: '50%',
+        border: '2px solid rgba(255,255,255,0.92)',
+        boxShadow: '0 0 0 1px rgba(0,0,0,0.18)',
+        pointerEvents: 'none',
+        zIndex: 6
+      }
+    }), /*#__PURE__*/React.createElement("button", {
+      title: m.name,
+      onClick: () => onSelect && onSelect(m.id),
+      style: {
+        position: 'absolute',
+        left: `${cx}%`,
+        top: `${m.y}%`,
+        transform: 'translate(-50%,-50%)',
+        width: `${Math.max(sw, 9)}%`,
+        height: `${Math.max(sh, 9)}%`,
+        borderRadius: '50%',
+        background: 'transparent',
+        border: 'none',
+        cursor: onSelect ? 'pointer' : 'default',
+        padding: 0,
+        outline: 'none',
+        zIndex: 5
+      }
+    }));
+  }));
+}
+window.MuscleMapView = MuscleMapView;
+window.MUSCLE_DEFS = MUSCLE_DEFS;
+window.MAP_TONE_COLOR = MAP_TONE_COLOR;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/MuscleMapView.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/mobile_app/SensorDetailSheet.jsx
+try { (() => {
+// SensorDetailSheet — slide-up bottom sheet with live animated EMG waveform
+// Renders via AppShell overlay slot, covers full screen including tab bar.
+
+function SensorDetailSheet({
+  sensor,
+  onClose
+}) {
+  const Icon = window.Icon;
+  const WAVE_COLOR = {
+    good: '#5CB68A',
+    caution: '#E2B05C',
+    fatigue: '#E5787E',
+    offline: '#3B3A4C',
+    signal: '#8878E8'
+  };
+  const isOffline = sensor.status === 'offline';
+  const baseLevel = isOffline ? 0 : sensor.status === 'caution' ? 20 : 32;
+  const waveColor = isOffline ? WAVE_COLOR.offline : sensor.status === 'caution' ? WAVE_COLOR.caution : WAVE_COLOR.signal;
+  const POINTS = 120;
+  const [wave, setWave] = React.useState(() => Array(POINTS).fill(0));
+  React.useEffect(() => {
+    if (isOffline) return;
+    const t = setInterval(() => {
+      setWave(prev => {
+        const next = [...prev.slice(1)];
+        const burst = Math.random() > 0.72 ? Math.random() * baseLevel * 3.2 : 0;
+        const noise = (Math.random() - 0.5) * 14;
+        next.push(Math.max(0, Math.min(100, baseLevel + burst + noise)));
+        return next;
+      });
+    }, 30);
+    return () => clearInterval(t);
+  }, [isOffline, baseLevel]);
+  const current = Math.round(wave[wave.length - 1] || 0);
+  const avg = Math.round(wave.reduce((a, b) => a + b, 0) / POINTS);
+  const W = 300,
+    H = 88;
+  const pathD = wave.map((v, i) => {
+    const x = i / (POINTS - 1) * W;
+    const y = H - v / 100 * H;
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+
+  // Gradient area fill under waveform
+  const areaD = pathD + ` L${W},${H} L0,${H} Z`;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 30,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end'
     }
   }, /*#__PURE__*/React.createElement("div", {
+    onClick: onClose,
+    style: {
+      position: 'absolute',
+      inset: 0,
+      background: 'rgba(8,8,14,0.52)',
+      backdropFilter: 'blur(4px)',
+      WebkitBackdropFilter: 'blur(4px)'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    "data-theme": "dark",
+    style: {
+      position: 'relative',
+      zIndex: 1,
+      background: 'var(--ink-900)',
+      borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0',
+      padding: '14px 20px 42px',
+      border: '1px solid var(--border-default)',
+      borderBottom: 'none',
+      boxShadow: '0 -24px 64px rgba(8,8,14,0.55)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 32,
+      height: 4,
+      borderRadius: 2,
+      background: 'var(--ink-600)',
+      margin: '0 auto 15px'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: 16
     }
-  }, /*#__PURE__*/React.createElement("h1", {
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
+      fontSize: 17,
+      fontWeight: 700,
+      color: '#fff',
       fontFamily: 'var(--font-display)',
-      fontSize: 27,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      letterSpacing: '-.02em'
+      letterSpacing: '-.01em'
     }
-  }, "Insights"), /*#__PURE__*/React.createElement(SegmentedControl, {
-    size: "sm",
-    value: range,
-    onChange: setRange,
-    options: [{
-      value: 'week',
-      label: 'Week'
-    }, {
-      value: 'month',
-      label: 'Month'
-    }]
-  })), /*#__PURE__*/React.createElement(Card, {
+  }, sensor.name), /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: 20
+      fontSize: 11,
+      color: 'var(--neutral-500)',
+      fontFamily: 'var(--font-mono)',
+      marginTop: 3
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, sensor.id, " \xB7 ", sensor.signal)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      alignItems: 'baseline',
-      justifyContent: 'space-between'
+      alignItems: 'center',
+      gap: 10
+    }
+  }, !isOffline && /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 5,
+      fontSize: 10,
+      color: waveColor,
+      fontFamily: 'var(--font-mono)',
+      fontWeight: 700,
+      letterSpacing: '.1em'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      font: '600 12px/1 var(--font-sans)',
-      letterSpacing: '.12em',
-      textTransform: 'uppercase',
-      color: 'var(--text-muted)'
+      width: 6,
+      height: 6,
+      borderRadius: '50%',
+      background: waveColor,
+      boxShadow: `0 0 6px ${waveColor}`,
+      animation: 'actus-pulse 1s ease-in-out infinite'
     }
-  }, "Training load"), /*#__PURE__*/React.createElement(Metric, {
-    label: "",
-    value: "358",
-    unit: " load units",
-    size: 18
+  }), "LIVE"), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: '50%',
+      background: 'var(--ink-700)',
+      border: 'none',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'var(--neutral-500)'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "x",
+    size: 15
+  })))), isOffline ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--ink-850)',
+      borderRadius: 'var(--radius-md)',
+      padding: '28px 20px',
+      textAlign: 'center',
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--neutral-600)',
+      marginBottom: 8,
+      display: 'flex',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "wifi-off",
+    size: 26
   })), /*#__PURE__*/React.createElement("div", {
     style: {
-      display: 'flex',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      gap: 8,
-      height: 132,
-      marginTop: 18
+      fontSize: 13,
+      color: 'var(--neutral-600)'
     }
-  }, load.map((b, i) => /*#__PURE__*/React.createElement("div", {
-    key: i,
+  }, "Sensor offline \u2014 no signal")) : /*#__PURE__*/React.createElement("div", {
     style: {
-      flex: 1,
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 8
+      background: 'var(--ink-950)',
+      borderRadius: 'var(--radius-md)',
+      padding: '10px 10px 6px',
+      marginBottom: 14,
+      border: '1px solid rgba(136,120,232,0.14)'
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "100%",
+    viewBox: `0 0 ${W} ${H}`,
     style: {
-      flex: 1,
-      width: '100%',
-      maxWidth: 26,
-      margin: '0 auto',
-      display: 'flex',
-      alignItems: 'flex-end'
+      display: 'block',
+      overflow: 'visible'
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: '100%',
-      height: `${Math.max(b.v, 4)}%`,
-      background: toneColor[b.tone],
-      borderRadius: 7,
-      transition: 'height .4s var(--ease-out)'
-    }
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 11.5,
-      color: 'var(--text-faint)',
-      fontWeight: 600
-    }
-  }, b.d))))), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("linearGradient", {
+    id: "emg-fill",
+    x1: "0",
+    y1: "0",
+    x2: "0",
+    y2: "1"
+  }, /*#__PURE__*/React.createElement("stop", {
+    offset: "0%",
+    stopColor: waveColor,
+    stopOpacity: "0.22"
+  }), /*#__PURE__*/React.createElement("stop", {
+    offset: "100%",
+    stopColor: waveColor,
+    stopOpacity: "0"
+  }))), [25, 50, 75].map(pct => /*#__PURE__*/React.createElement("line", {
+    key: pct,
+    x1: "0",
+    y1: H * (1 - pct / 100),
+    x2: W,
+    y2: H * (1 - pct / 100),
+    stroke: "rgba(255,255,255,0.04)",
+    strokeWidth: "1"
+  })), /*#__PURE__*/React.createElement("path", {
+    d: areaD,
+    fill: "url(#emg-fill)"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: pathD,
+    fill: "none",
+    stroke: waveColor,
+    strokeWidth: "1.8",
+    strokeLinejoin: "round"
+  }))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 12,
-      marginTop: 14
+      gridTemplateColumns: '1fr 1fr 1fr',
+      gap: 9
     }
-  }, /*#__PURE__*/React.createElement(Card, {
+  }, [{
+    label: 'Now',
+    value: isOffline ? '—' : `${current}%`,
+    color: waveColor
+  }, {
+    label: 'Avg',
+    value: isOffline ? '—' : `${avg}%`,
+    color: '#fff'
+  }, {
+    label: 'Battery',
+    value: sensor.battery > 0 ? `${sensor.battery}%` : '—',
+    color: 'var(--neutral-400)'
+  }].map(s => /*#__PURE__*/React.createElement("div", {
+    key: s.label,
     style: {
-      padding: 18
+      background: 'var(--ink-800)',
+      borderRadius: 'var(--radius-md)',
+      padding: '10px 0',
+      textAlign: 'center'
     }
-  }, /*#__PURE__*/React.createElement(Metric, {
-    label: "L / R balance",
-    value: "95",
-    unit: "%",
-    tone: "good",
-    trend: "+2%",
-    trendDirection: "up",
-    size: 28
-  })), /*#__PURE__*/React.createElement(Card, {
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: 18
+      fontFamily: 'var(--font-mono)',
+      fontSize: 20,
+      fontWeight: 700,
+      color: s.color
     }
-  }, /*#__PURE__*/React.createElement(Metric, {
-    label: "Avg recovery",
-    value: "79",
-    unit: "%",
-    tone: "signal",
-    trend: "\u22124%",
-    trendDirection: "down",
-    size: 28
-  }))), /*#__PURE__*/React.createElement("h2", {
+  }, s.value), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 16,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      margin: '24px 2px 14px'
+      fontSize: 10,
+      color: 'var(--neutral-600)',
+      marginTop: 3
     }
-  }, "Most-loaded this week"), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      padding: 18,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 15
-    }
-  }, /*#__PURE__*/React.createElement(SignalMeter, {
-    label: "Right calf",
-    value: 91,
-    tone: "fatigue"
-  }), /*#__PURE__*/React.createElement(SignalMeter, {
-    label: "Right quad",
-    value: 84,
-    tone: "caution"
-  }), /*#__PURE__*/React.createElement(SignalMeter, {
-    label: "Left quad",
-    value: 72,
-    tone: "good"
-  })));
+  }, s.label))))));
 }
-function ProfileScreen() {
+window.SensorDetailSheet = SensorDetailSheet;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/SensorDetailSheet.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/mobile_app/SensorsScreen.jsx
+try { (() => {
+// SensorsScreen — hub status, sensor placement muscle map, paired sensor list
+function SensorsScreen({
+  onSensorDetail
+}) {
   const {
     Card,
-    Avatar,
-    Badge,
-    Switch
+    StatusDot,
+    Switch,
+    Badge
   } = window.DS;
   const Icon = window.Icon;
-  const [dark, setDark] = React.useState(false);
-  const rows = [{
-    icon: 'user-round',
-    label: 'Account',
-    detail: 'Mara Okonkwo'
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const [haptics, setHaptics] = React.useState(true);
+  const [selectedId, setSelectedId] = React.useState(null);
+  const sensors = [{
+    name: 'L. Quad',
+    id: 'S-01',
+    battery: 88,
+    signal: 'Strong',
+    status: 'good',
+    muscleId: 'lquad'
   }, {
-    icon: 'target',
-    label: 'Training goals',
-    detail: 'Strength'
+    name: 'R. Quad',
+    id: 'S-02',
+    battery: 76,
+    signal: 'Strong',
+    status: 'good',
+    muscleId: 'rquad'
   }, {
-    icon: 'bell',
-    label: 'Notifications',
-    detail: 'On'
+    name: 'L. Hamstring',
+    id: 'S-03',
+    battery: 64,
+    signal: 'Strong',
+    status: 'good',
+    muscleId: 'lham'
   }, {
-    icon: 'shield-check',
-    label: 'Data & privacy'
+    name: 'R. Hamstring',
+    id: 'S-04',
+    battery: 91,
+    signal: 'Strong',
+    status: 'good',
+    muscleId: 'rham'
   }, {
-    icon: 'circle-help',
-    label: 'Help & support'
+    name: 'Core',
+    id: 'S-05',
+    battery: 52,
+    signal: 'Fair',
+    status: 'caution',
+    muscleId: 'abs'
+  }, {
+    name: 'R. Calf',
+    id: 'S-06',
+    battery: 0,
+    signal: 'Offline',
+    status: 'offline',
+    muscleId: 'rcalf'
   }];
+  const mapMuscles = MUSCLE_DEFS.map(m => {
+    const s = sensors.find(s => s.muscleId === m.id);
+    if (!s) return {
+      ...m,
+      value: 0,
+      tone: 'rest'
+    };
+    const tone = s.status === 'caution' ? 'caution' : s.status === 'offline' ? 'rest' : 'signal';
+    return {
+      ...m,
+      value: s.status !== 'offline' ? 72 : 0,
+      tone
+    };
+  });
+  const selSensor = sensors.find(s => s.muscleId === selectedId);
+  const handleSelect = muscleId => {
+    const sensor = sensors.find(s => s.muscleId === muscleId);
+    setSelectedId(muscleId);
+    if (sensor && onSensorDetail) onSensorDetail(sensor);
+  };
   return /*#__PURE__*/React.createElement("div", {
     style: {
       padding: '8px 20px 24px'
@@ -1457,189 +3696,7 @@ function ProfileScreen() {
   }, /*#__PURE__*/React.createElement("h1", {
     style: {
       fontFamily: 'var(--font-display)',
-      fontSize: 27,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      letterSpacing: '-.02em',
-      marginBottom: 18
-    }
-  }, "Profile"), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      padding: 20,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 16
-    }
-  }, /*#__PURE__*/React.createElement(Avatar, {
-    name: "Mara Okonkwo",
-    size: 60,
-    ring: true,
-    status: "good"
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 18,
-      fontWeight: 700,
-      color: 'var(--text-strong)',
-      fontFamily: 'var(--font-display)'
-    }
-  }, "Mara Okonkwo"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13,
-      color: 'var(--text-muted)',
-      marginTop: 3
-    }
-  }, "Sprinter \xB7 142 sessions"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 8
-    }
-  }, /*#__PURE__*/React.createElement(Badge, {
-    tone: "signal"
-  }, "Actus Pro")))), /*#__PURE__*/React.createElement(Card, {
-    flush: true,
-    style: {
-      marginTop: 16,
-      overflow: 'hidden'
-    }
-  }, rows.map((r, i) => /*#__PURE__*/React.createElement("div", {
-    key: r.label,
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 13,
-      padding: '14px 16px',
-      borderTop: i ? '1px solid var(--border-subtle)' : 'none'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 32,
-      height: 32,
-      borderRadius: 9,
-      background: 'var(--surface-sunken)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'var(--text-body)',
-      flex: '0 0 auto'
-    }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: r.icon,
-    size: 17
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      flex: 1,
-      fontSize: 15,
-      fontWeight: 500,
-      color: 'var(--text-strong)'
-    }
-  }, r.label), r.detail && /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13.5,
-      color: 'var(--text-muted)'
-    }
-  }, r.detail), /*#__PURE__*/React.createElement(Icon, {
-    name: "chevron-right",
-    size: 18,
-    color: "var(--text-faint)"
-  })))), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      marginTop: 16,
-      padding: '14px 16px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: 'var(--text-body)',
-      display: 'flex'
-    }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: "moon",
-    size: 18
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 15,
-      fontWeight: 500,
-      color: 'var(--text-strong)'
-    }
-  }, "Dark hardware theme")), /*#__PURE__*/React.createElement(Switch, {
-    checked: dark,
-    onChange: setDark
-  })));
-}
-window.InsightsScreen = InsightsScreen;
-window.ProfileScreen = ProfileScreen;
-})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/MiscScreens.jsx", error: String((e && e.message) || e) }); }
-
-// ui_kits/mobile_app/SensorsScreen.jsx
-try { (() => {
-// SensorsScreen — hub + paired EMG sensors management.
-function SensorsScreen() {
-  const {
-    Card,
-    Button,
-    Badge,
-    StatusDot,
-    Switch,
-    IconButton
-  } = window.DS;
-  const Icon = window.Icon;
-  const [haptics, setHaptics] = React.useState(true);
-  const sensors = [{
-    name: 'Left quad',
-    id: 'S-01',
-    battery: 88,
-    signal: 'Strong',
-    status: 'good'
-  }, {
-    name: 'Right quad',
-    id: 'S-02',
-    battery: 76,
-    signal: 'Strong',
-    status: 'good'
-  }, {
-    name: 'Left hamstring',
-    id: 'S-03',
-    battery: 64,
-    signal: 'Strong',
-    status: 'good'
-  }, {
-    name: 'Right hamstring',
-    id: 'S-04',
-    battery: 91,
-    signal: 'Strong',
-    status: 'good'
-  }, {
-    name: 'Core',
-    id: 'S-05',
-    battery: 52,
-    signal: 'Fair',
-    status: 'caution'
-  }, {
-    name: 'Right calf',
-    id: 'S-06',
-    battery: 0,
-    signal: 'Offline',
-    status: 'offline'
-  }];
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: `8px 20px 24px`
-    }
-  }, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 27,
+      fontSize: 24,
       fontWeight: 600,
       color: 'var(--text-strong)',
       letterSpacing: '-.02em',
@@ -1649,8 +3706,8 @@ function SensorsScreen() {
     "data-theme": "dark",
     style: {
       background: 'var(--ink-900)',
-      borderRadius: 'var(--radius-2xl)',
-      padding: 20,
+      borderRadius: 'var(--radius-xl)',
+      padding: 18,
       position: 'relative',
       overflow: 'hidden',
       boxShadow: 'var(--shadow-md)'
@@ -1660,23 +3717,24 @@ function SensorsScreen() {
       position: 'absolute',
       right: -30,
       top: -30,
-      width: 130,
-      height: 130,
+      width: 120,
+      height: 120,
       borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(6,195,252,0.16), transparent 70%)'
+      background: 'radial-gradient(circle, rgba(136,120,232,0.20), transparent 70%)',
+      pointerEvents: 'none'
     }
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: 14,
+      gap: 13,
       position: 'relative'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      width: 52,
-      height: 52,
-      borderRadius: 16,
+      width: 46,
+      height: 46,
+      borderRadius: 'var(--radius-md)',
       background: 'var(--ink-700)',
       display: 'flex',
       alignItems: 'center',
@@ -1686,14 +3744,14 @@ function SensorsScreen() {
     }
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "router",
-    size: 26
+    size: 22
   })), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: 600,
       color: '#fff'
     }
@@ -1707,20 +3765,57 @@ function SensorsScreen() {
     pulse: true
   }))), /*#__PURE__*/React.createElement("span", {
     style: {
-      display: 'inline-flex',
+      display: 'flex',
       alignItems: 'center',
-      gap: 5,
-      fontSize: 13,
+      gap: 4,
+      fontSize: 12,
       color: 'var(--neutral-300)',
       fontFamily: 'var(--font-mono)'
     }
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "battery-medium",
-    size: 16
-  }), " 82%"))), /*#__PURE__*/React.createElement(Card, {
+    size: 14
+  }), " 82%"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16,
+      marginBottom: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-muted)',
+      fontWeight: 600,
+      letterSpacing: '.1em',
+      textTransform: 'uppercase',
+      marginBottom: 10,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "Sensor placement"), selSensor && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--signal-600)',
+      fontWeight: 700,
+      textTransform: 'none',
+      letterSpacing: 0,
+      fontSize: 12
+    }
+  }, "\u2014 ", selSensor.name, " \xB7 ", selSensor.id)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(MuscleMapView, {
+    gender: "female",
+    muscles: mapMuscles,
+    selected: selectedId,
+    onSelect: handleSelect,
+    view: "both",
+    height: 210
+  }))), /*#__PURE__*/React.createElement(Card, {
     style: {
       marginTop: 14,
-      padding: '14px 16px',
+      padding: '12px 15px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between'
@@ -1729,19 +3824,18 @@ function SensorsScreen() {
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: 12
+      gap: 11
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      color: 'var(--accent-text)',
-      display: 'flex'
+      color: 'var(--accent-text)'
     }
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "vibrate",
-    size: 20
+    size: 18
   })), /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 14.5,
+      fontSize: 14,
       fontWeight: 600,
       color: 'var(--text-strong)'
     }
@@ -1753,531 +3847,559 @@ function SensorsScreen() {
       display: 'flex',
       alignItems: 'baseline',
       justifyContent: 'space-between',
-      margin: '24px 2px 12px'
+      margin: '20px 2px 10px'
     }
   }, /*#__PURE__*/React.createElement("h2", {
     style: {
       fontFamily: 'var(--font-display)',
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: 600,
       color: 'var(--text-strong)'
     }
   }, "Paired sensors"), /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 13,
+      fontSize: 12.5,
       color: 'var(--accent-text)',
       fontWeight: 600,
-      display: 'inline-flex',
+      display: 'flex',
       alignItems: 'center',
-      gap: 4
+      gap: 3,
+      cursor: 'pointer'
     }
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "plus",
-    size: 15
-  }), " Pair")), /*#__PURE__*/React.createElement(Card, {
+    size: 14
+  }), " Pair new")), /*#__PURE__*/React.createElement(Card, {
     flush: true,
     style: {
       overflow: 'hidden'
     }
-  }, sensors.map((s, i) => /*#__PURE__*/React.createElement("div", {
-    key: s.id,
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 13,
-      padding: '13px 16px',
-      borderTop: i ? '1px solid var(--border-subtle)' : 'none'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 36,
-      height: 36,
-      borderRadius: '50%',
-      background: s.status === 'offline' ? 'var(--surface-sunken)' : 'var(--accent-surface)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: s.status === 'offline' ? 'var(--text-faint)' : 'var(--accent-text)',
-      flex: '0 0 auto'
-    }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: "circle-dot",
-    size: 18
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      minWidth: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14.5,
-      fontWeight: 600,
-      color: 'var(--text-strong)'
-    }
-  }, s.name), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: 'var(--text-muted)',
-      fontFamily: 'var(--font-mono)',
-      marginTop: 2
-    }
-  }, s.id, " \xB7 ", s.signal)), s.status === 'offline' ? /*#__PURE__*/React.createElement(Badge, {
-    tone: "neutral",
-    size: "sm"
-  }, "Offline") : /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 12.5,
-      color: 'var(--text-muted)',
-      fontFamily: 'var(--font-mono)',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 4
-    }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: s.battery > 60 ? 'battery-full' : 'battery-low',
-    size: 15
-  }), " ", s.battery, "%")))));
+  }, sensors.map((s, i) => {
+    const isSel = selectedId === s.muscleId;
+    return /*#__PURE__*/React.createElement("button", {
+      key: s.id,
+      onClick: () => handleSelect(s.muscleId),
+      style: {
+        width: '100%',
+        border: 'none',
+        background: isSel ? 'var(--signal-100)' : 'transparent',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        padding: '12px 15px',
+        borderTop: i ? '1px solid var(--border-subtle)' : 'none',
+        textAlign: 'left',
+        transition: 'background .15s'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 34,
+        height: 34,
+        borderRadius: '50%',
+        flex: '0 0 auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: s.status === 'offline' ? 'var(--surface-sunken)' : isSel ? 'var(--signal-200)' : 'var(--accent-surface)',
+        color: s.status === 'offline' ? 'var(--text-faint)' : isSel ? 'var(--signal-600)' : 'var(--accent-text)'
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "circle-dot",
+      size: 16
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 600,
+        color: 'var(--text-strong)'
+      }
+    }, s.name), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11.5,
+        color: 'var(--text-muted)',
+        fontFamily: 'var(--font-mono)',
+        marginTop: 2
+      }
+    }, s.id, " \xB7 ", s.signal)), s.status === 'offline' ? /*#__PURE__*/React.createElement(Badge, {
+      tone: "neutral",
+      size: "sm"
+    }, "Offline") : /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11.5,
+        color: 'var(--text-muted)',
+        fontFamily: 'var(--font-mono)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 3
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: s.battery > 60 ? 'battery-full' : 'battery-low',
+      size: 13
+    }), " ", s.battery, "%"));
+  })));
 }
 window.SensorsScreen = SensorsScreen;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/SensorsScreen.jsx", error: String((e && e.message) || e) }); }
 
-// ui_kits/mobile_app/SummaryScreen.jsx
+// ui_kits/mobile_app/SessionsScreen.jsx
 try { (() => {
-// SummaryScreen — post-session report (light), shown after ending a live session.
-function SummaryScreen({
-  onDone
-}) {
-  const {
-    Card,
-    Button,
-    Metric,
-    SignalMeter,
-    Badge,
-    ActivationRing
-  } = window.DS;
-  const Icon = window.Icon;
-  const breakdown = [{
-    name: 'Right quad',
-    value: 92,
-    tone: 'caution'
-  }, {
-    name: 'Left quad',
-    value: 88,
-    tone: 'good'
-  }, {
-    name: 'Right calf',
-    value: 96,
-    tone: 'fatigue'
-  }, {
-    name: 'Left calf',
-    value: 74,
-    tone: 'good'
-  }, {
-    name: 'Core',
-    value: 66,
-    tone: 'good'
-  }, {
-    name: 'Glutes',
-    value: 58,
-    tone: 'rest'
-  }];
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      background: 'var(--surface-page)'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      overflow: 'auto',
-      padding: '58px 20px 20px'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 8
-    }
-  }, /*#__PURE__*/React.createElement(Badge, {
-    tone: "good",
-    dot: true
-  }, "Session complete"), /*#__PURE__*/React.createElement("button", {
-    onClick: onDone,
-    style: {
-      border: 'none',
-      background: 'var(--surface-sunken)',
-      width: 34,
-      height: 34,
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
-      color: 'var(--text-muted)'
-    }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: "x",
-    size: 18
-  }))), /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 26,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      letterSpacing: '-.02em',
-      marginTop: 10
-    }
-  }, "Lower body \xB7 strength"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13.5,
-      color: 'var(--text-muted)',
-      marginTop: 6
-    }
-  }, "Today \xB7 9:12 AM \u2014 9:54 AM"), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      marginTop: 18,
-      padding: 20,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 18
-    }
-  }, /*#__PURE__*/React.createElement(ActivationRing, {
-    value: 84,
-    tone: "good",
-    size: 92,
-    thickness: 8,
-    label: "Engaged"
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '16px 12px'
-    }
-  }, /*#__PURE__*/React.createElement(Metric, {
-    label: "Duration",
-    value: "42:10",
-    size: 22
-  }), /*#__PURE__*/React.createElement(Metric, {
-    label: "Balance",
-    value: "96",
-    unit: "%",
-    size: 22,
-    tone: "good"
-  }), /*#__PURE__*/React.createElement(Metric, {
-    label: "Peak load",
-    value: "96",
-    unit: "%",
-    size: 22,
-    tone: "fatigue"
-  }), /*#__PURE__*/React.createElement(Metric, {
-    label: "Calories",
-    value: "418",
-    size: 22
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 12,
-      alignItems: 'flex-start',
-      padding: '14px 16px',
-      borderRadius: 'var(--radius-lg)',
-      background: 'var(--accent-surface)',
-      marginTop: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: 'var(--accent-text)',
-      display: 'flex',
-      marginTop: 1
-    }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: "sparkles",
-    size: 18
-  })), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 13.5,
-      color: 'var(--text-body)',
-      lineHeight: 1.5
-    }
-  }, "Strong, balanced quads today. Your ", /*#__PURE__*/React.createElement("strong", {
-    style: {
-      color: 'var(--text-strong)'
-    }
-  }, "right calf"), " fatigued early \u2014 add a mobility set before your next lower-body block.")), /*#__PURE__*/React.createElement("h2", {
-    style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 16,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      margin: '24px 2px 14px'
-    }
-  }, "Muscle breakdown"), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      padding: 18,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 15
-    }
-  }, breakdown.map(m => /*#__PURE__*/React.createElement(SignalMeter, {
-    key: m.name,
-    label: m.name,
-    value: m.value,
-    tone: m.tone
-  })))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: '0 0 auto',
-      padding: '12px 20px 30px',
-      background: 'var(--surface-card)',
-      borderTop: '1px solid var(--border-subtle)'
-    }
-  }, /*#__PURE__*/React.createElement(Button, {
-    variant: "primary",
-    fullWidth: true,
-    size: "lg",
-    onClick: onDone
-  }, "Done")));
-}
-window.SummaryScreen = SummaryScreen;
-})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/SummaryScreen.jsx", error: String((e && e.message) || e) }); }
-
-// ui_kits/mobile_app/TodayScreen.jsx
-try { (() => {
-// TodayScreen — home dashboard: readiness, hub status, recent sessions.
-function TodayScreen({
+// SessionsScreen — Actus plan templates + custom templates + session detail view
+function SessionDetail({
+  session,
+  onBack,
   onStart
 }) {
   const {
-    Card,
     Button,
-    ActivationRing,
-    StatusDot,
-    Badge,
-    Avatar,
-    Metric
+    Badge
   } = window.DS;
   const Icon = window.Icon;
-  const PX = 20;
-  const sessions = [{
-    name: 'Lower body · strength',
-    when: 'Yesterday · 48 min',
-    balance: 'L/R 96%',
-    load: 'High',
-    tone: 'caution'
-  }, {
-    name: 'Sprint intervals',
-    when: 'Tue · 32 min',
-    balance: 'L/R 91%',
-    load: 'Optimal',
-    tone: 'good'
-  }, {
-    name: 'Recovery flow',
-    when: 'Mon · 26 min',
-    balance: 'L/R 99%',
-    load: 'Light',
-    tone: 'rest'
-  }];
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const muscles = MUSCLE_DEFS.map(m => ({
+    ...m,
+    value: session.muscles.includes(m.id) ? 72 : 0,
+    tone: session.muscles.includes(m.id) ? 'signal' : 'rest'
+  }));
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: `8px ${PX}px 24px`
+      padding: '8px 20px 24px'
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: onBack,
     style: {
+      border: 'none',
+      background: 'none',
+      cursor: 'pointer',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 20
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      font: '600 13px/1 var(--font-sans)',
-      letterSpacing: '.12em',
-      textTransform: 'uppercase',
-      color: 'var(--text-muted)'
-    }
-  }, "Friday \xB7 Jun 6"), /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 27,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      marginTop: 8,
-      letterSpacing: '-.02em'
-    }
-  }, "Good morning, Mara")), /*#__PURE__*/React.createElement(Avatar, {
-    name: "Mara Okonkwo",
-    size: 46,
-    ring: true,
-    status: "good"
-  })), /*#__PURE__*/React.createElement("div", {
-    "data-theme": "dark",
-    style: {
-      background: 'var(--ink-900)',
-      borderRadius: 'var(--radius-2xl)',
-      padding: 22,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 20,
-      position: 'relative',
-      overflow: 'hidden',
-      boxShadow: 'var(--shadow-lg)'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: 'absolute',
-      right: -40,
-      top: -40,
-      width: 160,
-      height: 160,
-      borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(6,195,252,0.18), transparent 70%)'
-    }
-  }), /*#__PURE__*/React.createElement(ActivationRing, {
-    value: 78,
-    tone: "signal",
-    glow: true,
-    size: 104,
-    thickness: 9,
-    label: "Ready"
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: 'relative'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      font: '600 12px/1 var(--font-sans)',
-      letterSpacing: '.14em',
-      textTransform: 'uppercase',
-      color: 'var(--signal-400)'
-    }
-  }, "Recovery status"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 20,
-      fontWeight: 600,
-      color: '#fff',
-      marginTop: 8,
-      lineHeight: 1.2
-    }
-  }, "Primed to train"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 13,
-      color: 'var(--neutral-300)',
-      marginTop: 6,
-      lineHeight: 1.5,
-      maxWidth: 150
-    }
-  }, "Legs fully recovered. Aim for a strength block."))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      margin: '18px 2px 16px'
-    }
-  }, /*#__PURE__*/React.createElement(StatusDot, {
-    tone: "signal",
-    label: "Hub \xB7 6 sensors live",
-    pulse: true
-  }), /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: 'inline-flex',
       alignItems: 'center',
       gap: 5,
-      fontSize: 13,
+      color: 'var(--accent-text)',
+      fontWeight: 600,
+      fontSize: 14,
+      padding: '0 0 14px'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron-left",
+    size: 18
+  }), " All sessions"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      marginBottom: 5
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 21,
+      fontWeight: 600,
+      color: 'var(--text-strong)',
+      letterSpacing: '-.02em',
+      flex: 1,
+      paddingRight: 10
+    }
+  }, session.name), session.author !== 'Actus' && /*#__PURE__*/React.createElement(Badge, {
+    tone: "signal"
+  }, session.author)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: 'var(--text-muted)',
+      marginBottom: 16,
+      display: 'flex',
+      gap: 14
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 4
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "clock",
+    size: 13
+  }), session.duration), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 4
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "layers",
+    size: 13
+  }), session.exercises.length, " exercises")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement(MuscleMapView, {
+    gender: "female",
+    muscles: muscles,
+    view: "both",
+    height: 210
+  })), /*#__PURE__*/React.createElement("h2", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 15,
+      fontWeight: 600,
+      color: 'var(--text-strong)',
+      marginBottom: 10
+    }
+  }, "Exercises"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 0,
+      borderRadius: 'var(--radius-lg)',
+      overflow: 'hidden',
+      border: '1px solid var(--border-subtle)',
+      marginBottom: 20
+    }
+  }, session.exercises.map((ex, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      borderTop: i ? '1px solid var(--border-subtle)' : 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 26,
+      height: 26,
+      borderRadius: 'var(--radius-xs)',
+      background: 'var(--surface-sunken)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 11,
+      fontWeight: 700,
+      color: 'var(--text-muted)',
+      flexShrink: 0
+    }
+  }, i + 1), /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1,
+      fontSize: 14,
+      fontWeight: 500,
+      color: 'var(--text-strong)'
+    }
+  }, ex.name), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
       color: 'var(--text-muted)',
       fontFamily: 'var(--font-mono)'
     }
-  }, /*#__PURE__*/React.createElement(Icon, {
-    name: "battery-medium",
-    size: 16
-  }), " 82%")), /*#__PURE__*/React.createElement(Button, {
+  }, ex.sets, "\xD7", ex.reps)))), /*#__PURE__*/React.createElement(Button, {
     variant: "primary",
     fullWidth: true,
     size: "lg",
     leadingIcon: /*#__PURE__*/React.createElement(Icon, {
       name: "play",
-      size: 18
+      size: 16
     }),
-    onClick: onStart
-  }, "Start a session"), /*#__PURE__*/React.createElement("div", {
+    onClick: () => onStart(session)
+  }, "Start session"));
+}
+function SessionsScreen({
+  onStart
+}) {
+  const {
+    Card
+  } = window.DS;
+  const Icon = window.Icon;
+  const MuscleMapView = window.MuscleMapView;
+  const MUSCLE_DEFS = window.MUSCLE_DEFS || [];
+  const [subTab, setSubTab] = React.useState('actus');
+  const [selected, setSelected] = React.useState(null);
+  const actusTemplates = [{
+    id: 1,
+    name: 'Lower Body · Strength',
+    author: 'Actus',
+    duration: '45–55 min',
+    muscles: ['lquad', 'rquad', 'lham', 'rham', 'lglute', 'rglute', 'lcalf', 'rcalf'],
+    exercises: [{
+      name: 'Back Squat',
+      sets: 4,
+      reps: '5'
+    }, {
+      name: 'Romanian Deadlift',
+      sets: 3,
+      reps: '8'
+    }, {
+      name: 'Leg Press',
+      sets: 3,
+      reps: '12'
+    }, {
+      name: 'Calf Raise',
+      sets: 3,
+      reps: '15'
+    }]
+  }, {
+    id: 2,
+    name: 'Push Day',
+    author: 'Actus',
+    duration: '40–50 min',
+    muscles: ['chest', 'lshoulder', 'rshoulder', 'lbicep', 'rbicep'],
+    exercises: [{
+      name: 'Bench Press',
+      sets: 4,
+      reps: '6'
+    }, {
+      name: 'Overhead Press',
+      sets: 3,
+      reps: '8'
+    }, {
+      name: 'Lateral Raise',
+      sets: 3,
+      reps: '12'
+    }, {
+      name: 'Tricep Pushdown',
+      sets: 3,
+      reps: '12'
+    }]
+  }, {
+    id: 3,
+    name: 'Pull Day',
+    author: 'Actus',
+    duration: '40–50 min',
+    muscles: ['llat', 'rlat', 'traps', 'lbicep', 'rbicep'],
+    exercises: [{
+      name: 'Pull-Up',
+      sets: 4,
+      reps: '6'
+    }, {
+      name: 'Cable Row',
+      sets: 3,
+      reps: '10'
+    }, {
+      name: 'Face Pull',
+      sets: 3,
+      reps: '15'
+    }, {
+      name: 'Bicep Curl',
+      sets: 3,
+      reps: '12'
+    }]
+  }, {
+    id: 4,
+    name: 'Full Body · Power',
+    author: 'Actus',
+    duration: '55–65 min',
+    muscles: ['lham', 'rham', 'lglute', 'rglute', 'chest', 'llat', 'rlat', 'abs'],
+    exercises: [{
+      name: 'Deadlift',
+      sets: 4,
+      reps: '4'
+    }, {
+      name: 'Bench Press',
+      sets: 3,
+      reps: '6'
+    }, {
+      name: 'Pull-Up',
+      sets: 3,
+      reps: '6'
+    }, {
+      name: 'Box Jump',
+      sets: 3,
+      reps: '5'
+    }, {
+      name: 'Plank',
+      sets: 3,
+      reps: '60 s'
+    }]
+  }];
+  const myTemplates = [{
+    id: 5,
+    name: 'Sprint & Power',
+    author: 'Mara',
+    duration: '30–40 min',
+    muscles: ['lquad', 'rquad', 'lglute', 'rglute', 'abs', 'lcalf', 'rcalf'],
+    exercises: [{
+      name: 'Box Jump',
+      sets: 4,
+      reps: '5'
+    }, {
+      name: 'Sprint 40 m',
+      sets: 6,
+      reps: '×1'
+    }, {
+      name: 'Hip Thrust',
+      sets: 3,
+      reps: '10'
+    }, {
+      name: 'Plank',
+      sets: 3,
+      reps: '45 s'
+    }]
+  }];
+  const templates = subTab === 'actus' ? actusTemplates : myTemplates;
+  if (selected) return /*#__PURE__*/React.createElement(SessionDetail, {
+    session: selected,
+    onBack: () => setSelected(null),
+    onStart: onStart
+  });
+  return /*#__PURE__*/React.createElement("div", {
     style: {
-      display: 'flex',
-      alignItems: 'baseline',
-      justifyContent: 'space-between',
-      margin: '28px 2px 12px'
-    }
-  }, /*#__PURE__*/React.createElement("h2", {
-    style: {
-      fontFamily: 'var(--font-display)',
-      fontSize: 17,
-      fontWeight: 600,
-      color: 'var(--text-strong)'
-    }
-  }, "Recent sessions"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      color: 'var(--accent-text)',
-      fontWeight: 600
-    }
-  }, "See all")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10
-    }
-  }, sessions.map((s, i) => /*#__PURE__*/React.createElement(Card, {
-    key: i,
-    interactive: true,
-    style: {
-      padding: 16,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 14
+      padding: '8px 20px 24px'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      width: 42,
-      height: 42,
-      borderRadius: 12,
-      background: 'var(--accent-surface)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 24,
+      fontWeight: 600,
+      color: 'var(--text-strong)',
+      letterSpacing: '-.02em'
+    }
+  }, "Sessions"), /*#__PURE__*/React.createElement("button", {
+    style: {
+      width: 34,
+      height: 34,
+      borderRadius: 'var(--radius-sm)',
+      background: 'var(--signal-100)',
+      border: '1px solid var(--signal-200)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: 'var(--accent-text)',
-      flex: '0 0 auto'
+      color: 'var(--signal-600)',
+      cursor: 'pointer'
     }
   }, /*#__PURE__*/React.createElement(Icon, {
-    name: "dumbbell",
-    size: 20
-  })), /*#__PURE__*/React.createElement("div", {
+    name: "plus",
+    size: 19
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      background: 'var(--surface-sunken)',
+      borderRadius: 'var(--radius-md)',
+      padding: 3,
+      marginBottom: 18
+    }
+  }, [['actus', 'Actus Plans'], ['mine', 'My Templates']].map(([id, label]) => /*#__PURE__*/React.createElement("button", {
+    key: id,
+    onClick: () => setSubTab(id),
     style: {
       flex: 1,
-      minWidth: 0
+      border: 'none',
+      cursor: 'pointer',
+      padding: '7px 0',
+      borderRadius: 'calc(var(--radius-md) - 2px)',
+      background: subTab === id ? 'var(--surface-card)' : 'transparent',
+      color: subTab === id ? 'var(--text-strong)' : 'var(--text-muted)',
+      fontWeight: subTab === id ? 700 : 500,
+      fontSize: 13,
+      boxShadow: subTab === id ? 'var(--shadow-sm)' : 'none',
+      transition: 'all .2s'
+    }
+  }, label))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 11
+    }
+  }, templates.map(t => {
+    const muscles = MUSCLE_DEFS.map(m => ({
+      ...m,
+      value: t.muscles.includes(m.id) ? 72 : 0,
+      tone: t.muscles.includes(m.id) ? 'signal' : 'rest'
+    }));
+    return /*#__PURE__*/React.createElement(Card, {
+      key: t.id,
+      interactive: true,
+      style: {
+        padding: 0,
+        overflow: 'hidden'
+      },
+      onClick: () => setSelected(t)
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: 13,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12
+      }
+    }, /*#__PURE__*/React.createElement(MuscleMapView, {
+      gender: "female",
+      muscles: muscles,
+      view: "both",
+      height: 70,
+      style: {
+        borderRadius: 'var(--radius-sm)'
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: 'var(--text-strong)',
+        marginBottom: 3
+      }
+    }, t.name), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11.5,
+        color: 'var(--text-muted)',
+        marginBottom: 5,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+      }
+    }, t.exercises.slice(0, 3).map(e => e.name).join(' · '), t.exercises.length > 3 ? ` +${t.exercises.length - 3}` : ''), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11,
+        color: 'var(--text-muted)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 3
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "clock",
+      size: 11
+    }), " ", t.duration)), /*#__PURE__*/React.createElement(Icon, {
+      name: "chevron-right",
+      size: 16,
+      color: "var(--text-faint)"
+    })));
+  }), templates.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '40px 20px',
+      textAlign: 'center',
+      color: 'var(--text-muted)'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 15,
-      fontWeight: 600,
-      color: 'var(--text-strong)',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
+      marginBottom: 10
     }
-  }, s.name), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "plus-circle",
+    size: 34
+  })), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 12.5,
-      color: 'var(--text-muted)',
-      marginTop: 3
+      fontSize: 14
     }
-  }, s.when, " \xB7 ", s.balance)), /*#__PURE__*/React.createElement(Badge, {
-    tone: s.tone,
-    dot: true
-  }, s.load)))));
+  }, "Tap + to create your first template"))));
 }
-window.TodayScreen = TodayScreen;
-})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/TodayScreen.jsx", error: String((e && e.message) || e) }); }
+window.SessionDetail = SessionDetail;
+window.SessionsScreen = SessionsScreen;
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/SessionsScreen.jsx", error: String((e && e.message) || e) }); }
 
 // ui_kits/mobile_app/ios-frame.jsx
 try { (() => {
@@ -2989,6 +5111,672 @@ function Icon({
 }
 window.Icon = Icon;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/kit-util.jsx", error: String((e && e.message) || e) }); }
+
+// ui_kits/mobile_app/tweaks-panel.jsx
+try { (() => {
+// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
+
+/* BEGIN USAGE */
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+// Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
+//   TweakToggle, TweakRadio, TweakSelect, TweakText, TweakNumber, TweakColor, TweakButton.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// TweakRadio is the segmented control for 2–3 short options (auto-falls-back to
+// TweakSelect past ~16/~10 chars per label); reach for TweakSelect directly when
+// options are many or long. For color tweaks always curate 3-4 options rather than
+// a free picker; an option can also be a whole 2–5 color palette (the stored value
+// is the array). The Tweak* controls are a floor, not a ceiling — build custom
+// controls inside the panel if a tweak calls for UI they don't cover.
+/* END USAGE */
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null ? keyOrEdits : {
+      [keyOrEdits]: val
+    };
+    setValues(prev => ({
+      ...prev,
+      ...edits
+    }));
+    window.parent.postMessage({
+      type: '__edit_mode_set_keys',
+      edits
+    }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', {
+      detail: edits
+    }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({
+  title = 'Tweaks',
+  children
+}) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({
+    x: 16,
+    y: 16
+  });
+  const PAD = 16;
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth,
+      h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y))
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+  React.useEffect(() => {
+    const onMsg = e => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({
+      type: '__edit_mode_available'
+    }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({
+      type: '__edit_mode_dismissed'
+    }, '*');
+  };
+  const onDragStart = e => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX,
+      sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = ev => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy)
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+  if (!open) return null;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("style", null, __TWEAKS_STYLE), /*#__PURE__*/React.createElement("div", {
+    ref: dragRef,
+    className: "twk-panel",
+    "data-omelette-chrome": "",
+    style: {
+      right: offsetRef.current.x,
+      bottom: offsetRef.current.y
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-hd",
+    onMouseDown: onDragStart
+  }, /*#__PURE__*/React.createElement("b", null, title), /*#__PURE__*/React.createElement("button", {
+    className: "twk-x",
+    "aria-label": "Close tweaks",
+    onMouseDown: e => e.stopPropagation(),
+    onClick: dismiss
+  }, "\u2715")), /*#__PURE__*/React.createElement("div", {
+    className: "twk-body"
+  }, children)));
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({
+  label,
+  children
+}) {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "twk-sect"
+  }, label), children);
+}
+function TweakRow({
+  label,
+  value,
+  children,
+  inline = false
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: inline ? 'twk-row twk-row-h' : 'twk-row'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label), value != null && /*#__PURE__*/React.createElement("span", {
+    className: "twk-val"
+  }, value)), children);
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({
+  label,
+  value,
+  min = 0,
+  max = 100,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label,
+    value: `${value}${unit}`
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    className: "twk-slider",
+    min: min,
+    max: max,
+    step: step,
+    value: value,
+    onChange: e => onChange(Number(e.target.value))
+  }));
+}
+function TweakToggle({
+  label,
+  value,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-row twk-row-h"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-lbl"
+  }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "twk-toggle",
+    "data-on": value ? '1' : '0',
+    role: "switch",
+    "aria-checked": !!value,
+    onClick: () => onChange(!value)
+  }, /*#__PURE__*/React.createElement("i", null)));
+}
+function TweakRadio({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = o => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({
+    2: 16,
+    3: 10
+  }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = s => {
+      const m = options.find(o => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return /*#__PURE__*/React.createElement(TweakSelect, {
+      label: label,
+      value: value,
+      options: options,
+      onChange: s => onChange(resolve(s))
+    });
+  }
+  const opts = options.map(o => typeof o === 'object' ? o : {
+    value: o,
+    label: o
+  });
+  const idx = Math.max(0, opts.findIndex(o => o.value === value));
+  const n = opts.length;
+  const segAt = clientX => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor((clientX - r.left - 2) / inner * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+  const onPointerDown = e => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = ev => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    ref: trackRef,
+    role: "radiogroup",
+    onPointerDown: onPointerDown,
+    className: dragging ? 'twk-seg dragging' : 'twk-seg'
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-seg-thumb",
+    style: {
+      left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+      width: `calc((100% - 4px) / ${n})`
+    }
+  }), opts.map(o => /*#__PURE__*/React.createElement("button", {
+    key: o.value,
+    type: "button",
+    role: "radio",
+    "aria-checked": o.value === value
+  }, o.label))));
+}
+function TweakSelect({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "twk-field",
+    value: value,
+    onChange: e => onChange(e.target.value)
+  }, options.map(o => {
+    const v = typeof o === 'object' ? o.value : o;
+    const l = typeof o === 'object' ? o.label : o;
+    return /*#__PURE__*/React.createElement("option", {
+      key: v,
+      value: v
+    }, l);
+  })));
+}
+function TweakText({
+  label,
+  value,
+  placeholder,
+  onChange
+}) {
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "twk-field",
+    type: "text",
+    value: value,
+    placeholder: placeholder,
+    onChange: e => onChange(e.target.value)
+  }));
+}
+function TweakNumber({
+  label,
+  value,
+  min,
+  max,
+  step = 1,
+  unit = '',
+  onChange
+}) {
+  const clamp = n => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({
+    x: 0,
+    val: 0
+  });
+  const onScrubStart = e => {
+    e.preventDefault();
+    startRef.current = {
+      x: e.clientX,
+      val: value
+    };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = ev => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "twk-num"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-lbl",
+    onPointerDown: onScrubStart
+  }, label), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: value,
+    min: min,
+    max: max,
+    step: step,
+    onChange: e => onChange(clamp(Number(e.target.value)))
+  }), unit && /*#__PURE__*/React.createElement("span", {
+    className: "twk-num-unit"
+  }, unit));
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = n >> 16 & 255,
+    g = n >> 8 & 255,
+    b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+const __TwkCheck = ({
+  light
+}) => /*#__PURE__*/React.createElement("svg", {
+  viewBox: "0 0 14 14",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M3 7.2 5.8 10 11 4.2",
+  fill: "none",
+  strokeWidth: "2.2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  stroke: light ? 'rgba(0,0,0,.78)' : '#fff'
+}));
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({
+  label,
+  value,
+  options,
+  onChange
+}) {
+  if (!options || !options.length) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "twk-row twk-row-h"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "twk-lbl"
+    }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("input", {
+      type: "color",
+      className: "twk-swatch",
+      value: value,
+      onChange: e => onChange(e.target.value)
+    }));
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = o => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return /*#__PURE__*/React.createElement(TweakRow, {
+    label: label
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "twk-chips",
+    role: "radiogroup"
+  }, options.map((o, i) => {
+    const colors = Array.isArray(o) ? o : [o];
+    const [hero, ...rest] = colors;
+    const sup = rest.slice(0, 4);
+    const on = key(o) === cur;
+    return /*#__PURE__*/React.createElement("button", {
+      key: i,
+      type: "button",
+      className: "twk-chip",
+      role: "radio",
+      "aria-checked": on,
+      "data-on": on ? '1' : '0',
+      "aria-label": colors.join(', '),
+      title: colors.join(' · '),
+      style: {
+        background: hero
+      },
+      onClick: () => onChange(o)
+    }, sup.length > 0 && /*#__PURE__*/React.createElement("span", null, sup.map((c, j) => /*#__PURE__*/React.createElement("i", {
+      key: j,
+      style: {
+        background: c
+      }
+    }))), on && /*#__PURE__*/React.createElement(__TwkCheck, {
+      light: __twkIsLight(hero)
+    }));
+  })));
+}
+function TweakButton({
+  label,
+  onClick,
+  secondary = false
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: secondary ? 'twk-btn secondary' : 'twk-btn',
+    onClick: onClick
+  }, label);
+}
+Object.assign(window, {
+  useTweaks,
+  TweaksPanel,
+  TweakSection,
+  TweakRow,
+  TweakSlider,
+  TweakToggle,
+  TweakRadio,
+  TweakSelect,
+  TweakText,
+  TweakNumber,
+  TweakColor,
+  TweakButton
+});
+})(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/mobile_app/tweaks-panel.jsx", error: String((e && e.message) || e) }); }
 
 // ui_kits/website/HomePage.jsx
 try { (() => {

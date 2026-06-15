@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Actus — Live Session</title>
+<title>Actus — App Preview</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-  html, body { margin: 0; height: 100%; background: transparent !important; overflow: hidden; }
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
   body {
     display: flex; align-items: center; justify-content: center;
     height: 100%; padding: 0; box-sizing: border-box;
     font-family: var(--font-sans);
-    background: transparent !important;
+    background: transparent;
   }
   #stage { transform-origin: center center; }
 </style>
@@ -19,46 +19,54 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="_ds_bundle.js"></script>
-<script type="text/babel" src="ios-frame.jsx"></script>
-<script type="text/babel" src="kit-util.jsx"></script>
-<script type="text/babel" src="AppShell.jsx"></script>
-<script type="text/babel" src="TodayScreen.jsx"></script>
-<script type="text/babel" src="LiveSessionScreen.jsx"></script>
-<script type="text/babel" src="SummaryScreen.jsx"></script>
-<script type="text/babel" src="SensorsScreen.jsx"></script>
-<script type="text/babel" src="MiscScreens.jsx"></script>
+<script src="_ds_bundle.js?v=20260614"></script>
 </head>
 <body>
 <div id="stage"><div id="root"></div></div>
 <script type="text/babel">
+const tweaks = { cautionMuscle: 'L. Calf', fatigueMuscle: 'R. Quad', readiness: 78 };
+
 function App() {
-  const { IOSDevice, AppShell, TodayScreen, LiveSessionScreen, SummaryScreen, SensorsScreen, InsightsScreen, ProfileScreen } = window;
-  // Start on home (today) screen
-  const [view, setView] = React.useState('today');
-  const tabbed = ['today', 'sensors', 'insights', 'profile'].includes(view);
+  const { IOSDevice, AppShell, InsightScreen, SensorsScreen, SessionsScreen,
+          LiveSessionScreen, ExercisesScreen, HistoryScreen, SensorDetailSheet } = window;
+
+  const [view, setView]                   = React.useState('insight');
+  const [activeSession, setActiveSession] = React.useState(null);
+  const [sensorDetail, setSensorDetail]   = React.useState(null);
+
+  const handleStartSession = (session) => { setActiveSession(session); setView('live'); };
+  const handleEndSession   = ()         => { setActiveSession(null);   setView('history'); };
+
+  const sensorOverlay = sensorDetail
+    ? <SensorDetailSheet sensor={sensorDetail} onClose={() => setSensorDetail(null)} />
+    : null;
+
+  if (view === 'live') {
+    return (
+      <IOSDevice dark>
+        <LiveSessionScreen session={activeSession} onEnd={handleEndSession} tweaks={tweaks} />
+      </IOSDevice>
+    );
+  }
 
   let screen;
-  if (view === 'today') screen = <TodayScreen onStart={() => setView('live')} />;
-  else if (view === 'sensors') screen = <SensorsScreen />;
-  else if (view === 'insights') screen = <InsightsScreen />;
-  else if (view === 'profile') screen = <ProfileScreen />;
+  if      (view === 'insight')   screen = <InsightScreen tweaks={tweaks} />;
+  else if (view === 'sensors')   screen = <SensorsScreen onSensorDetail={setSensorDetail} />;
+  else if (view === 'sessions')  screen = <SessionsScreen onStart={handleStartSession} />;
+  else if (view === 'exercises') screen = <ExercisesScreen />;
+  else if (view === 'history')   screen = <HistoryScreen />;
 
   return (
     <IOSDevice dark>
-      {view === 'live'
-        ? <LiveSessionScreen onEnd={() => setView('summary')} />
-        : view === 'summary'
-          ? <SummaryScreen onDone={() => setView('today')} />
-          : <AppShell tab={view} setTab={setView}>{screen}</AppShell>}
+      <AppShell tab={view} setTab={setView} overlay={sensorOverlay}>{screen}</AppShell>
     </IOSDevice>
   );
 }
 
 function fit() {
   const stage = document.getElementById('stage');
-  const padV = 80;  /* room for the iPhone drop shadow top/bottom */
-  const padH = 40;  /* room for the side shadow glow */
+  const padV = 80;
+  const padH = 40;
   const s = Math.min(1, (window.innerHeight - padV) / 874, (window.innerWidth - padH) / 402);
   stage.style.transform = `scale(${s})`;
 }
