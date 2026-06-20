@@ -425,7 +425,7 @@
       line-height: 1.62;
       color: var(--neutral-400);
       max-width: 480px;
-      margin-bottom: 36px;
+      margin: 0 auto 36px;
     }
     .hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; justify-content: center; }
     .hero__stats {
@@ -1524,17 +1524,15 @@
         <div class="why__grid">
 
           <div class="why-card" data-reveal data-delay="1">
-            <div class="why-card__num">01</div>
             <div class="why-card__icon" aria-hidden="true">
               <!-- Waveform / realtime icon -->
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
             <h3 class="why-card__h3">Realtime Informed Feedback</h3>
-            <p class="why-card__body">Know exactly which muscles are firing, how hard, and whether your form is degrading, all while you move. Actus delivers per-muscle feedback on activation and fatigue in under 20 ms, so every rep is informed, not assumed.</p>
+            <p class="why-card__body">Know exactly which muscles are activating, how hard, and whether your form is degrading, all while you move. Actus delivers per-muscle feedback on activation and fatigue in under 20 ms, so every rep is informed, not assumed.</p>
           </div>
 
           <div class="why-card" data-reveal data-delay="2">
-            <div class="why-card__num">02</div>
             <div class="why-card__icon" aria-hidden="true">
               <!-- Shield / recovery icon -->
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1544,7 +1542,6 @@
           </div>
 
           <div class="why-card" data-reveal data-delay="3">
-            <div class="why-card__num">03</div>
             <div class="why-card__icon" aria-hidden="true">
               <!-- Target / optimize icon -->
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
@@ -1580,7 +1577,7 @@
               Hardware
             </div>
             <h3 class="product-panel__title">Actus Sensor</h3>
-            <p class="product-panel__body">A clinical-grade EMG and 6-axis IMU sensor you place on any muscle. Up to 6 sensors per session, streaming raw signal to your phone at 1,000 times per second.</p>
+            <p class="product-panel__body">A precision EMG and 6-axis IMU sensor you place on any muscle. Up to 8 sensors per session, streaming raw signal to your phone at 1,000 times per second.</p>
 
             <!-- Three.js OBJ viewer -->
             <div class="sensor-viewer" id="sensor-viewer" aria-label="3D sensor model, drag to rotate">
@@ -1601,9 +1598,9 @@
               <span class="spec-pill"><strong>1kHz</strong> EMG</span>
               <span class="spec-pill"><strong>6-axis</strong> IMU</span>
               <span class="spec-pill"><strong>&lt;20ms</strong> latency</span>
-              <span class="spec-pill">up to <strong>4</strong> sessions</span>
-              <span class="spec-pill"><strong>IP54</strong> rated</span>
-              <span class="spec-pill">Up to <strong>6</strong> sensors</span>
+              <span class="spec-pill">up to <strong>4</strong> sessions per charge</span>
+              <span class="spec-pill"><strong>IP54</strong> splash &amp; dust resistant</span>
+              <span class="spec-pill">Up to <strong>8</strong> sensors</span>
             </div>
 
             <!-- HUB sub-section -->
@@ -1635,7 +1632,7 @@
               Software
             </div>
             <h3 class="product-panel__title">Actus App</h3>
-            <p class="product-panel__body">Free for iOS and Android. The app receives raw signal from your sensors and translates it in real time, showing a live muscle map, catching fatigue before it hurts, and building your recovery score.</p>
+            <p class="product-panel__body">Available for iOS and Android. The app receives raw signal from your sensors and translates it in real time, showing a live muscle map, catching fatigue before it hurts, and building your recovery score.</p>
 
             <!-- Live app preview - interactive sketch from Actus Design System -->
             <div class="app-screens-wrap">
@@ -1847,9 +1844,6 @@
       <div class="mission__radial" aria-hidden="true"></div>
       <div class="mission__inner" data-reveal>
         <img src="assets/logo-mark-pulse.svg" alt="Actus" class="mission__logo">
-        <p class="mission__quote">
-          "To take the guesswork out of training,<br>one muscle fiber at a time."
-        </p>
         <div class="mission__taglines">
           <div class="mission__tag"><strong>Informed by your body, powered by AI.</strong></div>
           <div class="mission__tag">Take control of your fitness journey.</div>
@@ -1870,7 +1864,7 @@
             Seed Stage
           </div>
           <h2 class="invest__h2">Back the future of<br><span>human performance.</span></h2>
-          <p class="invest__body">We're building the technology that will change how athletes, patients, and coaches understand the human body. Actus is raising its seed round to bring clinical-grade muscle intelligence from the lab to everyday training and rehabilitation.</p>
+          <p class="invest__body">We're building the technology that will change how athletes and coaches understand the human body. Actus is raising its seed round to bring real-time muscle intelligence from the lab to everyday training.</p>
           <div class="invest__actions">
             <a href="mailto:hello@actus.bio?subject=Investment%20Inquiry" class="btn btn--primary">
               Investor Inquiries
@@ -1889,7 +1883,7 @@
               </div>
               <div>
                 <div class="invest__point-h3">Massive untapped market</div>
-                <div class="invest__point-body">Millions of athletes, physiotherapists, and sports scientists lack access to real-time, objective muscle data. Actus makes it wearable, affordable, and actionable.</div>
+                <div class="invest__point-body">Millions of athletes, coaches, and fitness enthusiasts lack access to real-time, objective muscle data. Actus makes it wearable, affordable, and actionable.</div>
               </div>
             </div>
 
@@ -1899,7 +1893,7 @@
               </div>
               <div>
                 <div class="invest__point-h3">Deep technical moat</div>
-                <div class="invest__point-body">Clinical-grade EMG hardware, sub-20ms wireless streaming, multi-sensor body coverage, and an AI engine trained on real muscle physiology, built from the ground up.</div>
+                <div class="invest__point-body">Precision EMG hardware, sub-20ms wireless streaming, multi-sensor body coverage, and an AI engine trained on real muscle physiology, built from the ground up.</div>
               </div>
             </div>
 
@@ -1908,8 +1902,8 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
               <div>
-                <div class="invest__point-h3">Dual market: training &amp; rehab</div>
-                <div class="invest__point-body">Two high-value verticals: performance athletes optimizing training, and rehabilitation patients requiring objective recovery measurement. One platform serves both.</div>
+                <div class="invest__point-h3">Clear path to scale</div>
+                <div class="invest__point-body">From serious athletes to everyday gym-goers, the market for objective, personalized training data is large and underserved. Actus is positioned to own it.</div>
               </div>
             </div>
 
@@ -2039,11 +2033,6 @@
           </ul>
         </div>
         <div>
-          <div class="footer__col-head">Legal</div>
-          <ul class="footer__links">
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">Terms</a></li>
-          </ul>
         </div>
       </div>
     </div>
