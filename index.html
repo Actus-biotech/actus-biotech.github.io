@@ -2609,7 +2609,41 @@
       window.actusHoldAt(Math.round(ys[hit]), FEATURE_HOLD_MS, dir);
       holdLastY = window.scrollY;
     }
-    window.addEventListener('scroll', () => { holdOnFeatures(); update(); }, { passive: true });
+    // Touch: one swipe moves at most one stop. A flick's coasting (after the
+    // finger lifts) is stopped at the next feature in its way — so arriving
+    // from "Let it sense!" lands on the first feature, and a new swipe is
+    // needed to go on to the next. Dragging with the finger down is never
+    // stopped (that would feel like a lock); the settle-on-release below
+    // handles that. The first / last feature's far side is open, so a swipe
+    // from the last feature still leaves the section.
+    let swipeMin = -Infinity, swipeMax = Infinity, swipeDown = false;
+    window.addEventListener('touchstart', () => {
+      swipeDown = true;
+      if (!section) return;
+      const y0 = window.scrollY, ys = cards.map((c, i) => stopAt(i)), tol = 4;
+      const below = ys.filter(v => v > y0 + tol), above = ys.filter(v => v < y0 - tol);
+      swipeMax = below.length ? below[0] : Infinity;
+      swipeMin = above.length ? above[above.length - 1] : -Infinity;
+    }, { passive: true });
+    window.addEventListener('touchend', () => { swipeDown = false; }, { passive: true });
+    function stopCoasting(){
+      if (!byTouch || swipeDown || !section) return;
+      // a link jump (logo, nav) or a dot's glide isn't a flick: let it through
+      if (performance.now() - (window.actusJumpAt || 0) < 250 || (window.actusGliding && window.actusGliding())) {
+        swipeMin = -Infinity; swipeMax = Infinity;
+        return;
+      }
+      const y = window.scrollY;
+      const to = y > swipeMax + 1 ? swipeMax : y < swipeMin - 1 ? swipeMin : null;
+      if (to === null) return;
+      // a flick's momentum can't be cancelled directly: briefly switching
+      // page scrolling off stops it dead, then it's back on at the feature
+      const root = document.documentElement;
+      root.style.overflow = 'hidden';
+      if (window.actusHoldAt) window.actusHoldAt(Math.round(to), 0, 0); else window.scrollTo(0, Math.round(to));
+      requestAnimationFrame(() => requestAnimationFrame(() => { root.style.overflow = ''; }));
+    }
+    window.addEventListener('scroll', () => { stopCoasting(); holdOnFeatures(); update(); }, { passive: true });
     window.addEventListener('resize', update);
 
     // No resting between two features — but scrolling itself is never
