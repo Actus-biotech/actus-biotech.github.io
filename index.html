@@ -3461,10 +3461,14 @@
     // settles, which would otherwise read as "changed your mind".
     let lastInputAt = 0;
     let touchY = null;
+    // Last input was a finger: no snapping at all (see settle) — on touch
+    // the page only ever moves as far as you move it
+    let byTouch = false;
     window.addEventListener('wheel', (e) => {
+      byTouch = false;
       if (e.deltaY) { lastDir = e.deltaY > 0 ? 1 : -1; lastInputAt = performance.now(); }
     }, { passive: true });
-    window.addEventListener('touchstart', (e) => { touching = true; touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchstart', (e) => { byTouch = true; touching = true; touchY = e.touches[0].clientY; }, { passive: true });
     window.addEventListener('touchmove', (e) => {
       const y = e.touches[0].clientY;
       if (touchY !== null && Math.abs(y - touchY) > 2) { lastDir = y < touchY ? 1 : -1; lastInputAt = performance.now(); }
@@ -3474,7 +3478,9 @@
 
     // The black-screen intro: no resting half-way between the black
     // screen and the white hero — glide on to whichever you were heading
-    // toward. Only while the intro is on (not under reduced motion).
+    // toward. Only while the intro is on (not under reduced motion), and
+    // not on touch: there the glide fought the finger and a flick's
+    // coasting, so the page felt stuck between the hero and "Wear it.".
     const introEl = document.documentElement.classList.contains('intro-on') && document.getElementById('intro');
     const introSpacer = introEl && introEl.querySelector('.intro-spacer');
     function introZone(){
@@ -3486,7 +3492,7 @@
     function settle(){
       // a timed glide is already taking the page somewhere on purpose
       // (the intro) — let it land
-      if (touching || panReduceMotion.matches || introGlide || navTo !== null || window.actusDragging) return;
+      if (byTouch || touching || panReduceMotion.matches || introGlide || navTo !== null || window.actusDragging) return;
       const iz = introZone();
       if (!INTRO_AUTO_GLIDE || !iz || iz.p <= EDGE || iz.p >= 1 - EDGE) return; // not mid-intro
       const target = Math.round(iz.toScroll(lastDir > 0 ? 1 : 0)); // 1 = white hero, 0 = black screen
