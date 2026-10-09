@@ -743,28 +743,36 @@
   @media (max-width:900px){
     .story-reel-interlude{ width:calc(100vw - 170px); font-size:clamp(28px, 8vw, 44px); }
   }
-  /* The focused tab's line: big, centred over the tab, with its lower
-     part tucked behind the tab's top edge (z-index:-1 = under the reel's
-     tabs, which sit in the track's own stacking context). updateReel sets
-     --reel-tab-top (the tab's top edge, from the top of the screen). */
+  /* The focused tab's line: big, left-aligned, in the space to the left of
+     the tab — from the page's left margin to just short of the tab —
+     vertically centred on it, wrapping to a few lines. updateReel sets
+     --reel-desc-left (the page margin), --reel-desc-w (from there to the
+     tab, minus a gap), --reel-tab-top and --reel-tab-cy (the tab's top
+     edge and centre), all from the screen's top-left. */
   .story-reel-copy{
-    position:absolute; inset:0; z-index:-1;
+    position:absolute; inset:0; z-index:2;
     pointer-events:none; color:var(--ink);
   }
   .story-reel-desc{
-    position:absolute; left:50%; top:var(--reel-tab-top, 30%);
-    /* up by its own height, then back down 0.38em: that much
-       of the last line goes under the tab */
-    translate:-50% calc(-100% + 0.38em);
-    /* one line on wider screens, sized to stay clear of "Let it sense!"
-       waiting at the left */
-    margin:0; white-space:nowrap; text-align:center;
-    font-size:clamp(34px, 3.3vw, 60px); font-weight:800;
-    letter-spacing:-0.03em; line-height:1;
+    position:absolute;
+    left:var(--reel-desc-left, 40px);
+    top:var(--reel-tab-cy, 50%); translate:0 -50%;
+    /* narrow: three short lines (--reel-desc-fit = a third of the line's
+       one-line width, set by updateReel for each line) */
+    width:min(var(--reel-desc-w, 420px), var(--reel-desc-fit, 6.6em));
+    margin:0; text-align:left; text-wrap:balance; /* even lines, no word left alone */
+    font-size:clamp(42px, 4.1vw, 76px); font-weight:800;
+    letter-spacing:-0.035em; line-height:0.98;
     opacity:0;
   }
+  /* phones: no room beside the tab — just above it, left-aligned */
   @media (max-width:900px){
-    .story-reel-desc{ width:calc(100vw - 40px); white-space:normal; text-wrap:balance; font-size:clamp(30px, 9vw, 40px); }
+    .story-reel-desc{
+      left:20px; top:var(--reel-tab-top, 30%);
+      translate:0 calc(-100% - 18px);
+      width:min(calc(100vw - 40px), var(--reel-desc-fit, 7em));
+      font-size:clamp(32px, 9.5vw, 42px);
+    }
   }
   /* Gallery controls, bottom centre (between the focused tab's copy
      blocks). Shown once "Let it sense!" has landed (.is-browsable on the
@@ -875,55 +883,82 @@
   }
   .story-step{ height:100vh; scroll-snap-align: start; }
 
-  /* SCIENCE — EMG and IMU, simply: the hero's grey rounded frame again
-     (same --frame-* inset, radius and colour), holding two tall cards side
-     by side, one per sensor. Each card: a label, a live-looking signal
-     trace (drawn by the science script, scrolling sideways on a loop),
-     then one line of headline and one of explanation. */
+  /* SCIENCE — Apple-style "closer look": a compact grey rounded frame
+     (the hero's frame colour and radius), no wider than --science-max and
+     only as tall as its content. Left: a column of pill options (EMG, IMU),
+     the picked one dark. Right: the picked one's explanation — its live
+     signal trace (drawn by the science script, scrolling on a loop), a
+     headline and a line of text — crossfading on a switch. The big title
+     sits at the frame's bottom-left, starting out past its left edge
+     (--science-hang) with the rest of it over the frame. */
   .science{
+    --science-max:1080px;
+    /* how far the title hangs out past the frame's left edge: up to the
+       page margin (level with the logo), none when there's no room */
+    --science-hang:clamp(0px, calc((100vw - var(--science-max)) / 2 - 70px), 180px);
+    padding:clamp(60px, 10vh, 120px) calc(var(--frame-gap) + 0px);
+  }
+  .science-frame{
     position:relative;
-    min-height:100vh; min-height:100dvh;
-    /* the frame's top edge sits this far below the section's top (clear
-       of the logo / nav), and the title straddles it */
-    --science-edge:120px;
-    display:flex; flex-direction:column; gap:clamp(24px, 4vh, 44px);
-    padding:
-      calc(var(--frame-gap) + var(--science-edge))
-      calc(var(--frame-gap) + var(--frame-pad-x))
-      calc(var(--frame-gap) + 40px);
-  }
-  .science::before{
-    content:''; position:absolute; inset:var(--frame-gap);
-    top:calc(var(--frame-gap) + var(--science-edge));
+    max-width:var(--science-max); margin:0 auto;
+    display:grid; grid-template-columns:minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-areas:"options panel" "title panel";
+    grid-template-rows:auto 1fr;
+    column-gap:clamp(24px, 3vw, 48px);
+    padding:clamp(28px, 3.4vw, 52px);
+    min-height:clamp(440px, 58vh, 560px);
     border-radius:var(--frame-radius); background:var(--frame-bg);
-    z-index:0; pointer-events:none;
   }
-  .science > *{ position:relative; z-index:1; }
-  /* centred, on the frame's top edge: upper half outside the frame, lower
-     half inside (pulled up by half its own height; the cards follow at
-     the usual gap below what's left of it) */
-  .science-head{ text-align:center; transform:translateY(-50%); margin-bottom:calc(-0.5 * clamp(32px, 3.6vw, 56px)); }
+  .science-options{ grid-area:options; display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+  .science-option{
+    display:inline-flex; align-items:center; gap:14px;
+    padding:10px 22px 10px 10px; border:0; border-radius:999px;
+    background:var(--bg); color:var(--ink);
+    font-family:var(--sans); text-align:left; cursor:pointer;
+    box-shadow:0 1px 2px rgba(0,0,0,0.04);
+    transition:background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  }
+  .science-option:hover{ transform:scale(1.02); }
+  .science-option:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  /* round "+" icon; on the picked option it turns into a "−" */
+  .science-option-icon{
+    position:relative; flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+    background:var(--ink); transition:background-color 0.3s ease;
+  }
+  .science-option-icon::before, .science-option-icon::after{
+    content:''; position:absolute; left:50%; top:50%; width:13px; height:2px; margin:-1px 0 0 -6.5px;
+    border-radius:1px; background:var(--bg); transition:transform 0.3s ease, background-color 0.3s ease;
+  }
+  .science-option-icon::after{ transform:rotate(90deg); }
+  .science-option-text{ display:flex; flex-direction:column; line-height:1.15; }
+  .science-option-text b{ font-size:19px; font-weight:700; letter-spacing:-0.01em; }
+  .science-option-text span{ font-size:13px; color:var(--gray); transition:color 0.3s ease; }
+  .science-option.is-active{ background:var(--ink); color:var(--bg); cursor:default; transform:none; }
+  .science-option.is-active .science-option-text span{ color:rgba(255,255,255,0.6); }
+  .science-option.is-active .science-option-icon{ background:var(--bg); }
+  .science-option.is-active .science-option-icon::before{ background:var(--ink); }
+  .science-option.is-active .science-option-icon::after{ transform:rotate(0deg); background:var(--ink); }
   .science-title{
-    font-size:clamp(32px, 3.6vw, 56px); font-weight:800; line-height:1.02;
-    letter-spacing:-0.03em; color:var(--ink);
+    grid-area:title; align-self:end;
+    margin-left:calc(-1 * var(--science-hang) - clamp(28px, 3.4vw, 52px));
+    position:relative; z-index:1;
+    font-size:clamp(40px, 4.6vw, 72px); font-weight:800; line-height:0.98;
+    letter-spacing:-0.035em; color:var(--ink);
   }
-  .science-label{
-    font-size:13px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray);
-  }
-  /* fill the rest of the frame (the cards stretch to its bottom) */
-  .science-cards{ flex:1 1 auto; display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px, 2vw, 28px); }
-  .science-card{
-    display:flex; flex-direction:column;
-    min-height:420px;
-    padding:clamp(22px, 2.4vw, 36px);
+  /* the explanation: one panel per option, stacked in one spot */
+  .science-panels{ grid-area:panel; display:grid; }
+  .science-panel{
+    grid-area:1 / 1; display:flex; flex-direction:column; justify-content:center;
+    padding:clamp(22px, 2.6vw, 38px);
     background:var(--bg); border-radius:calc(var(--frame-radius) - 8px);
+    animation:science-in 0.45s ease both;
   }
-  .science-label{ display:flex; justify-content:space-between; }
-  .science-label b{ font-weight:600; color:var(--ink); }
-  /* the trace: fills the space between label and text, faded out at
-     both ends so it reads as a window onto a running signal */
+  .science-panel[hidden]{ display:none; }
+  @keyframes science-in{ from{ opacity:0; translate:0 10px; } to{ opacity:1; translate:0 0; } }
+  /* the trace, faded out at both ends so it reads as a window onto a
+     running signal */
   .science-viz{
-    flex:1 1 auto; min-height:120px; margin:20px 0;
+    height:clamp(130px, 20vh, 190px); margin:0 0 clamp(18px, 2.4vh, 28px);
     -webkit-mask-image:linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
     mask-image:linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
   }
@@ -936,19 +971,29 @@
      period loops seamlessly */
   .science-trace{ animation:science-scroll var(--science-speed, 7s) linear infinite; }
   @keyframes science-scroll{ to{ transform:translateX(-400px); } }
-  .science-card h3{
-    font-size:clamp(24px, 2.2vw, 34px); font-weight:800; line-height:1.08;
+  .science-panel h3{
+    font-size:clamp(24px, 2.2vw, 32px); font-weight:800; line-height:1.08;
     letter-spacing:-0.02em; color:var(--ink);
   }
-  .science-card p{ margin-top:10px; max-width:420px; font-size:clamp(15px, 1.1vw, 17px); line-height:1.45; color:#6B6B6B;
-    min-height:calc(3em * 1.45); /* room for three lines, so both cards' headlines line up */ }
-  @media (prefers-reduced-motion: reduce){ .science-trace{ animation:none; } }
+  .science-panel p{ margin-top:10px; max-width:440px; font-size:clamp(15px, 1.1vw, 17px); line-height:1.45; color:#6B6B6B; }
+  @media (prefers-reduced-motion: reduce){ .science-trace, .science-panel{ animation:none; } }
+  /* phones / narrow: one column — title on top, options in a row, then
+     the explanation */
   @media (max-width:860px){
-    .science{ --science-edge:140px; padding:calc(var(--frame-gap) + var(--science-edge)) calc(var(--frame-gap) + 20px) calc(var(--frame-gap) + 24px); }
-    .science-cards{ grid-template-columns:1fr; }
-    .science-card{ height:auto; min-height:0; }
-    .science-card p{ min-height:0; }
-    .science-viz{ flex:none; height:120px; }
+    .science{ padding:56px 16px; }
+    .science-frame{
+      grid-template-columns:minmax(0, 1fr);
+      grid-template-areas:"title" "options" "panel";
+      grid-template-rows:auto;
+      row-gap:20px; min-height:0; padding:24px 18px 18px;
+    }
+    .science-title{ margin-left:0; align-self:start; font-size:clamp(34px, 10vw, 44px); }
+    .science-options{ flex-direction:row; flex-wrap:wrap; gap:10px; }
+    .science-option{ padding:8px 16px 8px 8px; gap:10px; }
+    .science-option-icon{ width:28px; height:28px; }
+    .science-option-text b{ font-size:16px; }
+    .science-option-text span{ font-size:11px; }
+    .science-viz{ height:110px; margin-bottom:16px; }
   }
 
   .panel{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 40px; text-align:center; scroll-snap-align: start; }
@@ -1348,25 +1393,35 @@
   <div class="story-gallery-steps" id="storyGallerySteps" aria-hidden="true"></div>
 </section>
 
-<!-- The science, simply: EMG and IMU, one card each (traces drawn by the
-     science script) -->
+<!-- The science, Apple-style: EMG / IMU options on the left, the picked
+     one's explanation (with its live trace) on the right; the title at
+     the frame's bottom-left, hanging out past its left edge. Traces drawn
+     by the science script; switching by the science-tabs script. -->
 <section class="science" id="science">
-  <div class="science-head">
-    <h2 class="science-title">The science behind ACTUS</h2>
-  </div>
-  <div class="science-cards">
-    <article class="science-card">
-      <span class="science-label"><b>EMG</b><span>Electromyography</span></span>
-      <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="emg" style="--science-speed:6s"></g></svg></div>
-      <h3>Muscles speak in electricity.</h3>
-      <p>Every contraction starts with a tiny electrical signal. Sensors on your skin read it: which muscle fires, and how hard.</p>
-    </article>
-    <article class="science-card">
-      <span class="science-label"><b>IMU</b><span>Inertial measurement</span></span>
-      <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="imu" style="--science-speed:9s"></g></svg></div>
-      <h3>Motion, in every direction.</h3>
-      <p>An accelerometer and a gyroscope track every tilt, turn and change of speed, so Actus knows how you move.</p>
-    </article>
+  <div class="science-frame">
+    <div class="science-options" role="tablist" aria-label="The science behind ACTUS">
+      <button class="science-option is-active" type="button" role="tab" id="scienceTabEmg" aria-controls="sciencePanelEmg" aria-selected="true">
+        <span class="science-option-icon" aria-hidden="true"></span>
+        <span class="science-option-text"><b>EMG</b><span>Electromyography</span></span>
+      </button>
+      <button class="science-option" type="button" role="tab" id="scienceTabImu" aria-controls="sciencePanelImu" aria-selected="false" tabindex="-1">
+        <span class="science-option-icon" aria-hidden="true"></span>
+        <span class="science-option-text"><b>IMU</b><span>Inertial measurement</span></span>
+      </button>
+    </div>
+    <div class="science-panels">
+      <article class="science-panel is-active" role="tabpanel" id="sciencePanelEmg" aria-labelledby="scienceTabEmg">
+        <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="emg" style="--science-speed:6s"></g></svg></div>
+        <h3>Muscles speak in electricity.</h3>
+        <p>Every contraction starts with a tiny electrical signal. Sensors on your skin read it: which muscle fires, and how hard.</p>
+      </article>
+      <article class="science-panel" role="tabpanel" id="sciencePanelImu" aria-labelledby="scienceTabImu" hidden>
+        <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="imu" style="--science-speed:9s"></g></svg></div>
+        <h3>Motion, in every direction.</h3>
+        <p>An accelerometer and a gyroscope track every tilt, turn and change of speed, so Actus knows how you move.</p>
+      </article>
+    </div>
+    <h2 class="science-title">The science<br>behind ACTUS</h2>
   </div>
 </section>
 
@@ -2985,23 +3040,20 @@
   /* Focus reel, opened from the first "Let it sense!" view with the
      next button (or sideways input, see "Browsing the reel" below):
      1) In (m 0→1): the arm photo slides the rest of the way out to the
-        left; "Let it sense!" shrinks over to the left edge but stays; the
+        left; "Let it sense!" slides out past the left edge, fading; the
         first tab grows into the middle of the screen, the next one peeking
-        in small from the right edge. Its copy fades in along the bottom:
-        a big line bottom-left, a feature note with its icon bottom-right.
+        in small from the right edge. Its line fades in to the left of it
+        (phones: above it).
      2) Tabs (f 0→n-1): the focused tab slides out past the left edge
-        while the next grows in from the right to take its place. "Let it
-        sense!" leaves to the left along with the first tab.
+        while the next grows in from the right to take its place.
      Every in-between position is a straight blend with no snapping. */
   const REEL_IN = 1;
   const REEL_BIG_H = 0.56;       // focused tab height, fraction of the screen height
-  const REEL_DROP = 0.055;       // …and how far below the screen's centre it sits (fraction of the height), leaving room above for its line
+  const REEL_DROP = 0;           // …and how far below the screen's centre it sits (fraction of the height)
   const REEL_PEEK_SCALE = 0.62;  // the next tab, waiting at the right edge, vs the focused one
   const REEL_PEEK_SHOW = 0.45;   // how much of the waiting tab shows
-  const REEL_NARROW_TOP = 260;    // phones: space kept above the focused tab (for "Let it sense!" and the tab's line)…
+  const REEL_NARROW_TOP = 260;    // phones: space kept above the focused tab (for the tab's line)…
   const REEL_NARROW_BOTTOM = 150; // …and below it (for the gallery controls); the tab is centred in between
-  const REEL_TEXT_SCALE = 0.55;  // "Let it sense!" while it waits at the left
-  const REEL_TEXT_SCALE_NARROW = 0.8; // …on phones (smaller type to begin with — keep it readable)
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const mix = (a, b, t) => a + (b - a) * t;
   // page-scroll position where every "Let it sense!" piece has landed
@@ -3095,7 +3147,7 @@
   const reelCopy = document.getElementById('storyReelCopy');
   const reelDesc = reelCopy && reelCopy.querySelector('.story-reel-desc');
   const ripTextCol = ripLayer && ripLayer.querySelector('.story-text-col');
-  let reelOn = false, reelCopyIdx = -1;
+  let reelOn = false, reelCopyIdx = -1, reelDescFitKey = '';
   let titleW = 0, titleWKey = ''; // the title's own (unscaled) text width, and what it was measured for
   function updateGallery(rect, coreLen){
     const g = window.actusGallery;
@@ -3121,7 +3173,7 @@
         ripLayer.classList.remove('is-reel');
         g.relayout();
       }
-      if (ripTextCol) { ripTextCol.style.translate = ''; ripTextCol.style.scale = ''; }
+      if (ripTextCol) { ripTextCol.style.translate = ''; ripTextCol.style.opacity = ''; }
       if (reelCopy) reelDesc.style.opacity = '0';
       if (reelInterlude) reelInterlude.style.opacity = '0';
       return;
@@ -3211,25 +3263,19 @@
       }
     }
 
-    // "Let it sense!": over to the left edge (smaller) on the way in, then
-    // out past the left edge with the first tab
+    // "Let it sense!": slides out past the left edge, fading, as the first
+    // tab grows in — gone by the time it's in focus
     if (ripTextCol) {
       const col = ripTextCol, content = col.parentElement;
-      const left = col.offsetLeft + content.offsetLeft, top = col.offsetTop + content.offsetTop;
-      // phones / tablets: up top, just under the logo tile
-      const logo = document.querySelector('.site-logo');
-      const underLogo = logo ? logo.getBoundingClientRect().bottom - box.top + 16 : 92;
-      const restX = 32 - left, restY = narrow ? underLogo - top : 0;
-      const out = clamp01(f); // straight with scroll, like the tabs
-      const textScale = narrow ? REEL_TEXT_SCALE_NARROW : REEL_TEXT_SCALE;
-      const goneX = -left - col.offsetWidth * textScale - 60;
-      col.style.translate = `${mix(0, restX, m) + mix(0, goneX - restX, out)}px ${mix(0, restY, m)}px`;
-      col.style.scale = String(mix(1, textScale, m));
+      const left = col.offsetLeft + content.offsetLeft;
+      const goneX = -left - col.offsetWidth - 60;
+      col.style.translate = `${mix(0, goneX, m)}px 0`;
+      col.style.opacity = String(1 - m);
     }
 
-    // the focused tab's line: stays up while the tab starts moving and only
+    // the focused tab's line: moves sideways with its tab (below), and only
     // fades out close to the border with the next one (off = 0.5, half-way,
-    // where the text swaps), then rises back in just past it (see REEL_COPY_FADE)
+    // where the text swaps), then back in just past it (see REEL_COPY_FADE)
     const focusSeq = Math.round(f);
     const focusIdx = items[focusSeq] && items[focusSeq].tab; // undefined while a title is up — no copy then
     if (reelCopy) {
@@ -3238,12 +3284,55 @@
         const d = g.tabs[focusIdx].dataset;
         reelDesc.textContent = d.desc || '';
       }
-      // sits on the focused tab's top edge (where it lands, not where it is mid-way)
+      // placed against the focused tab (where it lands, not where it is mid-way):
+      // in the space to its left, or (phones) above its top edge
+      const tabLeft = box.width / 2 - w * big / 2;
       reelCopy.style.setProperty('--reel-tab-top', `${cy - bigH / 2 - box.top}px`);
+      reelCopy.style.setProperty('--reel-tab-cy', `${cy - box.top}px`);
+      // from the page's left margin (level with the logo) to the tab, minus a gap
+      const logo = document.querySelector('.site-logo');
+      const margin = logo ? Math.max(24, logo.getBoundingClientRect().left - box.left) : 40;
+      const room = narrow ? box.width - 40 : Math.max(180, tabLeft - 48 - margin);
+      reelCopy.style.setProperty('--reel-desc-left', `${margin}px`);
+      reelCopy.style.setProperty('--reel-desc-w', `${room}px`);
+      // three lines: the narrowest width that fits the line in three —
+      // from a third of its one-line width, widened step by step until it
+      // does. If that's wider than the room there is, the type shrinks to
+      // fit instead (line breaks scale with it, so it stays three lines).
+      // Re-measured only when the line or the screen width changes.
+      const fitKey = reelDesc.textContent + '|' + box.width;
+      if (reelDescFitKey !== fitKey) {
+        reelDescFitKey = fitKey;
+        reelDesc.style.fontSize = '';
+        const cs = getComputedStyle(reelDesc);
+        const fontPx = parseFloat(cs.fontSize), lineH = parseFloat(cs.lineHeight) || fontPx;
+        reelDesc.style.width = 'max-content';
+        const oneLine = reelDesc.offsetWidth;
+        let fit = oneLine / 3;
+        for (let k = 0; k < 40 && fit < oneLine; k++) {
+          reelDesc.style.width = `${fit}px`;
+          if (reelDesc.offsetHeight <= lineH * 3.5) break;
+          fit *= 1.04;
+        }
+        reelDesc.style.width = '';
+        if (fit > room) {
+          reelDesc.style.fontSize = `${fontPx * room / fit}px`;
+          fit = room;
+        }
+        reelCopy.style.setProperty('--reel-desc-fit', `${Math.ceil(fit)}px`);
+      }
       const off = focusIdx === undefined ? 1 : Math.abs(f - focusSeq); // a title: no copy
       const settled = 1 - clamp01((off - (0.5 - REEL_COPY_FADE)) / REEL_COPY_FADE);
       reelDesc.style.opacity = String(m * m * settled);
-      reelDesc.style.transform = `translateY(${(1 - settled) * 24}px)`;
+      // moves sideways with its tab: shifted by however far the tab's centre
+      // is from the focused spot (the outgoing one slides off left with its
+      // tab, the incoming one comes in from the right with its own)
+      const cxAt = d => {
+        const dc = Math.min(2, Math.max(-1, d));
+        const i = Math.min(keys.length - 2, Math.floor(dc + 1));
+        return mix(keys[i].cx, keys[i + 1].cx, dc - keys[i].d);
+      };
+      reelDesc.style.transform = `translateX(${cxAt(focusSeq - f) - cxAt(0)}px)`;
     }
   }
   updateRip();
@@ -3688,6 +3777,34 @@
           addPath(g, ys, cls);
         });
       }
+    });
+  })();
+
+  /* Science options: picking EMG / IMU (click, or the arrow keys while one
+     has focus) shows its explanation on the right. */
+  (function(){
+    const tabs = Array.from(document.querySelectorAll('.science-option'));
+    if (!tabs.length) return;
+    function pick(tab, focus){
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (panel) { panel.hidden = !on; panel.classList.toggle('is-active', on); }
+      });
+      if (focus) tab.focus();
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => pick(tab, false));
+      tab.addEventListener('keydown', (e) => {
+        const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (!step) return;
+        e.preventDefault();
+        e.stopPropagation(); // (not the gallery's arrow keys)
+        pick(tabs[(i + step + tabs.length) % tabs.length], true);
+      });
     });
   })();
 </script>
