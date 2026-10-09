@@ -2811,7 +2811,7 @@
         edge while the next grows in from the right to take its place.
         "Let it sense!" leaves to the left along with the first tab.
      Every in-between position is a straight blend, scrubbed by scroll
-     (and snapped to the nearest whole step, see settle() below). */
+     at a steady rate, with no snapping: stop anywhere and it stays put. */
   const REEL_IN = 1, REEL_HOLD = 0.5;
   const REEL_BIG_H = 0.6;        // focused tab height, fraction of the screen height
   const REEL_PEEK_SCALE = 0.62;  // the next tab, waiting at the right edge, vs the focused one
@@ -2842,8 +2842,6 @@
     return items.length ? items : [{ tab: 0 }];
   }
   function reelUnits(){ return REEL_IN + (reelItems().length - 1) + REEL_HOLD; }
-  // page-scroll position of reel unit u (0 = reel not started, REEL_IN = first tab in focus)
-  function reelScrollAt(r, u){ return r.start + u / reelUnits() * (r.end - r.start); }
   // one small line icon per feature (picked by a tab's data-icon)
   const REEL_ICONS = {
     emg: '<path d="M2 12h4l2-6 3 12 3-9 2 5 2-2h4"/>',
@@ -2867,10 +2865,10 @@
     if (!g) return;
     const r = galleryRange(rect.top + window.scrollY, coreLen);
     const u = clamp01((window.scrollY - r.start) / Math.max(1, r.end - r.start)) * reelUnits();
-    const m = easeInOut(clamp01(u / REEL_IN));
-    // one scroll unit per item, eased within each step
-    const fl = Math.min(reelItems().length - 1, Math.max(0, u - REEL_IN));
-    const f = Math.floor(fl) + easeInOut(fl - Math.floor(fl));
+    const m = clamp01(u / REEL_IN); // the way in: straight with scroll too
+    // one scroll unit per item, straight with scroll (no easing per step),
+    // so the tabs pan sideways continuously as you scroll
+    const f = Math.min(reelItems().length - 1, Math.max(0, u - REEL_IN));
     updateReel(g, m, f);
   }
   function updateReel(g, m, f){
@@ -2980,7 +2978,7 @@
       const logo = document.querySelector('.site-logo');
       const underLogo = logo ? logo.getBoundingClientRect().bottom - box.top + 16 : 92;
       const restX = 32 - left, restY = narrow ? underLogo - top : 0;
-      const out = easeInOut(clamp01(f));
+      const out = clamp01(f); // straight with scroll, like the tabs
       const textScale = narrow ? REEL_TEXT_SCALE_NARROW : REEL_TEXT_SCALE;
       const goneX = -left - col.offsetWidth * textScale - 60;
       col.style.translate = `${mix(0, restX, m) + mix(0, goneX - restX, out)}px ${mix(0, restY, m)}px`;
@@ -3059,14 +3057,8 @@
   // normal again straight away. Touch / keyboard / the scrollbar are
   // caught by the "settle" glide further down instead.
   const INTRO_GLIDE_MS = 1500;   // full black → white transition
-  // The same timed glide for the "Wear it." → "Let it sense!" switch: once
-  // "Wear it." is in place, a scroll down plays the whole switch (up plays
-  // it back) over STORY_GLIDE_MS, on the same motion curve.
-  const STORY_GLIDE_MS = 2600;
-  // …on an even ease-in-out (the intro's curve front-loads the motion,
-  // which made this switch feel rushed even when longer)
-  const STORY_GLIDE_CURVE = [0.45, 0, 0.35, 1];
-  const STORY_AUTO_GLIDE = true;
+  // (The "Wear it." → "Let it sense!" switch has no glide: it just follows
+  // the scroll, like the gallery after it.)
   // Pushing on hard while a glide runs: once you've scrolled this many px
   // further the same way, it hurries — finishes in GLIDE_HURRY_FACTOR of
   // its time from its current speed — and the extra scrolling carries on
@@ -3127,17 +3119,6 @@
     if (!introSpacerEl) return null;
     const top = introWrapEl.getBoundingClientRect().top + window.scrollY;
     return { top, end: top + introSpacerEl.offsetHeight };
-  }
-  // "Wear it." fully shown (top) … every "Let it sense!" piece landed (end)
-  function storyBounds(){
-    if (!ripLayer || !storyEl2) return null;
-    const top = storyEl2.getBoundingClientRect().top + window.scrollY;
-    const pinned = storyCoreLen(storyEl2.offsetHeight);
-    const lastPiece = ripPieces().length - 1;
-    return {
-      top: top + WEAR_OUT[0] * pinned,
-      end: top + (RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE) * pinned
-    };
   }
   // glide to `to`; `back` is the other end (a turn-around heads there);
   // fullMs = how long the whole stretch takes (a partial one, proportionally less)
@@ -3229,11 +3210,6 @@
       if (e.deltaY > 0 && y >= ib.top - 1 && y < ib.end - 1) { startIntroGlide(ib.end, ib.top, INTRO_GLIDE_MS); return; }
       if (e.deltaY < 0 && y > ib.top + 1 && y <= ib.end + 1) { startIntroGlide(ib.top, ib.end, INTRO_GLIDE_MS); return; }
     }
-    const sb = STORY_AUTO_GLIDE && e.deltaY ? storyBounds() : null;
-    if (sb) {
-      if (e.deltaY > 0 && y >= sb.top - 1 && y < sb.end - 1) { startIntroGlide(sb.end, sb.top, STORY_GLIDE_MS, false, STORY_GLIDE_CURVE); return; }
-      if (e.deltaY < 0 && y > sb.top + 1 && y <= sb.end + 1) { startIntroGlide(sb.top, sb.end, STORY_GLIDE_MS, false, STORY_GLIDE_CURVE); return; }
-    }
     // if something else moved the page (keyboard, drag), resync before applying delta
     if (Math.abs(window.scrollY - currentScroll) > 3) {
       currentScroll = window.scrollY;
@@ -3293,12 +3269,9 @@
     if (location.hash !== hash) history.pushState(null, '', hash);
   });
 
-  /* No resting halfway between "Wear it." and "Let it sense!": if scrolling
-     comes to a stop while both are partly on screen (anywhere between
-     "Wear it." starting to fade and the last "Let it sense!" piece landing),
-     glide on to whichever side you were heading toward — down finishes
-     "Let it sense!", up returns to "Wear it.". Only that in-between zone
-     snaps; everywhere else scrolling stays fully free. The glide reuses
+  /* Snapping when scrolling stops: only the black-screen intro snaps (see
+     introZone). The story — "Wear it." → "Let it sense!" and the gallery
+     after it — never does; it stays wherever you stop. The glide reuses
      the smooth-scroll easing above, so it feels like the rest of the page. */
   (function(){
     if (!ripLayer || !storyEl2) return;
@@ -3324,20 +3297,9 @@
     }, { passive: true });
     window.addEventListener('touchend', () => { touching = false; touchY = null; armSettle(); }, { passive: true });
 
-    function zone(){
-      const top = storyEl2.getBoundingClientRect().top + window.scrollY;
-      const pinnedLength = storyCoreLen(storyEl2.offsetHeight);
-      const lastPiece = ripPieces().length - 1;
-      return {
-        toScroll: p => top + p * pinnedLength,
-        p: (window.scrollY - top) / pinnedLength,
-        start: WEAR_OUT[0],                                   // "Wear it." fully shown, nothing of "Let it sense!" yet
-        end: RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE  // every "Let it sense!" piece landed
-      };
-    }
-    // Same for the black-screen intro: no resting half-way between the
-    // black screen and the white hero — glide on to whichever you were
-    // heading toward. Only while the intro is on (not under reduced motion).
+    // The black-screen intro: no resting half-way between the black
+    // screen and the white hero — glide on to whichever you were heading
+    // toward. Only while the intro is on (not under reduced motion).
     const introEl = document.documentElement.classList.contains('intro-on') && document.getElementById('intro');
     const introSpacer = introEl && introEl.querySelector('.intro-spacer');
     function introZone(){
@@ -3346,44 +3308,13 @@
       const pinnedLength = Math.max(1, introSpacer.offsetHeight);
       return { toScroll: p => top + p * pinnedLength, p: (window.scrollY - top) / pinnedLength };
     }
-    // Focus reel: no resting half-way between two tabs (or half-way in) —
-    // on to the next whole step in the direction you were heading
-    function reelSnap(){
-      const g = window.actusGallery;
-      if (!g) return null;
-      const rect = storyEl2.getBoundingClientRect();
-      const r = galleryRange(rect.top + window.scrollY, storyCoreLen(rect.height));
-      const y = window.scrollY, tol = 2;
-      const stops = [0];
-      for (let k = 0; k < reelItems().length; k++) stops.push(REEL_IN + k);
-      const ys = stops.map(u => reelScrollAt(r, u));
-      if (y <= ys[0] + tol || y >= ys[ys.length - 1] - tol) return null;
-      if (ys.some(s => Math.abs(y - s) <= tol)) return null; // resting on a step
-      const next = lastDir > 0 ? ys.find(s => s > y) : [...ys].reverse().find(s => s < y);
-      return next === undefined ? null : Math.round(next);
-    }
     function settle(){
       // a timed glide is already taking the page somewhere on purpose
-      // (the intro, the story switch) — let it land
+      // (the intro) — let it land
       if (touching || panReduceMotion.matches || introGlide || navTo !== null || window.actusDragging) return;
-      let target;
       const iz = introZone();
-      if (INTRO_AUTO_GLIDE && iz && iz.p > EDGE && iz.p < 1 - EDGE) {
-        target = Math.round(iz.toScroll(lastDir > 0 ? 1 : 0)); // 1 = white hero, 0 = black screen
-      } else {
-        const z = zone();
-        if (z.p > z.start + EDGE && z.p < z.end - EDGE) {
-          // let go mid-way through "Wear it." → "Let it sense!" (e.g. a
-          // finger): finish with the same slow timed glide a wheel plays
-          const to = Math.round(z.toScroll(lastDir > 0 ? z.end : z.start));
-          const back = Math.round(z.toScroll(lastDir > 0 ? z.start : z.end));
-          startIntroGlide(to, back, STORY_GLIDE_MS, false, STORY_GLIDE_CURVE);
-          return;
-        } else {
-          target = reelSnap();
-          if (target === null) return; // not in between
-        }
-      }
+      if (!INTRO_AUTO_GLIDE || !iz || iz.p <= EDGE || iz.p >= 1 - EDGE) return; // not mid-intro
+      const target = Math.round(iz.toScroll(lastDir > 0 ? 1 : 0)); // 1 = white hero, 0 = black screen
       currentScroll = window.scrollY;
       targetScroll = target;
       if (!ticking) {
