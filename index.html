@@ -1122,12 +1122,15 @@
 
   @media (max-width:720px){
     .team-section{ padding:32px 24px 76px; }
-    .team-heading{ margin-bottom:28px; }
+    /* everything centred: the heading and each person in their column */
+    .team-heading{ margin-bottom:28px; text-align:center; }
+    .team-title{ margin:0 auto; }
     .team-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:28px 14px; }
+    .team-member{ text-align:center; }
     /* an odd one out on the last row: centred under the two columns */
     .team-member:last-child:nth-child(odd){
       grid-column:1 / -1; justify-self:center;
-      width:calc(50% - 7px); text-align:center;
+      width:calc(50% - 7px);
     }
     footer{ flex-direction:column; gap:14px; text-align:center; }
     .footer-contacts{ justify-content:center; }
