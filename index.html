@@ -773,13 +773,67 @@
   @media (max-width:900px){
     .story-reel-copy{
       flex-direction:column; align-items:stretch; gap:14px;
-      padding:0 20px; bottom:24px;
+      padding:0 20px; bottom:86px; /* above the gallery controls */
     }
     .story-reel-desc{ max-width:none; font-size:24px; }
     .story-reel-feature{ max-width:none; }
     .story-reel-feature-icon{ width:36px; height:36px; border-radius:10px; }
     .story-reel-feature-icon svg{ width:20px; height:20px; }
     .story-reel-feature-text{ font-size:13px; }
+  }
+  /* Gallery controls, bottom centre (between the focused tab's copy
+     blocks). Shown once "Let it sense!" has landed (.is-browsable on the
+     rip layer). On the first view (.is-start) it's a single "Explore
+     features →" pill; once you're in, that shrinks to a round next button
+     and the back button + progress bar fade in beside it. On the last
+     item (.is-end) the next button goes. */
+  .story-reel-nav{
+    position:absolute; left:50%; bottom:clamp(32px, 7vh, 72px); z-index:5;
+    translate:-50% 0;
+    display:flex; align-items:center; gap:14px;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.35s ease;
+  }
+  .story-rip.is-browsable .story-reel-nav{ opacity:1; pointer-events:auto; }
+  .story-reel-btn{
+    height:48px; min-width:48px; padding:0;
+    border:0; border-radius:999px;
+    background:var(--ink); color:#fff;
+    font-family:var(--sans); font-size:15px; font-weight:600; letter-spacing:0.01em;
+    display:inline-flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,0.14);
+    transition:transform 0.2s ease, box-shadow 0.2s ease, padding 0.35s ease;
+  }
+  .story-reel-btn:hover{ transform:translateY(-1px) scale(1.04); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+  .story-reel-btn:active{ transform:scale(0.97); }
+  .story-reel-btn:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  .story-reel-btn svg{ flex:0 0 auto; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .story-reel-next-label{
+    max-width:0; overflow:hidden; white-space:nowrap; opacity:0;
+    transition:max-width 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
+  }
+  .story-reel-nav.is-start .story-reel-next{ padding:0 20px 0 24px; }
+  .story-reel-nav.is-start .story-reel-next-label{ max-width:220px; opacity:1; margin-right:10px; }
+  .story-reel-progress{
+    width:96px; height:3px; border-radius:2px; overflow:hidden;
+    background:rgba(36,36,36,0.14);
+  }
+  .story-reel-progress-fill{
+    display:block; width:100%; height:100%;
+    background:var(--ink); transform-origin:left center; transform:scaleX(0);
+  }
+  /* the back button + progress only once you've gone in; the next button
+     not on the last item. They fade in each time they come back. */
+  .story-reel-prev, .story-reel-progress, .story-reel-next{ animation:reel-nav-in 0.35s ease both; }
+  .story-reel-nav.is-start .story-reel-prev,
+  .story-reel-nav.is-start .story-reel-progress,
+  .story-reel-nav.is-end .story-reel-next{ display:none; }
+  @keyframes reel-nav-in{ from{ opacity:0; scale:0.85; } to{ opacity:1; scale:1; } }
+  @media (max-width:900px){
+    .story-reel-nav{ bottom:22px; gap:12px; }
+    .story-reel-btn{ height:44px; min-width:44px; font-size:14px; }
+    .story-reel-progress{ width:72px; }
   }
   /* Small screens: text stacks above the gallery, which spans the full
      width (bleeding off the right edge like on desktop) with every tab
@@ -1208,6 +1262,18 @@
          <p class="story-reel-feature-text"></p>
        </div>
      </div>
+     <!-- previous / next through the gallery, with a progress bar between
+          (wired up by the focus reel) -->
+     <div class="story-reel-nav is-start" id="storyReelNav">
+       <button class="story-reel-btn story-reel-prev" id="storyReelPrev" type="button" aria-label="Previous feature">
+         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+       </button>
+       <span class="story-reel-progress" aria-hidden="true"><span class="story-reel-progress-fill" id="storyReelProgress"></span></span>
+       <button class="story-reel-btn story-reel-next" id="storyReelNext" type="button" aria-label="Next feature">
+         <span class="story-reel-next-label">Explore features</span>
+         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+       </button>
+     </div>
     </div>
   </div>
   <!-- Scroll length only: "Wear it." holds over the first, "Let it sense!"
@@ -1215,9 +1281,9 @@
        story-rip script). -->
   <div class="story-step" data-bg-image="assets/photo1.jpeg"></div>
   <div class="story-step"></div>
-  <!-- Extra pinned scroll for the gallery: once "Let it sense!" has landed,
-       scrolling steps through the tabs one by one; after the last tab the
-       section un-pins (height set by the gallery script). -->
+  <!-- A short extra pinned hold once "Let it sense!" has landed, then the
+       section un-pins (height set by the gallery script). The gallery is
+       browsed with its buttons or sideways input, not by scrolling. -->
   <div class="story-gallery-steps" id="storyGallerySteps" aria-hidden="true"></div>
 </section>
 
@@ -2292,11 +2358,11 @@
      that just left (slid out to the left, faded), and anything beyond
      is parked invisibly. Slots wrap modulo the tab count, so the row
      loops forever both ways with no clones — a tab only ever jumps
-     across the row while it's fully transparent. Driven by page scroll:
-     the story section stays pinned while you scroll through the tabs
-     (see updateGallery in the story script). Scroll is the only way
-     through — the gallery doesn't react to the mouse (pointer-events
-     stay off on it). */
+     across the row while it's fully transparent. The previous / next
+     buttons and sideways input (trackpad swipe, Shift + wheel, arrow keys,
+     finger swipe) open the focus reel and move through it (see the story
+     script); vertical scrolling never does. The tabs themselves don't
+     react to clicks (pointer-events stay off on them). */
   (function(){
     const track = document.getElementById('storyGalleryTrack');
     if (!track) return;
@@ -2349,13 +2415,13 @@
       layout();
     }
 
-    // How much pinned scrolling the focus reel gets (the gallery-steps
-    // spacer at the end of the story section is sized from it): one unit
-    // to bring the reel in, one per tab change, and a short hold at the end
-    const GALLERY_STEP_VH = 55;
+    // A short extra hold on "Let it sense!" before the section un-pins
+    // (the gallery-steps spacer at the end of the story section). The
+    // gallery itself is browsed with the buttons / sideways input (see the
+    // focus reel in the story script), never by vertical scrolling.
+    const GALLERY_HOLD_VH = 27;
     const stepsEl = document.getElementById('storyGallerySteps');
-    const interludes = tabs.filter((t, i) => i > 0 && t.dataset.titleBefore).length; // each is one more step
-    if (stepsEl) stepsEl.style.height = `${(n + interludes + 0.5) * GALLERY_STEP_VH}vh`;
+    if (stepsEl) stepsEl.style.height = `${GALLERY_HOLD_VH}vh`;
 
     // the story script drives the focus reel from scroll position
     window.actusGallery = {
@@ -2799,35 +2865,31 @@
     updateGallery(rect, pinnedLength);
     updateBgPan(); // picks up reelBgOut
   }
-  /* Focus reel: from the moment every "Let it sense!" piece has landed to
-     the end of the pin (gallery stretch included), scroll drives — in
-     REEL units (one for the way in, one per tab change, a short hold):
+  /* Focus reel, opened from the first "Let it sense!" view with the
+     next button (or sideways input, see "Browsing the reel" below):
      1) In (m 0→1): the arm photo slides the rest of the way out to the
         left; "Let it sense!" shrinks over to the left edge but stays; the
         first tab grows into the middle of the screen, the next one peeking
         in small from the right edge. Its copy fades in along the bottom:
         a big line bottom-left, a feature note with its icon bottom-right.
-     2) Tabs (f 0→n-1): each step the focused tab slides out past the left
-        edge while the next grows in from the right to take its place.
-        "Let it sense!" leaves to the left along with the first tab.
-     Every in-between position is a straight blend, scrubbed by scroll
-     at a steady rate, with no snapping: stop anywhere and it stays put. */
-  const REEL_IN = 1, REEL_HOLD = 0.5;
+     2) Tabs (f 0→n-1): the focused tab slides out past the left edge
+        while the next grows in from the right to take its place. "Let it
+        sense!" leaves to the left along with the first tab.
+     Every in-between position is a straight blend with no snapping. */
+  const REEL_IN = 1;
   const REEL_BIG_H = 0.6;        // focused tab height, fraction of the screen height
   const REEL_PEEK_SCALE = 0.62;  // the next tab, waiting at the right edge, vs the focused one
   const REEL_PEEK_SHOW = 0.45;   // how much of the waiting tab shows
   const REEL_NARROW_TOP = 190;    // phones: space kept above the focused tab (for "Let it sense!")…
-  const REEL_NARROW_BOTTOM = 170; // …and below it (for its copy); the tab is centred in between
+  const REEL_NARROW_BOTTOM = 232; // …and below it (for its copy + the gallery controls); the tab is centred in between
   const REEL_TEXT_SCALE = 0.55;  // "Let it sense!" while it waits at the left
   const REEL_TEXT_SCALE_NARROW = 0.8; // …on phones (smaller type to begin with — keep it readable)
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const mix = (a, b, t) => a + (b - a) * t;
-  function galleryRange(storyTop, coreLen){ // page-scroll positions [start, end]
+  // page-scroll position where every "Let it sense!" piece has landed
+  function galleryStart(storyTop, coreLen){
     const lastPiece = ripPieces().length - 1;
-    return {
-      start: storyTop + (RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE) * coreLen,
-      end: storyTop + coreLen + (gallerySteps ? gallerySteps.offsetHeight : 0)
-    };
+    return storyTop + (RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE) * coreLen;
   }
   // The reel's sequence, one stop each: every tab, with a title item
   // slotted in before any tab that has a data-title-before. A title moves
@@ -2841,7 +2903,71 @@
     });
     return items.length ? items : [{ tab: 0 }];
   }
-  function reelUnits(){ return REEL_IN + (reelItems().length - 1) + REEL_HOLD; }
+  /* Browsing the reel: only on purpose, never by vertical scroll. The
+     reel's position H runs 0 → REEL_IN (the way in: H = 0 is the first
+     "Let it sense!" view) and then one unit per item. The previous / next
+     buttons, the left / right arrow keys and a sideways finger swipe step
+     one unit; a trackpad swipe or Shift + mouse wheel moves continuously
+     (REEL_PX_PER_ITEM of sideways scroll per unit). All of it works once
+     "Let it sense!" has landed. Vertical scrolling leaves H alone and
+     goes on to the next section; scrolling back up above "Let it sense!"
+     slides the reel back to its first view. */
+  const REEL_PX_PER_ITEM = 450;
+  const REEL_SWIPE_PX = 40;  // a finger swipe this far sideways = one step
+  let reelH = 0, reelHTarget = 0, reelHRaf = 0, reelReady = false;
+  const reelNav = document.getElementById('storyReelNav');
+  const reelPrev = document.getElementById('storyReelPrev');
+  const reelNext = document.getElementById('storyReelNext');
+  const reelProgress = document.getElementById('storyReelProgress');
+  function reelMaxH(){ return REEL_IN + reelItems().length - 1; }
+  function reelActive(){
+    if (!reelReady || !ripLayer) return false;
+    // still pinned on screen (not scrolled mostly away)
+    const b = ripLayer.getBoundingClientRect(), mid = window.innerHeight / 2;
+    return b.top < mid && b.bottom > mid;
+  }
+  function reelHTick(){
+    reelHRaf = 0;
+    reelH += (reelHTarget - reelH) * 0.14;
+    if (Math.abs(reelHTarget - reelH) < 0.001) reelH = reelHTarget;
+    updateRip();
+    if (reelH !== reelHTarget) reelHRaf = requestAnimationFrame(reelHTick);
+  }
+  function reelGoTo(t){
+    reelHTarget = Math.min(reelMaxH(), Math.max(0, t));
+    if (!reelHRaf && reelH !== reelHTarget) reelHRaf = requestAnimationFrame(reelHTick);
+    // first view: just "Explore features →"; last item: no next button
+    if (reelNav) {
+      reelNav.classList.toggle('is-start', reelHTarget <= 0.001);
+      reelNav.classList.toggle('is-end', reelHTarget >= reelMaxH() - 0.001);
+    }
+  }
+  const reelStep = dir => { if (reelActive()) reelGoTo(Math.round(reelHTarget) + dir); };
+  if (reelPrev) reelPrev.addEventListener('click', () => reelStep(-1));
+  if (reelNext) reelNext.addEventListener('click', () => reelStep(1));
+  // used by the page's wheel handler (further down)
+  window.actusReel = {
+    active: reelActive,
+    nudge: dx => reelGoTo(reelHTarget + dx / REEL_PX_PER_ITEM)
+  };
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || !reelActive()) return;
+    if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+    e.preventDefault();
+    reelStep(e.key === 'ArrowRight' ? 1 : -1);
+  });
+  let swipeX = null, swipeY = null;
+  window.addEventListener('touchstart', (e) => {
+    swipeX = e.touches[0].clientX; swipeY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchend', (e) => {
+    if (swipeX === null) return;
+    const t = e.changedTouches[0], dx = t.clientX - swipeX, dy = t.clientY - swipeY;
+    swipeX = swipeY = null;
+    if (Math.abs(dx) < REEL_SWIPE_PX || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    reelStep(dx < 0 ? 1 : -1); // swipe left = next
+  }, { passive: true });
   // one small line icon per feature (picked by a tab's data-icon)
   const REEL_ICONS = {
     emg: '<path d="M2 12h4l2-6 3 12 3-9 2 5 2-2h4"/>',
@@ -2863,13 +2989,17 @@
   function updateGallery(rect, coreLen){
     const g = window.actusGallery;
     if (!g) return;
-    const r = galleryRange(rect.top + window.scrollY, coreLen);
-    const u = clamp01((window.scrollY - r.start) / Math.max(1, r.end - r.start)) * reelUnits();
-    const m = clamp01(u / REEL_IN); // the way in: straight with scroll too
-    // one scroll unit per item, straight with scroll (no easing per step),
-    // so the tabs pan sideways continuously as you scroll
-    const f = Math.min(reelItems().length - 1, Math.max(0, u - REEL_IN));
-    updateReel(g, m, f);
+    // "Let it sense!" fully landed = the reel can be browsed
+    reelReady = window.scrollY >= galleryStart(rect.top + window.scrollY, coreLen) - 2;
+    ripLayer.classList.toggle('is-browsable', reelReady);
+    // scrolled back up into "Wear it." → "Let it sense!": back to the first view
+    if (!reelReady && reelHTarget !== 0) reelGoTo(0);
+    updateReel(g, clamp01(reelH / REEL_IN), Math.max(0, reelH - REEL_IN));
+    // progress bar: how far through the items, the first one counting as a step
+    if (reelProgress) {
+      const items = reelItems().length, f = Math.max(0, reelH - REEL_IN);
+      reelProgress.style.transform = `scaleX(${clamp01(reelH / REEL_IN) * (f + 1) / items})`;
+    }
   }
   function updateReel(g, m, f){
     reelBgOut = m;
@@ -3192,6 +3322,14 @@
   window.addEventListener('wheel', (e) => {
     e.preventDefault();
     if (document.documentElement.classList.contains('is-loading')) return; // still on the loading screen
+    // Sideways input (a trackpad swipe, Shift + mouse wheel) browses the
+    // gallery tabs while they're up, and never scrolls the page
+    let dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+    if (dx) {
+      if (e.deltaMode === 1) dx *= 40; // lines → px (Firefox mouse wheels)
+      if (window.actusReel && window.actusReel.active()) window.actusReel.nudge(dx);
+      return;
+    }
     if (performance.now() < wheelLockUntil && Math.sign(e.deltaY) === wheelLockDir) return; // holding on a coach feature
     if (e.deltaY) navTo = null; // you're scrolling yourself again
     const ib = introBounds();
