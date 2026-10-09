@@ -716,6 +716,10 @@
      take over the middle of the screen one at a time — scroll-scrubbed,
      so no CSS transitions, and no longer clipped to the gallery column. */
   .story-rip.is-reel .story-gallery{ overflow:visible; }
+  /* the tabs' titles (and the shade behind them) are only for the gallery
+     before "Explore features": they fade out as the reel opens (--reel-in,
+     0 → 1, set by updateReel) and stay gone while browsing it */
+  .story-gallery-tab-label, .story-gallery-tab::after{ opacity:calc(1 - var(--reel-in, 0)); }
   /* will-change off: otherwise the browser keeps the tab rasterized at its
      small size and the focused (scaled-up) one renders blurry */
   .story-rip.is-reel .story-gallery-tab{ transition:none; will-change:auto; }
@@ -739,47 +743,28 @@
   @media (max-width:900px){
     .story-reel-interlude{ width:calc(100vw - 170px); font-size:clamp(28px, 8vw, 44px); }
   }
-  /* The focused tab's copy, along the bottom of the screen on either side
-     of it: a big line bottom-left, a smaller feature note (with its icon)
-     bottom-right. --reel-side (set by updateReel) is the room left beside
-     the focused tab, so neither block ever runs under it. */
+  /* The focused tab's line: big, centred over the tab, with its lower
+     part tucked behind the tab's top edge (z-index:-1 = under the reel's
+     tabs, which sit in the track's own stacking context). updateReel sets
+     --reel-tab-top (the tab's top edge, from the top of the screen). */
   .story-reel-copy{
-    position:absolute; left:0; right:0; bottom:clamp(32px, 7vh, 72px);
-    padding:0 max(40px, calc((100vw - 1300px) / 2 + 40px));
-    display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+    position:absolute; inset:0; z-index:-1;
     pointer-events:none; color:var(--ink);
   }
   .story-reel-desc{
-    max-width:var(--reel-side, 440px); margin:0;
-    font-size:clamp(26px, 2.7vw, 42px); font-weight:800;
-    letter-spacing:-0.02em; line-height:1.1;
+    position:absolute; left:50%; top:var(--reel-tab-top, 30%);
+    /* up by its own height, then back down 0.38em: that much
+       of the last line goes under the tab */
+    translate:-50% calc(-100% + 0.38em);
+    /* one line on wider screens, sized to stay clear of "Let it sense!"
+       waiting at the left */
+    margin:0; white-space:nowrap; text-align:center;
+    font-size:clamp(34px, 3.3vw, 60px); font-weight:800;
+    letter-spacing:-0.03em; line-height:1;
     opacity:0;
-  }
-  .story-reel-feature{
-    display:flex; align-items:flex-start; gap:14px;
-    max-width:min(320px, var(--reel-side, 320px));
-    opacity:0;
-  }
-  .story-reel-feature-icon{
-    flex:0 0 auto; width:44px; height:44px; border-radius:12px;
-    display:flex; align-items:center; justify-content:center;
-    background:var(--ink); color:var(--bg);
-  }
-  .story-reel-feature-icon svg{ width:24px; height:24px; }
-  .story-reel-feature-text{
-    margin:0; font-size:14px; font-weight:500; line-height:1.5;
-    opacity:0.75;
   }
   @media (max-width:900px){
-    .story-reel-copy{
-      flex-direction:column; align-items:stretch; gap:14px;
-      padding:0 20px; bottom:86px; /* above the gallery controls */
-    }
-    .story-reel-desc{ max-width:none; font-size:24px; }
-    .story-reel-feature{ max-width:none; }
-    .story-reel-feature-icon{ width:36px; height:36px; border-radius:10px; }
-    .story-reel-feature-icon svg{ width:20px; height:20px; }
-    .story-reel-feature-text{ font-size:13px; }
+    .story-reel-desc{ width:calc(100vw - 40px); white-space:normal; text-wrap:balance; font-size:clamp(30px, 9vw, 40px); }
   }
   /* Gallery controls, bottom centre (between the focused tab's copy
      blocks). Shown once "Let it sense!" has landed (.is-browsable on the
@@ -890,6 +875,82 @@
   }
   .story-step{ height:100vh; scroll-snap-align: start; }
 
+  /* SCIENCE — EMG and IMU, simply: the hero's grey rounded frame again
+     (same --frame-* inset, radius and colour), holding two tall cards side
+     by side, one per sensor. Each card: a label, a live-looking signal
+     trace (drawn by the science script, scrolling sideways on a loop),
+     then one line of headline and one of explanation. */
+  .science{
+    position:relative;
+    min-height:100vh; min-height:100dvh;
+    /* the frame's top edge sits this far below the section's top (clear
+       of the logo / nav), and the title straddles it */
+    --science-edge:120px;
+    display:flex; flex-direction:column; gap:clamp(24px, 4vh, 44px);
+    padding:
+      calc(var(--frame-gap) + var(--science-edge))
+      calc(var(--frame-gap) + var(--frame-pad-x))
+      calc(var(--frame-gap) + 40px);
+  }
+  .science::before{
+    content:''; position:absolute; inset:var(--frame-gap);
+    top:calc(var(--frame-gap) + var(--science-edge));
+    border-radius:var(--frame-radius); background:var(--frame-bg);
+    z-index:0; pointer-events:none;
+  }
+  .science > *{ position:relative; z-index:1; }
+  /* centred, on the frame's top edge: upper half outside the frame, lower
+     half inside (pulled up by half its own height; the cards follow at
+     the usual gap below what's left of it) */
+  .science-head{ text-align:center; transform:translateY(-50%); margin-bottom:calc(-0.5 * clamp(32px, 3.6vw, 56px)); }
+  .science-title{
+    font-size:clamp(32px, 3.6vw, 56px); font-weight:800; line-height:1.02;
+    letter-spacing:-0.03em; color:var(--ink);
+  }
+  .science-label{
+    font-size:13px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray);
+  }
+  /* fill the rest of the frame (the cards stretch to its bottom) */
+  .science-cards{ flex:1 1 auto; display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px, 2vw, 28px); }
+  .science-card{
+    display:flex; flex-direction:column;
+    min-height:420px;
+    padding:clamp(22px, 2.4vw, 36px);
+    background:var(--bg); border-radius:calc(var(--frame-radius) - 8px);
+  }
+  .science-label{ display:flex; justify-content:space-between; }
+  .science-label b{ font-weight:600; color:var(--ink); }
+  /* the trace: fills the space between label and text, faded out at
+     both ends so it reads as a window onto a running signal */
+  .science-viz{
+    flex:1 1 auto; min-height:120px; margin:20px 0;
+    -webkit-mask-image:linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+    mask-image:linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  }
+  .science-viz svg{ display:block; width:100%; height:100%; overflow:hidden; }
+  .science-viz path{ fill:none; stroke-width:1.6; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke; }
+  .science-viz .t1{ stroke:var(--ink); }
+  .science-viz .t2{ stroke:var(--gray); }
+  .science-viz .t3{ stroke:var(--gray-dim); }
+  /* each trace is two copies of one period side by side: sliding by one
+     period loops seamlessly */
+  .science-trace{ animation:science-scroll var(--science-speed, 7s) linear infinite; }
+  @keyframes science-scroll{ to{ transform:translateX(-400px); } }
+  .science-card h3{
+    font-size:clamp(24px, 2.2vw, 34px); font-weight:800; line-height:1.08;
+    letter-spacing:-0.02em; color:var(--ink);
+  }
+  .science-card p{ margin-top:10px; max-width:420px; font-size:clamp(15px, 1.1vw, 17px); line-height:1.45; color:#6B6B6B;
+    min-height:calc(3em * 1.45); /* room for three lines, so both cards' headlines line up */ }
+  @media (prefers-reduced-motion: reduce){ .science-trace{ animation:none; } }
+  @media (max-width:860px){
+    .science{ --science-edge:140px; padding:calc(var(--frame-gap) + var(--science-edge)) calc(var(--frame-gap) + 20px) calc(var(--frame-gap) + 24px); }
+    .science-cards{ grid-template-columns:1fr; }
+    .science-card{ height:auto; min-height:0; }
+    .science-card p{ min-height:0; }
+    .science-viz{ flex:none; height:120px; }
+  }
+
   .panel{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 40px; text-align:center; scroll-snap-align: start; }
 
   /* DIVIDER — a black beat between the story section and capability, breaking
@@ -956,12 +1017,13 @@
     transition:opacity 0.6s ease, transform 0.8s cubic-bezier(.2,.8,.2,1);
   }
   .coach-card.is-active{ opacity:1; transform:none; transition-delay:0.1s; }
-  /* One dot per feature, centred at the very bottom of the screen; the
-     current one is the bright one. Clicking one scrolls to it. */
+  /* One dot per feature, stacked down the right edge of the screen,
+     centred vertically; the current one is the bright one. Clicking one
+     scrolls to it. */
   .coach-dots{
-    position:absolute; left:50%; bottom:28px; z-index:1;
-    translate:-50% 0;
-    display:flex; gap:10px;
+    position:absolute; right:28px; top:50%; z-index:1;
+    translate:0 -50%;
+    display:flex; flex-direction:column; gap:10px;
   }
   .coach-dot{
     width:8px; height:8px; padding:0; border:0; border-radius:50%;
@@ -1243,27 +1305,23 @@
       <div class="story-gallery" id="storyGallery">
         <div class="story-gallery-stage">
           <div class="story-gallery-track" id="storyGalleryTrack">
-            <div class="story-gallery-tab" data-desc="Train the muscles you mean to." data-feature="Surface EMG tracks your muscles through your skin, warning you the second you engage the wrong ones." data-icon="emg"><video src="assets/F1.mp4" autoplay muted loop playsinline aria-label="Muscle-specific optimization"></video><span class="story-gallery-tab-label">Muscle-Specific Optimization</span></div>
-            <div class="story-gallery-tab" data-desc="Clean form, every single rep." data-feature="Catches compensation and left/right imbalance mid-set, and nudges you back on track." data-icon="form"><video src="assets/F2.mp4" autoplay muted loop playsinline aria-label="Form correction"></video><span class="story-gallery-tab-label">Form Correction</span></div>
-            <div class="story-gallery-tab" data-desc="Every joint, tracked in motion." data-feature="Follows how your body moves through space, joint by joint — no camera needed." data-icon="pose"><video src="assets/F3.mp4" autoplay muted loop playsinline aria-label="Pose estimation"></video><span class="story-gallery-tab-label">Pose Estimation</span></div>
-            <div class="story-gallery-tab" data-desc="Know when to push, and when to stop." data-feature="Spots the drop in muscle output before you feel it, so you can end the set at the right moment." data-icon="fatigue"><img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&w=500&q=80" alt="Fatigue detection"><span class="story-gallery-tab-label">Fatigue Detection</span></div>
-            <div class="story-gallery-tab" data-title-before="And also, all the standard metrics." data-desc="Your heart, measured — not estimated." data-feature="A heart signal taken right from your arm, so effort and recovery come from real data instead of a guess." data-icon="ecg"><img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=500&q=80" alt="ECG"><span class="story-gallery-tab-label">ECG</span></div>
-            <div class="story-gallery-tab" data-desc="Every rep counted for you." data-feature="Counts reps automatically, along with tempo, partial reps and range of motion." data-icon="reps"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=500&q=80" alt="Rep count"><span class="story-gallery-tab-label">Rep Count</span></div>
-            <div class="story-gallery-tab" data-desc="Every calorie, actually counted." data-feature="Estimates calories burned from your real muscle effort and heart rate, not just how much you move." data-icon="burn"><img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=500&q=80" alt="Calorie burning"><span class="story-gallery-tab-label">Calorie Burn</span></div>
+            <div class="story-gallery-tab" data-desc="Train the muscles you mean to."><video src="assets/F1.mp4" autoplay muted loop playsinline aria-label="Muscle-specific optimization"></video><span class="story-gallery-tab-label">Muscle-Specific Optimization</span></div>
+            <div class="story-gallery-tab" data-desc="Clean form, every single rep."><video src="assets/F2.mp4" autoplay muted loop playsinline aria-label="Form correction"></video><span class="story-gallery-tab-label">Form Correction</span></div>
+            <div class="story-gallery-tab" data-desc="Every joint, tracked in motion."><video src="assets/F3.mp4" autoplay muted loop playsinline aria-label="Pose estimation"></video><span class="story-gallery-tab-label">Pose Estimation</span></div>
+            <div class="story-gallery-tab" data-desc="Know when to push, and when to stop."><img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&w=500&q=80" alt="Fatigue detection"><span class="story-gallery-tab-label">Fatigue Detection</span></div>
+            <div class="story-gallery-tab" data-title-before="And also, all the standard metrics." data-desc="Your heart, measured — not estimated."><img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=500&q=80" alt="ECG"><span class="story-gallery-tab-label">ECG</span></div>
+            <div class="story-gallery-tab" data-desc="Every rep counted for you."><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=500&q=80" alt="Rep count"><span class="story-gallery-tab-label">Rep Count</span></div>
+            <div class="story-gallery-tab" data-desc="Every calorie, actually counted."><img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=500&q=80" alt="Calorie burning"><span class="story-gallery-tab-label">Calorie Burn</span></div>
             <!-- big title on its own scroll stop just before a tab (its data-title-before) -->
             <p class="story-reel-interlude" id="storyReelInterlude" aria-live="polite"></p>
           </div>
         </div>
       </div>
      </div>
-     <!-- the focused tab's copy (filled from its data-desc / data-feature /
-          data-icon by updateReel): big line bottom-left, feature note bottom-right -->
+     <!-- the focused tab's line (its data-desc, filled in by updateReel):
+          big, centred over the tab, its lower part tucked behind it -->
      <div class="story-reel-copy" id="storyReelCopy" aria-live="polite">
        <p class="story-reel-desc"></p>
-       <div class="story-reel-feature">
-         <span class="story-reel-feature-icon" aria-hidden="true"></span>
-         <p class="story-reel-feature-text"></p>
-       </div>
      </div>
      <!-- previous / next through the gallery, with a progress bar between
           (wired up by the focus reel) -->
@@ -1288,6 +1346,28 @@
        section un-pins (height set by the gallery script). The gallery is
        browsed with its buttons or sideways input, not by scrolling. -->
   <div class="story-gallery-steps" id="storyGallerySteps" aria-hidden="true"></div>
+</section>
+
+<!-- The science, simply: EMG and IMU, one card each (traces drawn by the
+     science script) -->
+<section class="science" id="science">
+  <div class="science-head">
+    <h2 class="science-title">The science behind ACTUS</h2>
+  </div>
+  <div class="science-cards">
+    <article class="science-card">
+      <span class="science-label"><b>EMG</b><span>Electromyography</span></span>
+      <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="emg" style="--science-speed:6s"></g></svg></div>
+      <h3>Muscles speak in electricity.</h3>
+      <p>Every contraction starts with a tiny electrical signal. Sensors on your skin read it: which muscle fires, and how hard.</p>
+    </article>
+    <article class="science-card">
+      <span class="science-label"><b>IMU</b><span>Inertial measurement</span></span>
+      <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="imu" style="--science-speed:9s"></g></svg></div>
+      <h3>Motion, in every direction.</h3>
+      <p>An accelerometer and a gyroscope track every tilt, turn and change of speed, so Actus knows how you move.</p>
+    </article>
+  </div>
 </section>
 
 <section class="divider-black">
@@ -1468,7 +1548,7 @@
     const size = bounds.getSize(new THREE.Vector3());
     const center = bounds.getCenter(new THREE.Vector3());
     const largestDimension = Math.max(size.x, size.y, size.z);
-    const scale = 1.3 / largestDimension;
+    const scale = 1.17 / largestDimension; // the sensor's size in its card (was 1.3)
 
     object.scale.setScalar(scale);
     object.position.set(-center.x * scale, -center.y * scale , -center.z * scale);
@@ -2914,11 +2994,12 @@
         sense!" leaves to the left along with the first tab.
      Every in-between position is a straight blend with no snapping. */
   const REEL_IN = 1;
-  const REEL_BIG_H = 0.6;        // focused tab height, fraction of the screen height
+  const REEL_BIG_H = 0.56;       // focused tab height, fraction of the screen height
+  const REEL_DROP = 0.055;       // …and how far below the screen's centre it sits (fraction of the height), leaving room above for its line
   const REEL_PEEK_SCALE = 0.62;  // the next tab, waiting at the right edge, vs the focused one
   const REEL_PEEK_SHOW = 0.45;   // how much of the waiting tab shows
-  const REEL_NARROW_TOP = 190;    // phones: space kept above the focused tab (for "Let it sense!")…
-  const REEL_NARROW_BOTTOM = 232; // …and below it (for its copy + the gallery controls); the tab is centred in between
+  const REEL_NARROW_TOP = 260;    // phones: space kept above the focused tab (for "Let it sense!" and the tab's line)…
+  const REEL_NARROW_BOTTOM = 150; // …and below it (for the gallery controls); the tab is centred in between
   const REEL_TEXT_SCALE = 0.55;  // "Let it sense!" while it waits at the left
   const REEL_TEXT_SCALE_NARROW = 0.8; // …on phones (smaller type to begin with — keep it readable)
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -3005,21 +3086,14 @@
     if (Math.abs(dx) < REEL_SWIPE_PX || Math.abs(dx) < Math.abs(dy) * 1.5) return;
     reelStep(dx < 0 ? 1 : -1); // swipe left = next
   }, { passive: true });
-  // one small line icon per feature (picked by a tab's data-icon)
-  const REEL_ICONS = {
-    emg: '<path d="M2 12h4l2-6 3 12 3-9 2 5 2-2h4"/>',
-    ecg: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M5 12h3l1.5-2 2 4 1.5-2H19"/>',
-    fatigue: '<rect x="3" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 10v4"/>',
-    form: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
-    pose: '<circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6M12 13l-3.5 7M12 13l3.5 7M6 9.5l6-1 6 1"/>',
-    reps: '<path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/>',
-    burn: '<path d="M12 22c4 0 7-2.7 7-6.8 0-3.6-2.4-5.9-4.2-8.2-.4 1.9-1.3 3.3-2.6 3.9.2-3.3-1.3-6.4-4-8.9.2 3.6-3.2 6.4-3.2 10.9C5 18.8 8 22 12 22z"/><path d="M12 22c-1.8 0-3-1.2-3-3 0-1.9 1.6-3 2.4-4.6.9 1.4 3.6 2.6 3.6 4.6 0 1.8-1.2 3-3 3z"/>'
-  };
   const reelInterlude = document.getElementById('storyReelInterlude');
-  const TITLE_PEEK_SHOW = 0.45;  // how much of a title shows while it waits at the right edge
+  const TITLE_PEEK_SHOW = 0.45;
+  // the focused tab's copy fades over this last stretch (in tab widths)
+  // before the half-way border between two tabs — and back in over the same
+  // stretch after it
+  const REEL_COPY_FADE = 0.15;  // how much of a title shows while it waits at the right edge
   const reelCopy = document.getElementById('storyReelCopy');
   const reelDesc = reelCopy && reelCopy.querySelector('.story-reel-desc');
-  const reelFeature = reelCopy && reelCopy.querySelector('.story-reel-feature');
   const ripTextCol = ripLayer && ripLayer.querySelector('.story-text-col');
   let reelOn = false, reelCopyIdx = -1;
   let titleW = 0, titleWKey = ''; // the title's own (unscaled) text width, and what it was measured for
@@ -3040,6 +3114,7 @@
   }
   function updateReel(g, m, f){
     reelBgOut = m;
+    ripLayer.style.setProperty('--reel-in', String(m));
     if (m <= 0) {
       if (reelOn) {
         reelOn = false;
@@ -3047,7 +3122,7 @@
         g.relayout();
       }
       if (ripTextCol) { ripTextCol.style.translate = ''; ripTextCol.style.scale = ''; }
-      if (reelCopy) { reelDesc.style.opacity = '0'; reelFeature.style.opacity = '0'; }
+      if (reelCopy) reelDesc.style.opacity = '0';
       if (reelInterlude) reelInterlude.style.opacity = '0';
       return;
     }
@@ -3062,7 +3137,7 @@
     // phones: smaller, and up under "Let it sense!" so the copy fits below
     const bigH = Math.min(box.height * (narrow ? 0.42 : REEL_BIG_H), box.width * 0.62 / 0.72);
     const big = bigH / h, peek = big * REEL_PEEK_SCALE;
-    const cy = narrow ? box.top + (REEL_NARROW_TOP + box.height - REEL_NARROW_BOTTOM) / 2 : box.top + box.height / 2;
+    const cy = narrow ? box.top + (REEL_NARROW_TOP + box.height - REEL_NARROW_BOTTOM) / 2 : box.top + box.height * (0.5 + REEL_DROP);
     const baseLeft = tr.left + 4, baseCy = tr.top + tr.height / 2; // a tab's untransformed spot (left:4px, centered)
     // Reel keyframes by distance from focus: -1 gone left, 0 centre, 1 peeking right, 2 gone right
     const keys = [
@@ -3152,9 +3227,9 @@
       col.style.scale = String(mix(1, textScale, m));
     }
 
-    // the focused tab's copy: fades out as soon as the tab starts moving
-    // and back in (with the new text) once the next one lands — the big
-    // line rising in, the feature note a beat behind it
+    // the focused tab's line: stays up while the tab starts moving and only
+    // fades out close to the border with the next one (off = 0.5, half-way,
+    // where the text swaps), then rises back in just past it (see REEL_COPY_FADE)
     const focusSeq = Math.round(f);
     const focusIdx = items[focusSeq] && items[focusSeq].tab; // undefined while a title is up — no copy then
     if (reelCopy) {
@@ -3162,20 +3237,13 @@
         reelCopyIdx = focusIdx;
         const d = g.tabs[focusIdx].dataset;
         reelDesc.textContent = d.desc || '';
-        reelFeature.querySelector('.story-reel-feature-text').textContent = d.feature || '';
-        reelFeature.querySelector('.story-reel-feature-icon').innerHTML = REEL_ICONS[d.icon]
-          ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${REEL_ICONS[d.icon]}</svg>` : '';
       }
-      // room beside the focused tab, minus the page gutter and a gap
-      const gutter = Math.max(40, (box.width - 1300) / 2 + 40);
-      reelCopy.style.setProperty('--reel-side', `${Math.max(160, (box.width - w * big) / 2 - gutter - 40)}px`);
+      // sits on the focused tab's top edge (where it lands, not where it is mid-way)
+      reelCopy.style.setProperty('--reel-tab-top', `${cy - bigH / 2 - box.top}px`);
       const off = focusIdx === undefined ? 1 : Math.abs(f - focusSeq); // a title: no copy
-      const settled = 1 - clamp01(off * 3);
-      const late = 1 - clamp01(off * 4.5);
+      const settled = 1 - clamp01((off - (0.5 - REEL_COPY_FADE)) / REEL_COPY_FADE);
       reelDesc.style.opacity = String(m * m * settled);
-      reelDesc.style.translate = `0 ${(1 - settled) * 24}px`;
-      reelFeature.style.opacity = String(m * m * late);
-      reelFeature.style.translate = `0 ${(1 - late) * 16}px`;
+      reelDesc.style.transform = `translateY(${(1 - settled) * 24}px)`;
     }
   }
   updateRip();
@@ -3224,16 +3292,31 @@
   // normal again straight away. Touch / keyboard / the scrollbar are
   // caught by the "settle" glide further down instead.
   const INTRO_GLIDE_MS = 1500;   // full black → white transition
-  // (The "Wear it." → "Let it sense!" switch has no glide: it just follows
-  // the scroll, like the gallery after it.)
+  // The same timed glide for the "Wear it." → "Let it sense!" switch: once
+  // "Wear it." is in place, a scroll down plays the whole switch (up plays
+  // it back) over STORY_GLIDE_MS. (The gallery after it just follows the
+  // scroll.)
+  const STORY_GLIDE_MS = 2600;
+  // …on an even ease-in-out (the intro's curve front-loads the motion,
+  // which made this switch feel rushed even when longer)
+  const STORY_GLIDE_CURVE = [0.45, 0, 0.35, 1];
+  const STORY_AUTO_GLIDE = true;
   // Pushing on hard while a glide runs: once you've scrolled this many px
   // further the same way, it hurries — finishes in GLIDE_HURRY_FACTOR of
-  // its time from its current speed — and the extra scrolling carries on
-  // past its end, so a fast scroll never gets held at the end of a glide.
-  // A small scroll still plays the slow, full transition.
+  // its time from its current speed. A small scroll still plays the slow,
+  // full transition.
   const GLIDE_HURRY_PX = 500;
   const GLIDE_HURRY_FACTOR = 0.25;
   let glidePush = 0; // px scrolled the same way during the current glide
+  // However hard the scroll, the glide always stops where it lands: the
+  // rest of that same scroll (a trackpad's coasting, a wheel still
+  // spinning) is ignored, and only a new scroll moves on. A scroll counts
+  // as over after GLIDE_LAND_GAP_MS without a wheel event, or as a new one
+  // when its step jumps up past GLIDE_LAND_RISE × the last (a fresh swipe
+  // while the old one is still coasting down).
+  const GLIDE_LAND_GAP_MS = 150;
+  const GLIDE_LAND_RISE = 1.5;
+  let glideLanded = null; // { dir, at, step } — the scroll that played the glide, still going
   // false = no automatic transition: the wheel scrubs through it normally
   // and it never glides on by itself (the arrow cue still plays it)
   const INTRO_AUTO_GLIDE = true;
@@ -3286,6 +3369,17 @@
     if (!introSpacerEl) return null;
     const top = introWrapEl.getBoundingClientRect().top + window.scrollY;
     return { top, end: top + introSpacerEl.offsetHeight };
+  }
+  // "Wear it." fully shown (top) … every "Let it sense!" piece landed (end)
+  function storyBounds(){
+    if (!ripLayer || !storyEl2) return null;
+    const top = storyEl2.getBoundingClientRect().top + window.scrollY;
+    const pinned = storyCoreLen(storyEl2.offsetHeight);
+    const lastPiece = ripPieces().length - 1;
+    return {
+      top: top + WEAR_OUT[0] * pinned,
+      end: top + (RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE) * pinned
+    };
   }
   // glide to `to`; `back` is the other end (a turn-around heads there);
   // fullMs = how long the whole stretch takes (a partial one, proportionally less)
@@ -3341,13 +3435,10 @@
     currentScroll = targetScroll = y; // keep the wheel smoothing in sync
     if (u < 1) { requestAnimationFrame(introGlideTick); return; }
     introGlide = null;
-    // hurried by a hard push: let the extra scrolling carry on past the end
-    const carry = g.hurried ? Math.min(window.innerHeight * 1.5, Math.max(0, glidePush - GLIDE_HURRY_PX)) : 0;
     glidePush = 0;
-    if (carry > 0) {
-      targetScroll = clamp(g.to + carry * Math.sign(g.to - g.from), 0, maxScroll());
-      if (!ticking) { ticking = true; requestAnimationFrame(smoothScrollTick); }
-    }
+    // held here until a new scroll (see GLIDE_LAND_GAP_MS); a glide played
+    // without the wheel (the arrow cue) has nothing to hold back
+    if (glideLanded && glideLanded.dir !== Math.sign(g.to - g.from)) glideLanded = null;
   }
 
   // the black screen's scroll cue (see the intro script) plays it too
@@ -3370,11 +3461,18 @@
     if (performance.now() < wheelLockUntil && Math.sign(e.deltaY) === wheelLockDir) return; // holding on a coach feature
     if (e.deltaY) navTo = null; // you're scrolling yourself again
     const ib = introBounds();
+    if (glideLanded && !introGlide && e.deltaY) {
+      const now = performance.now(), step = Math.abs(e.deltaY);
+      const sameScroll = Math.sign(e.deltaY) === glideLanded.dir && now - glideLanded.at < GLIDE_LAND_GAP_MS && step <= glideLanded.step * GLIDE_LAND_RISE + 1;
+      if (sameScroll) { glideLanded.at = now; glideLanded.step = step; return; }
+      glideLanded = null;
+    }
     if (introGlide) {
       // mid-glide: the other way turns it around; the same way lets it
       // carry on — and a hard push the same way hurries it (see GLIDE_HURRY_PX)
       const g = introGlide, heading = Math.sign(g.to - g.from);
       if (!e.deltaY) return;
+      glideLanded = { dir: Math.sign(e.deltaY), at: performance.now(), step: Math.abs(e.deltaY) };
       if (Math.sign(e.deltaY) !== heading) { startIntroGlide(g.back, g.to, g.fullMs, false, g.curve); return; }
       glidePush += Math.abs(e.deltaY);
       if (!g.hurried && glidePush > GLIDE_HURRY_PX) startIntroGlide(g.to, g.back, g.fullMs * GLIDE_HURRY_FACTOR, true, g.curve);
@@ -3382,8 +3480,15 @@
     }
     const y = window.scrollY;
     if (INTRO_AUTO_GLIDE && ib && e.deltaY) {
-      if (e.deltaY > 0 && y >= ib.top - 1 && y < ib.end - 1) { startIntroGlide(ib.end, ib.top, INTRO_GLIDE_MS); return; }
-      if (e.deltaY < 0 && y > ib.top + 1 && y <= ib.end + 1) { startIntroGlide(ib.top, ib.end, INTRO_GLIDE_MS); return; }
+      const startedBy = { dir: Math.sign(e.deltaY), at: performance.now(), step: Math.abs(e.deltaY) };
+      if (e.deltaY > 0 && y >= ib.top - 1 && y < ib.end - 1) { startIntroGlide(ib.end, ib.top, INTRO_GLIDE_MS); glideLanded = startedBy; return; }
+      if (e.deltaY < 0 && y > ib.top + 1 && y <= ib.end + 1) { startIntroGlide(ib.top, ib.end, INTRO_GLIDE_MS); glideLanded = startedBy; return; }
+    }
+    const sb = STORY_AUTO_GLIDE && e.deltaY ? storyBounds() : null;
+    if (sb) {
+      const startedBy = { dir: Math.sign(e.deltaY), at: performance.now(), step: Math.abs(e.deltaY) };
+      if (e.deltaY > 0 && y >= sb.top - 1 && y < sb.end - 1) { startIntroGlide(sb.end, sb.top, STORY_GLIDE_MS, false, STORY_GLIDE_CURVE); glideLanded = startedBy; return; }
+      if (e.deltaY < 0 && y > sb.top + 1 && y <= sb.end + 1) { startIntroGlide(sb.top, sb.end, STORY_GLIDE_MS, false, STORY_GLIDE_CURVE); glideLanded = startedBy; return; }
     }
     // if something else moved the page (keyboard, drag), resync before applying delta
     if (Math.abs(window.scrollY - currentScroll) > 3) {
@@ -3436,7 +3541,7 @@
     if (!target) return;
     e.preventDefault();
     introGlide = null;
-    glidePush = 0;
+    glidePush = 0; glideLanded = null;
     const y = clamp(target.getBoundingClientRect().top + window.scrollY, 0, maxScroll());
     currentScroll = targetScroll = y; // a running smooth-scroll frame now just lands here
     window.actusJumpAt = performance.now(); // (so nothing on the way, e.g. the coach hold, catches the jump)
@@ -3444,9 +3549,10 @@
     if (location.hash !== hash) history.pushState(null, '', hash);
   });
 
-  /* Snapping when scrolling stops: only the black-screen intro snaps (see
-     introZone). The story — "Wear it." → "Let it sense!" and the gallery
-     after it — never does; it stays wherever you stop. The glide reuses
+  /* Snapping when scrolling stops: only the black-screen intro (see
+     introZone) and the "Wear it." → "Let it sense!" switch (see zone)
+     snap. The gallery after it never does; it stays wherever you stop.
+     Wheel / trackpad only: on touch the page just follows the finger. The glide reuses
      the smooth-scroll easing above, so it feels like the rest of the page. */
   (function(){
     if (!ripLayer || !storyEl2) return;
@@ -3489,10 +3595,35 @@
       const pinnedLength = Math.max(1, introSpacer.offsetHeight);
       return { toScroll: p => top + p * pinnedLength, p: (window.scrollY - top) / pinnedLength };
     }
+    // No resting halfway between "Wear it." and "Let it sense!": stopped
+    // while both are partly on screen (anywhere between "Wear it." starting
+    // to fade and the last "Let it sense!" piece landing), it finishes the
+    // switch toward whichever side you were heading — down finishes
+    // "Let it sense!", up returns to "Wear it.".
+    function zone(){
+      const top = storyEl2.getBoundingClientRect().top + window.scrollY;
+      const pinnedLength = storyCoreLen(storyEl2.offsetHeight);
+      const lastPiece = ripPieces().length - 1;
+      return {
+        toScroll: p => top + p * pinnedLength,
+        p: (window.scrollY - top) / pinnedLength,
+        start: WEAR_OUT[0],                                   // "Wear it." fully shown, nothing of "Let it sense!" yet
+        end: RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE  // every "Let it sense!" piece landed
+      };
+    }
     function settle(){
       // a timed glide is already taking the page somewhere on purpose
-      // (the intro) — let it land
+      // (the intro, the story switch) — let it land
       if (byTouch || touching || panReduceMotion.matches || introGlide || navTo !== null || window.actusDragging) return;
+      const z = STORY_AUTO_GLIDE ? zone() : null;
+      if (z && z.p > z.start + EDGE && z.p < z.end - EDGE) {
+        // stopped mid-way through "Wear it." → "Let it sense!": finish
+        // with the same slow timed glide a wheel plays
+        const to = Math.round(z.toScroll(lastDir > 0 ? z.end : z.start));
+        const back = Math.round(z.toScroll(lastDir > 0 ? z.start : z.end));
+        startIntroGlide(to, back, STORY_GLIDE_MS, false, STORY_GLIDE_CURVE);
+        return;
+      }
       const iz = introZone();
       if (!INTRO_AUTO_GLIDE || !iz || iz.p <= EDGE || iz.p >= 1 - EDGE) return; // not mid-intro
       const target = Math.round(iz.toScroll(lastDir > 0 ? 1 : 0)); // 1 = white hero, 0 = black screen
@@ -3519,6 +3650,47 @@
 
 </script>
 
+<script>
+  /* Science section traces: one 400-unit period of each signal, drawn
+     twice side by side so the CSS slide (.science-trace) loops seamlessly.
+     EMG: a quiet baseline with bursts of fast, spiky activity as a muscle
+     contracts. IMU: three smooth axes (x / y / z) of movement. */
+  (function(){
+    const W = 400, H = 160, MID = H / 2;
+    let seed = 7;
+    const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647; // same shape every load
+    const NS = 'http://www.w3.org/2000/svg';
+    function addPath(g, ys, cls){
+      let d = '';
+      for (let copy = 0; copy < 2; copy++) ys.forEach((y, i) => { d += (d ? 'L' : 'M') + (copy * W + i * W / (ys.length - 1)).toFixed(1) + ' ' + y.toFixed(1); });
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', d); p.setAttribute('class', cls);
+      g.appendChild(p);
+    }
+    document.querySelectorAll('.science-trace').forEach(g => {
+      if (g.dataset.trace === 'emg') {
+        const N = 400, bursts = [[110, 34], [290, 26]]; // [centre, width]
+        const ys = [];
+        for (let i = 0; i <= N; i++) {
+          const env = bursts.reduce((a, [c, w]) => a + Math.exp(-((i - c) ** 2) / (2 * w * w)), 0);
+          const amp = 3 + 62 * env;
+          ys.push(i === 0 || i === N ? MID : MID + (rand() * 2 - 1) * amp);
+        }
+        addPath(g, ys, 't1');
+      } else {
+        const N = 200;
+        [[2, 30, 0, 't1'], [3, 20, 1.3, 't2'], [1, 38, 2.4, 't3']].forEach(([cycles, amp, phase, cls]) => {
+          const ys = [];
+          for (let i = 0; i <= N; i++) {
+            const a = i / N * Math.PI * 2;
+            ys.push(MID + amp * Math.sin(a * cycles + phase) + amp * 0.25 * Math.sin(a * cycles * 3 + phase * 2));
+          }
+          addPath(g, ys, cls);
+        });
+      }
+    });
+  })();
+</script>
 <!-- Overlay scroll indicator (see .page-scroller) -->
 <div class="page-scroller" id="pageScroller" aria-hidden="true"><div class="page-scroller-thumb"></div></div>
 <script>
