@@ -101,7 +101,13 @@
   /* No browser scrollbar at all (it took up width — and popped in after
      the loading screen, shifting the page): a slim overlay indicator
      stands in for it (.page-scroller, see the scroller script). */
-  html{ scroll-behavior:auto; scroll-snap-type: none; scrollbar-width:none; }
+  /* Nothing may widen the page sideways: iOS Safari ignores
+     overflow-x:hidden on <body> alone, so anything parked off to the
+     side (the gallery's waiting cards, the intro video, elements sliding
+     in) let phones pan sideways and zoom out past the page. clip, on
+     both, cuts that off without making <body> a scroll container (which
+     would break the sticky sections). */
+  html{ scroll-behavior:auto; scroll-snap-type: none; scrollbar-width:none; overflow-x:clip; }
   ::-webkit-scrollbar{ width:0; height:0; display:none; }
   /* The overlay scroll indicator: a thin pill on the right edge, floating
      over the page. White with difference-blending, so it reads dark on
@@ -129,7 +135,7 @@
     background:var(--bg);
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    overflow-x:hidden; overflow-x:clip;
   }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
@@ -259,7 +265,10 @@
   /* HERO */
   .hero{
     position:relative;
-    min-height:100vh; min-height:100dvh; display:flex; flex-direction:row;
+    /* (svh, the height with the browser bars showing: unlike dvh it
+       doesn't change as a phone's address bar slides away mid-scroll,
+       which kept resizing the hero and blanking its background) */
+    min-height:100vh; min-height:100svh; display:flex; flex-direction:row;
     align-items:center; justify-content:space-between; gap:max(48px, calc(48px * var(--s, 1)));
     /* full page width (so the frame can be inset evenly from both
        edges); the padding is measured from the frame's edges, so the
@@ -949,10 +958,11 @@
      scaled down so title + subtitle + gallery fit on one screen. */
   @media (max-width:900px){
     .story-content{ flex-direction:column; gap:20px; padding:0 20px; }
-    .story-gallery{ --tab-scale:0.6; }
+    .story-gallery{ --tab-scale:0.78; }
     .story-rip .story-text-col{
       align-items:center; flex:0 0 auto; max-width:100%; margin-left:0;
       top:0; /* stacked above the gallery already */
+      text-align:center; /* ("Only with / Actus": each line centred, not left-aligned in a centred box) */
     }
     .story-rip .story-gallery{
       flex:0 0 auto; align-self:stretch;
@@ -1002,6 +1012,10 @@
     .story-rip .story-subtitle{ text-align:center; margin:20px auto 0; max-width:520px; }
   }
   .story-step{ height:100vh; scroll-snap-align: start; }
+  /* phones / tablets scrub the "Wear it." → "Only with Actus" switch with a
+     finger (no wheel-triggered switch there), so a full screen per step
+     was a long haul; this keeps it to about one screen and a bit */
+  @media (max-width:900px){ .story-step{ height:55vh; } }
 
   /* SCIENCE — Apple-style "closer look": a compact grey rounded frame
      (the hero's frame colour and radius), no wider than --science-max and
@@ -1147,7 +1161,11 @@
     .science-option-icon{ width:28px; height:28px; }
     .science-option-text b{ font-size:16px; }
     .science-option-text span{ font-size:11px; }
-    .science-viz{ height:auto; flex-direction:column; gap:14px; margin-bottom:16px; }
+    .science-viz{ height:170px; margin-bottom:16px; }
+  }
+  /* phones: the EMG muscle bars drop below the trace (no room beside it) */
+  @media (max-width:600px){
+    .science-viz{ height:auto; flex-direction:column; gap:14px; }
     .science-viz svg{ flex:none; height:100px; }
     .science-bars{ height:120px; align-self:center; }
   }
@@ -1225,7 +1243,8 @@
      analysis, a summary card, a reply). */
   .coach-viz{
     position:relative; overflow:hidden;
-    height:clamp(230px, 36vh, 330px); margin:0 0 clamp(18px, 2.4vh, 28px);
+    /* (tall enough, at the least, for all three caption lines to clear the fade) */
+    height:clamp(276px, 36vh, 330px); margin:0 0 clamp(18px, 2.4vh, 28px);
     -webkit-mask-image:linear-gradient(to bottom, #000 82%, transparent);
     mask-image:linear-gradient(to bottom, #000 82%, transparent);
   }
@@ -1268,7 +1287,7 @@
   .cc-ctx.is-buzz{ background:linear-gradient(90deg, #8B3DFF, #EC2678 62%, #FF5E3A); color:#fff; animation:cc-buzz 0.12s linear infinite; }
   @keyframes cc-buzz{ 0%,100%{ transform:translateX(0); } 25%{ transform:translateX(-1.5px) rotate(-1deg); } 75%{ transform:translateX(1.5px) rotate(1deg); } }
   .cc-caption{
-    position:absolute; top:180px; left:16px; right:16px; text-align:center;
+    position:absolute; top:164px; left:16px; right:16px; text-align:center;
     font-size:12px; font-weight:600; line-height:1.4; letter-spacing:-0.005em;
   }
   .cc-caption span{ color:#D3D3D8; transition:color 0.3s ease; }
@@ -1593,6 +1612,22 @@
     }
     footer{ flex-direction:column; gap:14px; text-align:center; }
     .footer-contacts{ justify-content:center; }
+  }
+
+  /* SHORT LANDSCAPE SCREENS (a phone held sideways): the stacked phone
+     layouts are built for a tall screen, so with ~375px of height the
+     hero's sensor ran up under the navbar and the story's title and
+     cards collided with the navbar and the gallery buttons. Everything
+     there shrinks to fit below the navbar instead. */
+  @media (max-width:900px) and (max-height:500px) and (orientation:landscape){
+    .hero{ padding-top:calc(var(--frame-gap) + 64px); padding-bottom:calc(var(--frame-gap) + 16px); }
+    .hero-right{ width:min(150px, 34vh); }
+    .story-content{ gap:8px; padding-top:72px; }
+    .story-title-sense{ font-size:32px; }
+    .story-rip .story-subtitle{ margin-top:6px; font-size:14px; }
+    .story-gallery{ --tab-scale:0.62; }
+    .story-gallery-tab-label{ left:7px; right:7px; bottom:7px; font-size:11px; }
+    .story-reel-nav{ bottom:8px; --nav-btn:36px; }
   }
 </style>
 </head>
@@ -2761,11 +2796,18 @@
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // resizing wipes the canvas: draw straight away rather than leave
+      // it blank until the next frame (a flicker, on every resize)
+      render(performance.now());
     }
     resize();
     new ResizeObserver(resize).observe(canvas);
 
     function draw(now){
+      render(now);
+      rafId = (reduceMotionQuery.matches || document.hidden || !onScreen) ? null : requestAnimationFrame(draw);
+    }
+    function render(now){
       const staticFrame = reduceMotionQuery.matches;
       const flowPhase = staticFrame ? 0 : (now - start) * SPEED;
       ctx.clearRect(0, 0, width, height);
@@ -2785,8 +2827,6 @@
         ctx.lineWidth = c.lineWidth;
         ctx.stroke();
       });
-
-      rafId = (staticFrame || document.hidden || !onScreen) ? null : requestAnimationFrame(draw);
     }
 
     // paused while scrolled off-screen (redrawing the full-width traces
@@ -3103,6 +3143,7 @@
      the queue, since nothing has scrolled yet). */
   const travelingBg = document.getElementById('travelingBgImage');
   const travelingBgFade = document.getElementById('travelingBgFade');
+  const reelNavEl = document.getElementById('storyReelNav');
   const MASK_OPACITY = 0.26; // the "mask" behind "Wear it." — photo reads as a faint texture, not a full image
   const REVEALED_OPACITY = 0.8; // full strength, once panned into the metrics panel — the mask goes away
   const firstStepImage = steps[0] && steps[0].dataset.bgImage;
@@ -3238,6 +3279,14 @@
       travelingBgFade.style.transform = panTransform;
       // (phones: straight away, so its edge is never a hard line)
       travelingBgFade.style.opacity = active ? String(narrowPan ? Math.min(1, k * 12) : land) : '0';
+    }
+
+    // the gallery's buttons ride the bottom of the pinned panel, so as the
+    // section scrolls away they'd slide on up past the navbar: they fade
+    // out over the first bit of that instead
+    if (reelNavEl) {
+      const leaving = Math.min(1, Math.max(0, (window.innerHeight - storyRect.bottom) / 90));
+      reelNavEl.style.opacity = leaving > 0 ? String(1 - leaving) : '';
     }
   }
   updateBgPan();
@@ -5110,7 +5159,7 @@
       W = screen.clientWidth; H = screen.clientHeight;
       dpr = Math.min(2, window.devicePixelRatio || 1);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-      home = { x: W / 2, y: 120, r: 44 };
+      home = { x: W / 2, y: 114, r: 40 };
       const s = screen.getBoundingClientRect(), a = avatar.getBoundingClientRect();
       nest = { x: a.left - s.left + a.width / 2, y: a.top - s.top + a.height / 2, r: a.width / 2 - 1 };
     }
