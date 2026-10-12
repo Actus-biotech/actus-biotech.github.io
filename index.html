@@ -90,7 +90,7 @@
     --corner-inset:max(14px, calc(14px * var(--s, 1)));
     /* Black-screen intro: how much scrolling the black → white hero
        transition takes (the hero stays pinned for this long) */
-    --intro-scroll:180vh;
+    --intro-scroll:140vh;
     /* …how dark the shade over its background video is (1 = solid
        black, 0 = no darkening) */
     --intro-shade:0.45;
@@ -461,7 +461,10 @@
      <head>; never under reduced motion, where none of this applies and
      the hero is exactly as normal). The hero is pinned (sticky) for
      --intro-scroll of scrolling, with a black layer over it that lifts
-     away like a curtain (translateY, crisp bottom edge — never faded).
+     away like a curtain (crisp bottom edge — never faded). The curtain is
+     just part of the page, above the pinned hero, so it's the browser's
+     own scrolling that carries it off, at exactly the speed you scroll
+     (moved by a script, it lagged behind a finger on phones).
      The ONE real sensor (.hero-right, which carries the 3D canvas plus
      its shadow and glare) sits above both and is moved with the
      `translate`/`scale` properties — they stack on top of its own CSS
@@ -484,9 +487,9 @@
     width:1px; height:1px; pointer-events:none;
   }
   .intro-on .intro-black{
-    display:block; position:absolute; inset:0; z-index:2;
+    display:block; position:absolute; top:0; left:0; width:100%; z-index:2;
+    height:100vh; height:100svh; /* (the screen with the browser bars showing) */
     background:#0B0B0B; pointer-events:none;
-    will-change:transform; /* lifted with translateY by the intro script */
     overflow:hidden; /* keeps the curtain's bottom edge crisp */
   }
   /* random squares / rectangles — noise flashes + horizontal/vertical
@@ -496,7 +499,7 @@
   /* Inside the curtain, bottom → top: the background video, a black shade
      over it, then the random squares. The video is a "low-pass" layer, no
      detail left, only soft shapes and the overall movement: it comes
-     already blurred (assets/background-header-blur.mp4, 320×180), so it's
+     already blurred (assets/background-header-blur.mp4, 960×540), so it's
      just played and scaled up. (It used to be blurred live with a CSS
      filter, re-blurring every frame, which made the curtain lag on phones.)
      --intro-shade = how dark the shade is (1 = solid black, 0 = none). */
@@ -1686,11 +1689,14 @@
     </div>
   </div>
 </section>
+</div>
 <div class="intro-black" id="introBlack" aria-hidden="true">
   <!-- background video (started by the intro script, so it never loads
        when the intro is off), darkened by the shade above it -->
-  <!-- background-header.mp4 (1080p, 14 MB), shrunk to 320×180 and blurred
-       once ahead of time (no audio, ~40 KB): played as is, never blurred live -->
+  <!-- background-header.mp4 (1080p, 14 MB), cropped to its middle 90%,
+       shrunk to 960×540 and blurred once ahead of time (no audio, ~420 KB,
+       lightly compressed so the soft gradients don't band or block up
+       when a phone scales it up): played as is, never blurred live -->
   <video class="intro-video" id="introVideo" src="assets/background-header-blur.mp4" muted loop playsinline preload="auto"></video>
   <div class="intro-shade"></div>
   <canvas class="intro-particles" id="introParticles"></canvas>
@@ -1701,7 +1707,6 @@
     <span class="intro-cue-text">Meet Actus</span>
   </button>
   <div class="intro-title" id="introTitle" data-text="A new era of bio‑wearables">A new era of bio‑wearables</div>
-</div>
 </div>
 <div class="intro-spacer" aria-hidden="true"></div>
 <span class="intro-anchor" id="introAnchor" aria-hidden="true"></span>
@@ -2370,7 +2375,6 @@
     const TRAVEL_ROLL = -0.15;
     // ---- scroll ranges, as [start, end] fractions of the pinned scroll ----
     const MOVE = [0.04, 0.82];    // sensor travel center → slot
-    const CURTAIN = [0, 0.72];    // black curtain lifts away (from the very first pixel of scroll)
     const FX = [0.6, 0.92];       // sensor's white-hero shadow + glare
     // scroll cue: clicking it asks the smooth-scroll script (end of the
     // page) to play the black → white transition, same as a scroll would
@@ -2400,10 +2404,8 @@
     const MOVER_GAP = [0.5, 3];   // s — pause before it starts again elsewhere
     const SHAPE_PARALLAX = 18;    // px the nearest shapes shift with the mouse
 
-    // phones / tablets: the curtain follows the finger exactly (the scrub's
-    // smoothing, floaty under a wheel, felt like lag under a finger), and
-    // the squares are drawn at 1× (they're soft specks; it's a quarter of
-    // the pixels to redraw every frame)
+    // phones / tablets: the squares are drawn at 1× (they're soft specks;
+    // it's a quarter of the pixels to redraw every frame)
     const touchScreen = window.matchMedia('(hover: none) and (pointer: coarse)');
     const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -2416,7 +2418,7 @@
     // shared with the model script (see window.actusIntro there)
     const shared = window.actusIntro = { spinFactor: 0, rotX: 0, rotY: SETTLE_ROT_Y, rotZ: SETTLE_ROT_Z, dark: 1 };
 
-    let geo = null, pinTop = 0, pinLength = 1;
+    let geo = null, pinTop = 0, pinLength = 1, curtainH = 1;
     let slideStart = null, running = false, settled = false;
     let p = null, lastNow = 0;                // smoothed scroll progress
     let mx = 0, my = 0, mxs = 0, mys = 0;     // mouse (-1..1), raw + smoothed
@@ -2476,6 +2478,7 @@
       };
       pinTop = intro.getBoundingClientRect().top + window.scrollY;
       pinLength = Math.max(1, spacer.offsetHeight);
+      curtainH = Math.max(1, black.offsetHeight || vh);
       if (pctx && (particlesCanvas.clientWidth !== pW || particlesCanvas.clientHeight !== pH)) {
         pW = particlesCanvas.clientWidth; pH = particlesCanvas.clientHeight;
         const dpr = touchScreen.matches ? 1 : Math.min(window.devicePixelRatio || 1, 2);
@@ -2524,35 +2527,37 @@
       const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 1 / 60;
       lastNow = now;
       const target = clamp((window.scrollY - pinTop) / pinLength, 0, 1);
-      if (p === null || touchScreen.matches) p = target; // (reloaded mid-page: start where you are)
+      if (p === null) p = target; // e.g. reloaded mid-page: start where you are
       p += (target - p) * (1 - Math.exp(-dt / SCRUB_TAU));
       if (Math.abs(target - p) < 0.0004) p = target;
       const km = 1 - Math.exp(-dt / 0.3);
       mxs += (mx - mxs) * km; mys += (my - mys) * km;
+
+      // the curtain scrolls away with the page by itself (see .intro-black);
+      // once it's wholly off the top it's hidden and its video paused
+      const lifted = window.scrollY - pinTop;
+      const gone = lifted >= curtainH - 1;
+      if (gone !== (black.dataset.gone === '1')) {
+        black.style.visibility = gone ? 'hidden' : '';
+        black.dataset.gone = gone ? '1' : '';
+        if (gone) pauseVideo(); else playVideo();
+      }
 
       if (p >= 1) {
         if (!settled) {
           heroRight.style.translate = ''; heroRight.style.scale = '';
           heroRight.style.setProperty('--intro-fx', '1');
           if (glow) glow.style.opacity = '0';
-          black.style.transform = 'translate3d(0, -100%, 0)';
-          black.style.visibility = 'hidden';
-          pauseVideo();
-          black.dataset.gone = '1';
           shared.spinFactor = 1; shared.rotX = 0; shared.rotY = 0; shared.rotZ = 0; shared.dark = 0;
           settled = true;
         }
         return true;
       }
       settled = false;
-      black.style.visibility = '';
-      playVideo();
-      black.dataset.gone = '';
 
-      // curtain: lifts straight up; its bottom edge (the seam) is at
-      // H·(1 − cur) on screen
-      const cur = range(p, CURTAIN); // follows the scroll directly — the glide itself supplies the easing
-      black.style.transform = `translate3d(0, ${(-cur * 100).toFixed(3)}%, 0)`;
+      // how far the curtain has lifted (0..1): its bottom edge (the seam)
+      // is at H·(1 − cur) on screen
+      const cur = clamp(lifted / curtainH, 0, 1);
 
       if (cue) { // scroll cue: gone as soon as the transition gets going
         const k = 1 - range(p, [0, 0.08]);
