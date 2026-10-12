@@ -268,10 +268,13 @@
   /* HERO */
   .hero{
     position:relative;
-    /* (svh, the height with the browser bars showing: unlike dvh it
-       doesn't change as a phone's address bar slides away mid-scroll,
-       which kept resizing the hero and blanking its background) */
-    min-height:100vh; min-height:100svh; display:flex; flex-direction:row;
+    /* (lvh, the height with a phone's browser bars tucked away — as they
+       are by the time you've scrolled down to it — so the frame reaches
+       the bottom of the screen and its contents sit centred in it. Like
+       svh, and unlike dvh, it doesn't change as the bars slide in and out
+       mid-scroll, which kept resizing the hero and blanking its
+       background.) */
+    min-height:100vh; min-height:100lvh; display:flex; flex-direction:row;
     align-items:center; justify-content:space-between; gap:max(48px, calc(48px * var(--s, 1)));
     /* full page width (so the frame can be inset evenly from both
        edges); the padding is measured from the frame's edges, so the
@@ -456,7 +459,9 @@
     .hero{ flex-direction:column; justify-content:center; gap:12px; text-align:center; padding:calc(var(--frame-gap) + 96px) calc(var(--frame-gap) + 24px) calc(var(--frame-gap) + 40px); }
     /* flex:none — its desktop flex-basis (a width) would otherwise make it
        480px tall in this column layout */
-    .hero-left{ flex:none; align-self:auto; align-items:center; text-align:center; transform:none; }
+    /* (z-index 2: the sensor's white glare — 160% of its card — reaches
+       down over the headline here, and would haze its top otherwise) */
+    .hero-left{ flex:none; align-self:auto; align-items:center; text-align:center; transform:none; z-index:2; }
     /* (an explicit width: as a centred flex item it would otherwise shrink
        to its content, and the square card inside it to nothing) */
     .hero-right{ order:-1; flex:0 0 auto; width:min(280px, 72vw); max-width:280px; align-self:auto; transform:none; }
