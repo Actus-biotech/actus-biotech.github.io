@@ -1075,6 +1075,7 @@
     font-size:17px; font-weight:500; line-height:1.45; color:var(--ink);
   }
   .m-features-row{
+    position:relative; /* (the cards' offsetParent: see the bar's snap) */
     display:flex; gap:12px; margin-top:28px; padding:0 20px 8px;
     overflow-x:auto; overscroll-behavior-x:contain;
     scroll-snap-type:x mandatory; scroll-padding:0 20px;
@@ -1094,6 +1095,23 @@
   .m-feature-desc{
     margin-top:4px; text-wrap:balance; color:var(--ink);
     font-size:20px; font-weight:800; letter-spacing:-0.02em; line-height:1.15;
+  }
+  /* The row's scroll bar: a thin track under the cards, its thumb as wide
+     as the share of the row on screen and placed where you are in it
+     (set by the phone-features script). Drag it, or tap along it, to
+     move through the cards. The bar is a taller, invisible strip around
+     the track, so it's easy to catch with a finger. */
+  .m-features-bar{
+    position:relative; margin:16px 20px 0; padding:12px 0;
+    touch-action:none; cursor:pointer;
+  }
+  .m-features-track{
+    position:relative; height:3px; border-radius:3px; overflow:hidden;
+    background:rgba(36,36,36,0.12);
+  }
+  .m-features-thumb{
+    position:absolute; left:0; top:0; height:100%; border-radius:3px;
+    background:var(--ink);
   }
 
   /* SCIENCE — Apple-style "closer look": a compact grey rounded frame
@@ -1852,6 +1870,9 @@
     <h2 class="m-features-title">Only with<br>Actus</h2>
     <p class="m-features-sub">Actus senses your muscles and movements.</p>
     <div class="m-features-row" id="mFeaturesRow"></div>
+    <div class="m-features-bar" id="mFeaturesBar" aria-hidden="true">
+      <div class="m-features-track"><div class="m-features-thumb" id="mFeaturesThumb"></div></div>
+    </div>
   </div>
 </section>
 <script>
@@ -1893,6 +1914,60 @@
       card.append(box, cap);
       row.appendChild(card);
     });
+
+    // The scroll bar (see .m-features-bar): the thumb follows the row…
+    const bar = document.getElementById('mFeaturesBar');
+    const thumb = document.getElementById('mFeaturesThumb');
+    let barRaf = 0;
+    function placeThumb(){
+      barRaf = 0;
+      if (!thumb || !row.scrollWidth) return; // (hidden on desktop)
+      const shown = Math.min(1, row.clientWidth / row.scrollWidth);
+      const max = row.scrollWidth - row.clientWidth;
+      thumb.style.width = `${shown * 100}%`;
+      // (translate % is of the thumb's own width: its travel is 1/shown − 1 of it)
+      thumb.style.transform = `translateX(${max > 0 ? (row.scrollLeft / max) * (1 / shown - 1) * 100 : 0}%)`;
+    }
+    row.addEventListener('scroll', () => { if (!barRaf) barRaf = requestAnimationFrame(placeThumb); }, { passive: true });
+    if (window.ResizeObserver) new ResizeObserver(placeThumb).observe(row);
+    placeThumb();
+    // …and the row follows a finger on the bar: the thumb's centre goes
+    // where you touch, free while you hold it (no snapping), then it
+    // snaps to the nearest card when you let go
+    if (bar) {
+      let dragging = false;
+      function scrollToX(clientX){
+        const r = bar.getBoundingClientRect();
+        const shown = Math.min(1, row.clientWidth / row.scrollWidth);
+        const t = (clientX - r.left - (shown * r.width) / 2) / Math.max(1, r.width * (1 - shown));
+        row.scrollLeft = Math.min(1, Math.max(0, t)) * (row.scrollWidth - row.clientWidth);
+      }
+      bar.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        bar.setPointerCapture(e.pointerId);
+        row.style.scrollSnapType = 'none';
+        scrollToX(e.clientX);
+      });
+      bar.addEventListener('pointermove', (e) => { if (dragging) scrollToX(e.clientX); });
+      const release = () => {
+        if (!dragging) return;
+        dragging = false;
+        row.style.scrollSnapType = '';
+        // (glide onto the nearest card explicitly: not every browser
+        // re-snaps when snapping is switched back on)
+        const pad = parseFloat(getComputedStyle(row).scrollPaddingLeft) || 0;
+        const max = row.scrollWidth - row.clientWidth;
+        let best = 0;
+        row.querySelectorAll('.m-feature').forEach(card => {
+          const x = Math.min(max, card.offsetLeft - pad);
+          if (Math.abs(x - row.scrollLeft) < Math.abs(best - row.scrollLeft)) best = x;
+        });
+        row.scrollTo({ left: best, behavior: 'smooth' });
+      };
+      bar.addEventListener('pointerup', release);
+      bar.addEventListener('pointercancel', release);
+    }
+
     if (!window.IntersectionObserver) return;
     // (on desktop the row is hidden, so nothing here ever plays)
     const io = new IntersectionObserver((entries) => {
@@ -3314,7 +3389,6 @@
      the queue, since nothing has scrolled yet). */
   const travelingBg = document.getElementById('travelingBgImage');
   const travelingBgFade = document.getElementById('travelingBgFade');
-  const reelNavEl = document.getElementById('storyReelNav');
   const MASK_OPACITY = 0.26; // the "mask" behind "Wear it." — photo reads as a faint texture, not a full image
   const REVEALED_OPACITY = 0.8; // full strength, once panned into the metrics panel — the mask goes away
   const firstStepImage = steps[0] && steps[0].dataset.bgImage;
@@ -3454,14 +3528,8 @@
       // (phones: straight away, so its edge is never a hard line)
       travelingBgFade.style.opacity = active ? String(narrowPan ? Math.min(1, k * 12) : land) : '0';
     }
-
-    // the gallery's buttons ride the bottom of the pinned panel, so as the
-    // section scrolls away they'd slide on up past the navbar: they fade
-    // out over the first bit of that instead
-    if (reelNavEl) {
-      const leaving = Math.min(1, Math.max(0, (window.innerHeight - storyRect.bottom) / 90));
-      reelNavEl.style.opacity = leaving > 0 ? String(1 - leaving) : '';
-    }
+    // (the gallery's buttons stay as they are when the section scrolls
+    // away: they ride off with the cards, under the navbar)
   }
   updateBgPan();
   // (on scroll it's run by updateRip, below — once per scroll, not twice)
@@ -3626,7 +3694,19 @@
   const reelStep = dir => { if (reelActive()) reelGoTo(Math.round(reelHTarget) + dir); };
   if (reelPrev) reelPrev.addEventListener('click', () => reelStep(-1));
   if (reelNext) reelNext.addEventListener('click', () => reelStep(1));
-  if (reelExplore) reelExplore.addEventListener('click', () => { if (reelHTarget <= 0.001) reelStep(1); });
+  if (reelExplore) reelExplore.addEventListener('click', () => {
+    if (reelHTarget > 0.001) return;
+    // the pill rides off with the section as it scrolls away, so it can be
+    // clicked part-way past it: bring the section back to its pinned spot
+    // and open the features on the way
+    if (reelReady && !reelActive() && storyEl2 && !window.actusPhone.matches) {
+      const r = storyEl2.getBoundingClientRect();
+      window.actusSmoothTo(r.top + window.scrollY + r.height - window.innerHeight);
+      reelGoTo(1);
+      return;
+    }
+    reelStep(1);
+  });
   // used by the page's wheel handler (further down)
   window.actusReel = {
     active: reelActive,
