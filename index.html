@@ -91,10 +91,8 @@
     /* Black-screen intro: how much scrolling the black → white hero
        transition takes (the hero stays pinned for this long) */
     --intro-scroll:180vh;
-    /* …its background video: how unfocused it is (bigger = blurrier, only
-       the overall movement shows) and how dark the shade over it is
-       (1 = solid black, 0 = no darkening) */
-    --intro-blur:7px;
+    /* …how dark the shade over its background video is (1 = solid
+       black, 0 = no darkening) */
     --intro-shade:0.45;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
@@ -489,25 +487,22 @@
     display:block; position:absolute; inset:0; z-index:2;
     background:#0B0B0B; pointer-events:none;
     will-change:transform; /* lifted with translateY by the intro script */
-    overflow:hidden; /* keeps the curtain's bottom edge crisp (the blurred video is a bit bigger than it) */
+    overflow:hidden; /* keeps the curtain's bottom edge crisp */
   }
   /* random squares / rectangles — noise flashes + horizontal/vertical
      movers (drawn by the intro script's drawParticles) — inside the
      curtain, so they lift away with it */
   .intro-particles{ position:absolute; inset:0; width:100%; height:100%; display:block; }
   /* Inside the curtain, bottom → top: the background video, a black shade
-     over it, then the random squares. The video is a "low-pass" layer: it
-     is drawn at a quarter of the screen size, then scaled back up 4× and
-     blurred, so no detail survives — only soft shapes and the overall
-     movement. (Shrinking first also makes the blur much cheaper.)
-     --intro-blur = how unfocused (in quarter-size px, so ×4 on screen);
+     over it, then the random squares. The video is a "low-pass" layer, no
+     detail left, only soft shapes and the overall movement: it comes
+     already blurred (assets/background-header-blur.mp4, 320×180), so it's
+     just played and scaled up. (It used to be blurred live with a CSS
+     filter, re-blurring every frame, which made the curtain lag on phones.)
      --intro-shade = how dark the shade is (1 = solid black, 0 = none). */
   .intro-video{
-    position:absolute; left:0; top:0; width:25%; height:25%;
+    position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; display:block;
-    transform:scale(4.4); transform-origin:0 0; /* a little over 4× (110% of the screen), so the blur's soft edge stays off-screen… */
-    translate:-20% -20%; /* …centered: −5% of the screen = −20% of this quarter-size box */
-    filter:blur(var(--intro-blur, 7px));
   }
   /* while the loader is up the video may still be on its way: it stays
      hidden over the curtain's own black and fades in once it plays (the
@@ -778,12 +773,21 @@
     margin-top:calc(var(--tab-h) / -2);
     border-radius:16px; overflow:hidden;
     transform-origin:left center;
-    transition:transform 0.75s cubic-bezier(.22,.61,.36,1), opacity 0.6s ease, filter 0.75s ease;
+    transition:transform 0.75s cubic-bezier(.22,.61,.36,1), opacity 0.6s ease, --dim 0.75s ease;
     will-change:transform;
   }
   .story-gallery-tab img, .story-gallery-tab video{
     display:block; width:100%; height:100%; object-fit:cover;
-    filter:brightness(0.85);
+  }
+  /* Each card is dimmed by a black layer over its photo / video (--dim,
+     set by the carousel and the focus reel), not a brightness filter:
+     a filter on a playing video re-filters every frame, and animating it
+     made the gallery and reel stutter on iPhones. Fading a layer is
+     nearly free. (0.15 at rest = the old brightness(0.85).) */
+  @property --dim{ syntax:'<number>'; inherits:false; initial-value:0.15; }
+  .story-gallery-tab::before{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:#000; opacity:var(--dim, 0.15);
   }
   .story-gallery-tab::after{
     content:''; position:absolute; inset:0;
@@ -1685,9 +1689,9 @@
 <div class="intro-black" id="introBlack" aria-hidden="true">
   <!-- background video (started by the intro script, so it never loads
        when the intro is off), darkened by the shade above it -->
-  <!-- a small web copy (640×360, no audio, ~170 KB) of background-header.mp4
-       (1080p, 14 MB): it's drawn at a quarter size and blurred anyway -->
-  <video class="intro-video" id="introVideo" src="assets/background-header-web.mp4" muted loop playsinline preload="auto"></video>
+  <!-- background-header.mp4 (1080p, 14 MB), shrunk to 320×180 and blurred
+       once ahead of time (no audio, ~40 KB): played as is, never blurred live -->
+  <video class="intro-video" id="introVideo" src="assets/background-header-blur.mp4" muted loop playsinline preload="auto"></video>
   <div class="intro-shade"></div>
   <canvas class="intro-particles" id="introParticles"></canvas>
   <!-- glitchy centered line (glitches driven by the intro script); the
@@ -2396,6 +2400,11 @@
     const MOVER_GAP = [0.5, 3];   // s — pause before it starts again elsewhere
     const SHAPE_PARALLAX = 18;    // px the nearest shapes shift with the mouse
 
+    // phones / tablets: the curtain follows the finger exactly (the scrub's
+    // smoothing, floaty under a wheel, felt like lag under a finger), and
+    // the squares are drawn at 1× (they're soft specks; it's a quarter of
+    // the pixels to redraw every frame)
+    const touchScreen = window.matchMedia('(hover: none) and (pointer: coarse)');
     const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
     const lerp = (a, b, t) => a + (b - a) * t;
     const range = (p, r) => clamp((p - r[0]) / (r[1] - r[0]), 0, 1);
@@ -2469,7 +2478,7 @@
       pinLength = Math.max(1, spacer.offsetHeight);
       if (pctx && (particlesCanvas.clientWidth !== pW || particlesCanvas.clientHeight !== pH)) {
         pW = particlesCanvas.clientWidth; pH = particlesCanvas.clientHeight;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = touchScreen.matches ? 1 : Math.min(window.devicePixelRatio || 1, 2);
         particlesCanvas.width = Math.round(pW * dpr); particlesCanvas.height = Math.round(pH * dpr);
         pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         // (re)scatter, as many as fit this screen's area
@@ -2515,7 +2524,7 @@
       const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 1 / 60;
       lastNow = now;
       const target = clamp((window.scrollY - pinTop) / pinLength, 0, 1);
-      if (p === null) p = target; // e.g. reloaded mid-page: start where you are
+      if (p === null || touchScreen.matches) p = target; // (reloaded mid-page: start where you are)
       p += (target - p) * (1 - Math.exp(-dt / SCRUB_TAU));
       if (Math.abs(target - p) < 0.0004) p = target;
       const km = 1 - Math.exp(-dt / 0.3);
@@ -2792,7 +2801,9 @@
       // narrower max-width hero container it's visually escaping
       width = canvas.clientWidth;
       height = canvas.clientHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // (touch screens: 1× — faint hairlines, and a quarter of the pixels
+      // to redraw every frame while the intro's curtain is also moving)
+      const dpr = window.matchMedia('(hover: none) and (pointer: coarse)').matches ? 1 : Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -2910,7 +2921,7 @@
         const p = poseOf(i);
         tab.style.transform = `translateX(${p.x}px) scale(${p.s}) rotateY(${p.rot}deg)`;
         tab.style.opacity = p.opacity;
-        tab.style.filter = d > 0 && !FLAT ? `brightness(${p.bright})` : '';
+        tab.style.setProperty('--dim', (1 - 0.85 * (d > 0 && !FLAT ? p.bright : 1)).toFixed(3)); // (see .story-gallery-tab::before)
         tab.style.zIndex = p.z;
         tab.dataset.slot = d;
         tab.classList.toggle('is-focused', d === 0);
@@ -3219,14 +3230,12 @@
     if (!travelingBg || !panStep || !lastPanStep || !storyEl2) return;
     const storyRect = storyEl2.getBoundingClientRect();
 
-    let enterProgress = 1; // 0 = not yet scrolled into view at all, 1 = sticky panel fully locked in place
     let p = 0; // phones: 0..1 through the pinned stretch
     let land = 0; // 0..1: "Wear it." → "Let it sense!" landed
     let out = 0; // 0..1: from there, the page scroll carrying it the rest of the way out
     let exitProgress = 0; // phones: 0..1 out, once the section starts scrolling away
     if (!panReduceMotion.matches) {
       const vh = window.innerHeight;
-      enterProgress = Math.min(1, Math.max(0, (vh - storyRect.top) / vh));
       // starts from where "Wear it." rests (PAN_START, not the very top), so
       // the photo is exactly in place — no gap at the right edge — whenever
       // "Wear it." is showing, including after gliding back up to it
@@ -3262,7 +3271,12 @@
     }
     const panTransform = `translateX(${-shift}%)`;
     travelingBg.style.transform = panTransform;
-    const clip = `inset(${(1 - enterProgress) * 100}% 0 0 0)`;
+    // the curtain's edge sits exactly on the section's top edge, in pixels
+    // (not a share of the layer's height: on iPhones that 100vh layer and
+    // the visible screen differ by the address bar, which shows and hides
+    // as you scroll, so the edge drifted away from the hero above it)
+    const clipTop = panReduceMotion.matches ? 0 : Math.round(Math.max(0, storyRect.top));
+    const clip = `inset(${clipTop}px 0 0 0)`;
     if (clip !== lastBgClip) { lastBgClip = clip; travelingBg.style.clipPath = clip; } // (a clip change repaints the photo — skip it when it's the same)
 
     // the mask fades out over the switch — dim behind "Wear it.", full
@@ -3554,6 +3568,10 @@
     const box = ripLayer.getBoundingClientRect();
     const tr = g.track.getBoundingClientRect();
     const w = g.tabs[0].offsetWidth, h = g.tabs[0].offsetHeight;
+    // (where "Let it sense!" leaves to, read now with the rest: reading
+    // layout after writing the tabs' styles below would force a relayout
+    // every frame)
+    const colGoneX = ripTextCol ? -(ripTextCol.offsetLeft + ripTextCol.parentElement.offsetLeft) - ripTextCol.offsetWidth - 60 : 0;
     const narrow = box.width <= 900;
     // phones: smaller, and up under "Let it sense!" so the copy fits below
     const bigH = Math.min(box.height * (narrow ? 0.42 : REEL_BIG_H), box.width * 0.62 / 0.72);
@@ -3603,7 +3621,7 @@
       const x = mix(c.x, rp.x, m), y = mix(0, rp.y, m), s = mix(c.s, rp.s, m);
       tab.style.transform = `translateX(${x}px) translateY(${y}px) scale(${s}) rotateY(${mix(c.rot, 0, m)}deg)`;
       tab.style.opacity = mix(c.opacity, rp.opacity, m);
-      tab.style.filter = `brightness(${mix(c.bright, rp.br, m)})`;
+      tab.style.setProperty('--dim', (1 - 0.85 * mix(c.bright, rp.br, m)).toFixed(3)); // (see .story-gallery-tab::before)
       tab.style.zIndex = m > 0.5 ? zOf(seqOfTab[i]) : c.z;
       // its caption, beside where the card actually is right now (its
       // left edge stays put as it scales: transform-origin is left centre)
@@ -3657,11 +3675,8 @@
     // "Let it sense!": slides out past the left edge, fading, as the first
     // tab grows in — gone by the time it's in focus
     if (ripTextCol) {
-      const col = ripTextCol, content = col.parentElement;
-      const left = col.offsetLeft + content.offsetLeft;
-      const goneX = -left - col.offsetWidth - 60;
-      col.style.translate = `${mix(0, goneX, m)}px 0`;
-      col.style.opacity = String(1 - m);
+      ripTextCol.style.translate = `${mix(0, colGoneX, m)}px 0`;
+      ripTextCol.style.opacity = String(1 - m);
     }
   }
   updateRip();
