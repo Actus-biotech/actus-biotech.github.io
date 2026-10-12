@@ -96,7 +96,7 @@
     /* Black-screen intro: how much scrolling the black → white hero
        transition takes (the hero stays pinned for this long) */
     --intro-scroll:140vh;
-    /* …how dark the shade over its background video is (1 = solid
+    /* …how much its background video is darkened (1 = solid
        black, 0 = no darkening) */
     --intro-shade:0.45;
   }
@@ -501,22 +501,26 @@
      movers (drawn by the intro script's drawParticles) — inside the
      curtain, so they lift away with it */
   .intro-particles{ position:absolute; inset:0; width:100%; height:100%; display:block; }
-  /* Inside the curtain, bottom → top: the background video, a black shade
-     over it, then the random squares. The video is a "low-pass" layer, no
+  /* Inside the curtain, bottom → top: the background video, then the
+     random squares. The video is a "low-pass" layer, no
      detail left, only soft shapes and the overall movement: it comes
      already blurred (assets/background-header-blur.mp4, 960×540), so it's
      just played and scaled up. (It used to be blurred live with a CSS
      filter, re-blurring every frame, which made the curtain lag on phones.)
-     --intro-shade = how dark the shade is (1 = solid black, 0 = none). */
+     It's darkened by being see-through over the curtain's own black —
+     the same blend a black shade over it would give, minus a whole extra
+     full-screen layer to composite every frame.
+     --intro-shade = how dark it is (1 = solid black, 0 = none). */
   .intro-video{
     position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; display:block;
+    opacity:calc(1 - var(--intro-shade, 0.7));
   }
   /* while the loader is up the video may still be on its way: it stays
      hidden over the curtain's own black and fades in once it plays (the
      loader script sets .is-ready), so a late arrival never pops in */
   .intro-video.is-pending{ opacity:0; }
-  .intro-video.is-ready{ opacity:1; transition:opacity 0.6s ease; }
+  .intro-video.is-ready{ opacity:calc(1 - var(--intro-shade, 0.7)); transition:opacity 0.6s ease; }
   /* Glitchy centered line on the black screen (inside the curtain, above
      the squares). Two copies of the text (::before white, ::after grey,
      from data-text) sit exactly on top of it, normally invisible; during a
@@ -641,10 +645,6 @@
   }
   .intro-title.is-glitching::before,
   .intro-title.is-glitching::after{ opacity:1; }
-  .intro-shade{
-    position:absolute; inset:0;
-    background:#0B0B0B; opacity:var(--intro-shade, 0.7);
-  }
   /* Soft white bloom behind the sensor while it's over the black — same
      box as the card (right-aligned, square), bigger than it and blurred
      out by the gradient itself. Faded by the script (opacity only). */
@@ -1764,13 +1764,12 @@
 </div>
 <div class="intro-black" id="introBlack" aria-hidden="true">
   <!-- background video (started by the intro script, so it never loads
-       when the intro is off), darkened by the shade above it -->
+       when the intro is off), darkened over the curtain's black (see .intro-video) -->
   <!-- background-header.mp4 (1080p, 14 MB), cropped to its middle 90%,
        shrunk to 960×540 and blurred once ahead of time (no audio, ~420 KB,
        lightly compressed so the soft gradients don't band or block up
        when a phone scales it up): played as is, never blurred live -->
   <video class="intro-video" id="introVideo" src="assets/background-header-blur.mp4" muted loop playsinline preload="auto"></video>
-  <div class="intro-shade"></div>
   <canvas class="intro-particles" id="introParticles"></canvas>
   <!-- glitchy centered line (glitches driven by the intro script); the
        hyphen is a non-breaking one, so "bio-wearables" never splits -->
@@ -2246,6 +2245,7 @@
   const SPIN_SHARPNESS_IN = 0.5;    // speed-up, before the back
   const SPIN_SHARPNESS_OUT = 1.5; // slow-down, after the back
   let spin = 0;
+  let modelDrawn = false; // drawn at least once since it loaded
 
   function renderModel(){
     const dt = Math.min(modelClock.getDelta(), 0.1); // clamp: no jump after a hidden tab
@@ -2281,7 +2281,14 @@
         m.roughness = base + (Math.min(base, GLOSS_ROUGHNESS) - base) * dark;
       });
     }
-    modelRenderer.render(modelScene, modelCamera);
+    // (under the intro's curtain, all the way down, it can't be seen: the
+    // spin carries on, the GPU rests — but it's drawn once regardless as
+    // soon as it has loaded, so its one-off setup (shaders) is already
+    // done when the curtain lifts, not a hitch at the start of the lift)
+    if (!modelDrawn || !(intro && intro.covered && intro.covered())) {
+      modelRenderer.render(modelScene, modelCamera);
+      if (modelObject) modelDrawn = true;
+    }
     modelRaf = modelOnScreen ? requestAnimationFrame(renderModel) : 0;
   }
 
@@ -2549,8 +2556,13 @@
     const shared = window.actusIntro = { spinFactor: 0, rotX: 0, rotY: SETTLE_ROT_Y, rotZ: SETTLE_ROT_Z, dark: 1 };
 
     let geo = null, pinTop = 0, pinLength = 1, curtainH = 1;
+    // true while the curtain is all the way down, hiding the white hero
+    // completely: the hero's 3D sensor and EMG lines skip drawing then
+    // (nothing of them shows), and pick up again the moment it lifts
+    shared.covered = () => !SENSOR_ON_BLACK && window.scrollY <= pinTop + 0.5;
     let slideStart = null, running = false, settled = false;
     let p = null, lastNow = 0;                // smoothed scroll progress
+    let cueK = '';                            // the cue's opacity, as last written
     let mx = 0, my = 0, mxs = 0, mys = 0;     // mouse (-1..1), raw + smoothed
 
     // shapes canvas (inside the curtain, so it lifts away with it)
@@ -2690,9 +2702,12 @@
       const cur = clamp(lifted / curtainH, 0, 1);
 
       if (cue) { // scroll cue: gone as soon as the transition gets going
-        const k = 1 - range(p, [0, 0.08]);
-        cue.style.opacity = k.toFixed(3);
-        cue.style.pointerEvents = k > 0.5 ? '' : 'none';
+        const k = (1 - range(p, [0, 0.08])).toFixed(3);
+        if (k !== cueK) { // (only when it changes: no style work on the idle frames)
+          cueK = k;
+          cue.style.opacity = k;
+          cue.style.pointerEvents = k > 0.5 ? '' : 'none';
+        }
       }
 
       if (!SENSOR_ON_BLACK) { // sensor stays put in its slot, under the curtain
@@ -2949,8 +2964,17 @@
     resize();
     new ResizeObserver(resize).observe(canvas);
 
+    // A pan this slow moves a fraction of a px a frame, so ~30 fps looks
+    // the same as 60 at half the work; and nothing at all while the
+    // intro's curtain hides the hero completely
+    const DRAW_EVERY_MS = 1000 / 30 - 4; // (-4: every 2nd frame at 60 Hz, every 4th at 120)
+    let lastDraw = -Infinity;
     function draw(now){
-      render(now);
+      const intro = window.actusIntro;
+      if (now - lastDraw >= DRAW_EVERY_MS && !(intro && intro.covered && intro.covered())) {
+        lastDraw = now;
+        render(now);
+      }
       rafId = (reduceMotionQuery.matches || document.hidden || !onScreen) ? null : requestAnimationFrame(draw);
     }
     function render(now){
