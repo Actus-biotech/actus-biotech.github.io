@@ -1679,14 +1679,29 @@
   .team-section.is-visible .team-member:nth-child(3){ transition-delay:0.28s; }
   .team-section.is-visible .team-member:nth-child(4){ transition-delay:0.38s; }
   .team-section.is-visible .team-member:nth-child(5){ transition-delay:0.48s; }
-  /* Text-only: a thin rule above each person keeps the row structured */
-  .team-member{ border-top:1px solid var(--line); padding-top:16px; }
+  /* Text-only: a thin rule above each person keeps the row structured.
+     Every person is the same three lines — name, then one line per
+     degree — never wrapped, so they all line up. Each line is held to
+     one line by its size: full size wherever the longest of them fits
+     (the column counts below are picked so it does), and only ever
+     scaled down to the column's width (cqi) on a screen too narrow for
+     that. The columns are all one width, so everyone gets the same
+     sizes. (Longest: "Armin Panjehpour" ≈ 8.6em, "PhD Candidate,
+     Neuroscience" ≈ 13.5em — the divisors leave a little room.) */
+  .team-member{ border-top:1px solid var(--line); padding-top:16px; container-type:inline-size; }
   .team-name{
-    display:block; font-size:18px; font-weight:600;
+    display:block; white-space:nowrap;
+    font-size:min(18px, 100cqi / 9.2); font-weight:600;
     color:var(--ink);
   }
   .team-degree{
-    display:block; margin-top:6px; font-size:14px; color:var(--gray);
+    display:block; margin-top:6px; white-space:nowrap;
+    font-size:min(14px, 100cqi / 14.2); color:var(--gray);
+  }
+  /* five across only once the longest degree fits a fifth of the row at
+     full size; three across below that (2 left on the second row) */
+  @media (max-width:1169px){
+    .team-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); row-gap:28px; }
   }
 
   /* FOOTER */
@@ -1705,15 +1720,23 @@
     /* everything centred: the heading and each person in their column */
     .team-heading{ margin-bottom:28px; text-align:center; }
     .team-title{ margin:0 auto; }
-    .team-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:28px 14px; }
-    .team-member{ text-align:center; }
-    /* an odd one out on the last row: centred under the two columns */
-    .team-member:last-child:nth-child(odd){
-      grid-column:1 / -1; justify-self:center;
-      width:calc(50% - 7px);
+    /* phones: one centred list — two columns were too narrow for the
+       degrees (some wrapped, some didn't) and left the fifth person
+       stranded on a row of their own */
+    .team-grid{ grid-template-columns:minmax(0, 1fr); gap:22px; }
+    .team-member{ text-align:center; padding-top:20px; }
+    .team-name{ font-size:min(20px, 100cqi / 9.2); }
+    .team-degree{ font-size:min(15px, 100cqi / 14.2); }
+  }
+  /* Narrower screens: the footer stacks, centred, and the addresses sit
+     in a 2 × 2 grid — each column centred, so the two rows line up
+     (wrapped rows of different widths didn't) */
+  @media (max-width:960px){
+    footer{ flex-direction:column; gap:18px; text-align:center; }
+    .footer-contacts{
+      display:grid; grid-template-columns:repeat(2, max-content);
+      justify-content:center; justify-items:center; gap:10px 32px;
     }
-    footer{ flex-direction:column; gap:14px; text-align:center; }
-    .footer-contacts{ justify-content:center; }
   }
 
   /* SHORT LANDSCAPE SCREENS (a phone held sideways): the stacked phone
