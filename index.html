@@ -4749,8 +4749,10 @@
     // the look, all relative to the word's font size / the dot spacing:
     const DOT_GAP = 1 / 18;   // dot spacing, as a fraction of the font size
     const DOT_SIZE = 0.45;    // dot radius, as a fraction of the spacing (0.5 = touching)
-    const THICKEN = 0.3;      // how much the letters are fattened first, in dot spacings
+    const THICKEN = 0.3;      // how much the letters are widened first, in dot spacings each side
     const WIGGLE = 0.15;      // how far each dot drifts around its spot, in dot spacings
+    const MASK_RES = 4;       // the letters are rasterised this many times finer than the page…
+    const COVER = 0.7;        // …and a dot goes where they cover at least this much of its cell
     // the gradient the colour drifts along (ping-ponging end to end)
     const STOPS = [[255, 94, 58], [236, 38, 120], [139, 61, 255], [37, 99, 235], [8, 145, 178]];
     const LUT = [];
@@ -4761,7 +4763,7 @@
     }
     let dots = [], w = 0, h = 0, pad = 0, gap = 3, size = 0, dpr = 1;
     let t = 0, last = 0, raf = 0, appear = reduce ? 1 : 0, inView = false, introDone = reduce;
-    const pointer = { x: 0, y: 0, on: false };
+    const pointer = { x: 0, y: 0, on: false, touch: false };
 
     function build(){
       const cs = getComputedStyle(text);
@@ -4774,30 +4776,65 @@
       Object.assign(canvas.style, { left: `${-pad}px`, top: `${-pad}px`, width: `${w}px`, height: `${h}px` });
       canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
       // the glyphs, drawn letter by letter where the page put them (so the
-      // title's tight letter-spacing carries over)
+      // title's tight letter-spacing carries over), MASK_RES× finer than
+      // the page so each dot can be judged by how much of it they cover
       const mask = document.createElement('canvas');
-      mask.width = w; mask.height = h;
+      const mw = w * MASK_RES, mh = h * MASK_RES;
+      mask.width = mw; mask.height = mh;
       const mc = mask.getContext('2d', { willReadFrequently: true });
-      gap = Math.max(2.4, size * DOT_GAP);
+      mc.scale(MASK_RES, MASK_RES);
       mc.font = `${cs.fontStyle} ${cs.fontWeight} ${size}px ${cs.fontFamily}`;
-      // outlined as well as filled: thickens the strokes a little, so the
-      // dotted word carries the same weight as the solid title around it
-      mc.lineWidth = gap * THICKEN; mc.lineJoin = 'round';
+      // The grid's rows are fitted to the type: a whole number of them
+      // across the x-height (the lowercase letters' height), centred in it,
+      // the spacing nudged from DOT_GAP to make that fit. The letters'
+      // flat tops and bottoms then fall half-way between two rows, so the
+      // slight dip of a round letter below the baseline (s, c, e) or over
+      // the x-height can't reach the next row — a free-running grid caught
+      // it here and there as a lone dot under a letter, like a cedilla,
+      // wherever each browser's sub-pixel text placement happened to put
+      // a row (Safari, on phones).
+      const xh = mc.measureText('x').actualBoundingBoxAscent || size * 0.52;
+      const rowsInX = Math.max(3, Math.round(xh / (Math.max(2.4, size * DOT_GAP) * 0.866)));
+      const rowStep = xh / rowsInX;
+      gap = rowStep / 0.866;
+      // each letter is drawn three times, nudged left and right: widens
+      // the strokes a little, so the dotted word carries the same weight
+      // as the solid title around it — sideways only, so the letters'
+      // tops and bottoms stay on the rows fitted above (an outline grew
+      // them up and down as well)
+      const nudge = gap * THICKEN;
       const ascent = mc.measureText(text.textContent).fontBoundingBoxAscent || size * 0.8;
       const node = text.firstChild, range = document.createRange();
+      let baseline = 0;
       for (let i = 0; i < node.length; i++) {
         range.setStart(node, i); range.setEnd(node, i + 1);
         const cr = range.getBoundingClientRect();
         const gx = cr.left - r.left + pad, gy = cr.top - r.top + pad + ascent;
-        // (an "i" is outlined dotless, or the thickening would join its dot to its stem)
+        baseline = gy;
         const ch = node.data[i];
-        mc.fillText(ch, gx, gy); mc.strokeText(ch === 'i' ? '\u0131' : ch === 'j' ? '\u0237' : ch, gx, gy);
+        for (const dx of [-nudge, 0, nudge]) mc.fillText(ch, gx + dx, gy);
       }
-      const data = mc.getImageData(0, 0, w, h).data;
+      const data = mc.getImageData(0, 0, mw, mh).data;
+      // a dot goes wherever the letters cover at least COVER of the dot's
+      // own cell — judged by area, not by the single pixel under its
+      // centre, which let a mere sliver of a letter's edge make a dot
+      const cell = Math.max(1, Math.round(gap * 0.5 * MASK_RES)); // half-width of the cell sampled, mask px
+      function coverage(x, y){
+        const cx = Math.round(x * MASK_RES), cy = Math.round(y * MASK_RES);
+        let on = 0, all = 0;
+        for (let yy = Math.max(0, cy - cell); yy < Math.min(mh, cy + cell); yy++) {
+          for (let xx = Math.max(0, cx - cell); xx < Math.min(mw, cx + cell); xx++) {
+            all++; if (data[(yy * mw + xx) * 4 + 3] > 128) on++;
+          }
+        }
+        return all ? on / all : 0;
+      }
       dots = [];
-      for (let row = 0, y = gap / 2; y < h; row++, y += gap * 0.866) {
+      // (rows at baseline − ½, 1½, 2½… row steps, and on below it the same)
+      const y0 = baseline - rowStep / 2 - Math.floor((baseline - rowStep / 2) / rowStep) * rowStep;
+      for (let row = 0, y = y0; y < h; row++, y += rowStep) {
         for (let x = gap / 2 + (row % 2 ? gap / 2 : 0); x < w; x += gap) {
-          if (data[((y | 0) * w + (x | 0)) * 4 + 3] > 128) dots.push({ hx: x, hy: y, x, y, vx: 0, vy: 0, ph: Math.random() * 6.283 });
+          if (coverage(x, y) >= COVER) dots.push({ hx: x, hy: y, x, y, vx: 0, vy: 0, ph: Math.random() * 6.283 });
         }
       }
       word.classList.add('is-dotted');
@@ -4862,11 +4899,25 @@
     });
 
     if (!reduce) {
-      frame.addEventListener('pointermove', (e) => {
+      // mouse / pen: the dots part around it while it hovers. A finger:
+      // only while it's down — and it lets go as soon as the browser takes
+      // the touch over to scroll the page (pointercancel; Safari sends no
+      // pointerleave then, which left the dots parted around the spot
+      // until the next touch)
+      const aim = (e) => {
         const b = canvas.getBoundingClientRect();
         pointer.x = e.clientX - b.left; pointer.y = e.clientY - b.top; pointer.on = true;
-      });
-      frame.addEventListener('pointerleave', () => { pointer.on = false; });
+        pointer.touch = e.pointerType === 'touch';
+      };
+      const release = () => { pointer.on = false; };
+      frame.addEventListener('pointerdown', aim);
+      frame.addEventListener('pointermove', aim);
+      frame.addEventListener('pointerleave', release);
+      frame.addEventListener('pointercancel', release);
+      frame.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') release(); });
+      // (and in case a browser sends none of those: a page scroll under a
+      // finger always lets go)
+      window.addEventListener('scroll', () => { if (pointer.touch) release(); }, { passive: true });
     }
   })();
 </script>
