@@ -17,6 +17,11 @@
     set();
     window.addEventListener('resize', set);
   })();
+  /* Phones (narrow screens, and phones held sideways): the page's own,
+     simpler version of the heavy scroll-driven parts — see the PHONES
+     rules in the CSS, which use this same query. Live: rotating or
+     resizing across it switches over. */
+  window.actusPhone = window.matchMedia('(max-width:900px), (pointer:coarse) and (max-height:500px)');
 </script>
 <script>
   /* Reloading (or coming back with back / forward): you come back exactly
@@ -611,6 +616,29 @@
   .is-loading .intro-cue, .intro-cue.is-waiting{ visibility:hidden; }
   .is-loading .intro-cue-text, .intro-cue.is-waiting .intro-cue-text{ animation:none; }
   html.is-loading, html.is-loading body{ overflow:hidden; }
+  /* Phones (window.actusPhone): a ^ over "Meet Actus" — swipe up —
+     nudging upward. The words themselves hold still there (the loader's
+     landed words too, so the hand-over still lines up), and the ^ fades
+     in once the real cue takes over. */
+  .intro-cue-arrow{ display:none; }
+  @media (max-width:900px), (pointer:coarse) and (max-height:500px){
+    .intro-cue{ gap:6px; }
+    .intro-cue-arrow{
+      display:block; width:22px; height:22px;
+      animation:intro-cue-nudge 1.8s ease-in-out infinite;
+      transition:opacity 0.5s ease;
+    }
+    .intro-cue-text, .site-loader.is-landed .site-loader-text{ animation:none; }
+  }
+  .is-loading .intro-cue-arrow, .intro-cue.is-waiting .intro-cue-arrow{ opacity:0; }
+  .intro-cue-arrow svg{
+    display:block; width:100%; height:100%;
+    fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+  }
+  @keyframes intro-cue-nudge{
+    0%, 100%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+  }
   .intro-title.is-glitching::before,
   .intro-title.is-glitching::after{ opacity:1; }
   .intro-shade{
@@ -1023,6 +1051,50 @@
      finger (no wheel-triggered switch there), so a full screen per step
      was a long haul; this keeps it to about one screen and a bit */
   @media (max-width:900px){ .story-step{ height:55vh; } }
+
+  /* PHONES — the features, plain (window.actusPhone is the same query).
+     The pinned "Wear it." → "Only with Actus" story, its travelling photo
+     and the focus reel are desktop only: heavy, and built for a wheel. On
+     a phone the section is just its title and a row of equal, flat
+     feature cards, swiped sideways with the browser's own scrolling
+     (snapping card to card) — nothing scales, fades or tilts. The cards
+     are built from the story's tabs by the phone-features script. */
+  .m-features{ display:none; }
+  @media (max-width:900px), (pointer:coarse) and (max-height:500px){
+    .story-sticky, .story-step, .story-gallery-steps,
+    .traveling-bg-image, .traveling-bg-fade{ display:none; }
+    .m-features{ display:block; padding:64px 0 16px; }
+  }
+  .m-features-title{
+    padding:0 20px; color:var(--ink);
+    font-size:clamp(40px, 12vw, 56px); font-weight:800;
+    letter-spacing:-0.03em; line-height:0.98;
+  }
+  .m-features-sub{
+    margin-top:14px; padding:0 20px; max-width:520px;
+    font-size:17px; font-weight:500; line-height:1.45; color:var(--ink);
+  }
+  .m-features-row{
+    display:flex; gap:12px; margin-top:28px; padding:0 20px 8px;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory; scroll-padding:0 20px;
+    scrollbar-width:none;
+  }
+  .m-features-row::-webkit-scrollbar{ display:none; }
+  /* (narrower on a phone held sideways, so a whole card fits the height) */
+  .m-feature{ flex:0 0 min(72vw, 300px, 52vh); scroll-snap-align:start; }
+  .m-feature-media{
+    aspect-ratio:3/4; border-radius:16px; overflow:hidden;
+    background:var(--frame-bg);
+  }
+  .m-feature-media img, .m-feature-media video{
+    display:block; width:100%; height:100%; object-fit:cover;
+  }
+  .m-feature-name{ display:block; margin-top:14px; font-size:14px; font-weight:600; color:#6B6B6B; }
+  .m-feature-desc{
+    margin-top:4px; text-wrap:balance; color:var(--ink);
+    font-size:20px; font-weight:800; letter-spacing:-0.02em; line-height:1.15;
+  }
 
   /* SCIENCE — Apple-style "closer look": a compact grey rounded frame
      (the hero's frame colour and radius), no wider than --science-max and
@@ -1704,6 +1776,7 @@
        hyphen is a non-breaking one, so "bio-wearables" never splits -->
   <!-- scroll cue: "Meet Actus", bobbing downward; clicking it plays the transition -->
   <button class="intro-cue" id="introCue" type="button" aria-label="Meet Actus — scroll down">
+    <span class="intro-cue-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
     <span class="intro-cue-text">Meet Actus</span>
   </button>
   <div class="intro-title" id="introTitle" data-text="A new era of bio‑wearables">A new era of bio‑wearables</div>
@@ -1774,7 +1847,64 @@
        section un-pins (height set by the gallery script). The gallery is
        browsed with its buttons or sideways input, not by scrolling. -->
   <div class="story-gallery-steps" id="storyGallerySteps" aria-hidden="true"></div>
+  <!-- Phones: the features as a plain row of cards (see .m-features),
+       filled by the phone-features script just below -->
+  <div class="m-features">
+    <h2 class="m-features-title">Only with<br>Actus</h2>
+    <p class="m-features-sub">Actus senses your muscles and movements.</p>
+    <div class="m-features-row" id="mFeaturesRow"></div>
+  </div>
 </section>
+<script>
+  /* Phones: one flat card per feature — built from the story's own tabs
+     (its photo or video, name and line), so each feature is written once.
+     A card's video plays only while that card is on screen. */
+  (function(){
+    const row = document.getElementById('mFeaturesRow');
+    const tabs = document.querySelectorAll('#storyGalleryTrack .story-gallery-tab');
+    if (!row || !tabs.length) return;
+    const videos = [];
+    tabs.forEach(tab => {
+      const card = document.createElement('figure');
+      card.className = 'm-feature';
+      const box = document.createElement('div');
+      box.className = 'm-feature-media';
+      const src = tab.querySelector('video, img');
+      if (src) {
+        const media = src.cloneNode(false);
+        if (media.tagName === 'VIDEO') {
+          media.removeAttribute('autoplay'); // (played by the observer below)
+          media.muted = true;
+          media.preload = 'metadata';
+          videos.push(media);
+        } else {
+          media.loading = 'lazy';
+        }
+        box.appendChild(media);
+      }
+      const cap = document.createElement('figcaption');
+      const name = document.createElement('span');
+      name.className = 'm-feature-name';
+      const label = tab.querySelector('.story-gallery-tab-label');
+      name.textContent = label ? label.textContent : '';
+      const desc = document.createElement('p');
+      desc.className = 'm-feature-desc';
+      desc.textContent = tab.dataset.desc || '';
+      cap.append(name, desc);
+      card.append(box, cap);
+      row.appendChild(card);
+    });
+    if (!window.IntersectionObserver) return;
+    // (on desktop the row is hidden, so nothing here ever plays)
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(({ target: v, isIntersecting }) => {
+        if (isIntersecting && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+        else if (!isIntersecting && !v.paused) v.pause();
+      });
+    }, { threshold: 0.25 });
+    videos.forEach(v => io.observe(v));
+  })();
+</script>
 
 <!-- The science, Apple-style: EMG / IMU / Analysis options on the left,
      the picked one's explanation (with its live trace, or for Analysis a
@@ -2965,7 +3095,8 @@
     const warmImgs = tabs.map(t => t.querySelector('img')).filter(Boolean);
     if (storySec && window.IntersectionObserver) {
       new IntersectionObserver((entries) => {
-        const near = entries[entries.length - 1].isIntersecting;
+        // (phones show the plain cards instead — see .m-features)
+        const near = entries[entries.length - 1].isIntersecting && !window.actusPhone.matches;
         warmVideos.forEach(v => {
           if (near && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
           else if (!near && !v.paused) v.pause();
@@ -3232,7 +3363,7 @@
   let reelBgOut = 0;
   let lastBgClip = '';
   function updateBgPan(){
-    if (!travelingBg || !panStep || !lastPanStep || !storyEl2) return;
+    if (!travelingBg || !panStep || !lastPanStep || !storyEl2 || window.actusPhone.matches) return; // (phones: no photo, see .m-features)
     const storyRect = storyEl2.getBoundingClientRect();
 
     let p = 0; // phones: 0..1 through the pinned stretch
@@ -3345,7 +3476,7 @@
     return [...ripLayer.querySelectorAll('[data-rip-piece]'), ...tabs];
   }
   function updateRip(){
-    if (!ripLayer || !storyEl2) return;
+    if (!ripLayer || !storyEl2 || window.actusPhone.matches) return; // (phones: the plain cards instead, see .m-features)
     const rect = storyEl2.getBoundingClientRect();
     const rawP = storyProgress(rect);
     // scrolled past the landed end by hand (keyboard, scrollbar): past it too
@@ -3424,7 +3555,7 @@
   const reelProgress = document.getElementById('storyReelProgress');
   function reelMaxH(){ return REEL_IN + reelItems().length - 1; }
   function reelActive(){
-    if (!reelReady || !ripLayer) return false;
+    if (!reelReady || !ripLayer || window.actusPhone.matches) return false;
     // still pinned on screen (not scrolled mostly away)
     const b = ripLayer.getBoundingClientRect(), mid = window.innerHeight / 2;
     return b.top < mid && b.bottom > mid;
@@ -3804,7 +3935,7 @@
   // "Wear it." fully shown (top) … every "Let it sense!" piece landed (end),
   // as page-scroll positions and as story progress (topP, endP)
   function storyBounds(){
-    if (!ripLayer || !storyEl2) return null;
+    if (!ripLayer || !storyEl2 || window.actusPhone.matches) return null;
     const top = storyEl2.getBoundingClientRect().top + window.scrollY;
     const pinned = storyCoreLen(storyEl2.offsetHeight);
     const topP = WEAR_OUT[0], endP = ripEnd();
@@ -3873,7 +4004,7 @@
   window.addEventListener('scroll', () => {
     const y = window.scrollY, prev = passPrevY;
     passPrevY = y;
-    if (!passedNow() || storySwitch || storyHoldY !== null) return;
+    if (!passedNow() || storySwitch || storyHoldY !== null || window.actusPhone.matches) return;
     const r = storyEl2.getBoundingClientRect();
     const top = r.top + y, landY = top + bgLandP * storyCoreLen(r.height);
     if (y > top + 0.5 && y < landY - 0.5) {
@@ -4064,7 +4195,7 @@
     navTo = null; // you're scrolling yourself again
     // In the features reel (past its first view), up or down just scrolls
     // the page (see reelScrollOff)
-    if (reelHTarget > 0 && !storySwitch) { reelScrollOff(e.deltaY > 0); return; }
+    if (reelHTarget > 0 && !storySwitch && !window.actusPhone.matches) { reelScrollOff(e.deltaY > 0); return; }
     if (storySwitch) {
       // mid-switch: the other way turns it around; the same way changes
       // nothing (it never speeds up or skips ahead)
@@ -4285,7 +4416,7 @@
       // a timed glide is already taking the page somewhere on purpose
       // (the intro, the story switch) — let it land
       if (byTouch || touching || panReduceMotion.matches || introGlide || storySwitch || storyHoldY !== null || passedNow() || navTo !== null || window.actusDragging) return;
-      const z = STORY_AUTO_GLIDE ? zone() : null;
+      const z = STORY_AUTO_GLIDE && !window.actusPhone.matches ? zone() : null;
       if (z && z.p > z.start + EDGE && z.p < z.end - EDGE) {
         // stopped mid-way through "Wear it." → "Let it sense!": finish
         // with the same switch a wheel plays
