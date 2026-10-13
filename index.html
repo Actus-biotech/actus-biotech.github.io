@@ -42,8 +42,8 @@
       const saved = parseFloat(sessionStorage.getItem('actus:scrollY'));
       if ((type === 'reload' || type === 'back_forward') && saved >= 0) {
         // a #section left in the address by a nav link would have the
-        // browser jump there on its own as the page loads — #preorder to
-        // the footer, #top to the white hero even when you were on the
+        // browser jump there on its own as the page loads — #waitlist to
+        // the form, #top to the white hero even when you were on the
         // curtain. Where you actually were wins: drop it before the browser
         // can act on it (which also lets the top get its loading screen).
         if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
@@ -142,8 +142,8 @@
   }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
-    .hero, .panel, .team-section, footer,
-    .panel > *, footer > *,
+    .hero, .panel, .team-section, .waitlist, footer,
+    .panel > *, .waitlist-inner > *, footer > *,
     .team-heading, .team-member{ opacity:1; transform:none; }
     .coach-title, .coach-body{ opacity:1; transform:none; filter:none; }
     .site-logo, .nav-links li, .nav-cta-pill, .title-xl-line1, .title-xl-line2,
@@ -237,7 +237,7 @@
     :root{ --frame-gap:8px; --frame-radius:20px; --frame-pad-x:16px; --corner-inset:16px; }
     .header-wrap{ top:calc(var(--frame-gap) + 12px); }
     .site-logo{ top:calc(var(--frame-gap) + 12px); }
-    /* Phones: the bar is just Pre-order + a menu button, the same height
+    /* Phones: the bar is just Join waitlist + a menu button, the same height
        as the logo tile opposite it; the links drop down under it as a
        black panel when the menu is open. */
     header{ height:57px; padding:0 8px 0 10px; gap:4px; overflow:visible; }
@@ -1796,6 +1796,84 @@
   footer a:hover{ text-decoration:underline; }
   .footer-contacts{ display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:flex-end; }
 
+  /* WAITLIST / CONTACT: one small form above the footer. A two-way
+     switch picks what it does — just an email for the waitlist, or name,
+     email and a message to get in touch. Sent to hello@actus.bio through
+     FormSubmit (see the waitlist script). */
+  .waitlist{ padding:20px 56px 120px; max-width:1240px; margin:0 auto; }
+  .waitlist-inner{
+    display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 520px);
+    gap:48px 72px; align-items:start;
+    border-top:1px solid var(--line); padding-top:56px;
+  }
+  .waitlist-inner > *{
+    opacity:0; transform:translateX(-40px);
+    transition:opacity 0.55s ease, transform 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .waitlist.is-visible .waitlist-inner > *{ opacity:1; transform:translateX(0); }
+  .waitlist.is-visible .waitlist-inner > *:nth-child(2){ transition-delay:0.12s; }
+  .waitlist-title{
+    margin:12px 0 0; max-width:520px;
+    font-size:clamp(30px, 4vw, 52px); font-weight:800;
+    line-height:0.98; letter-spacing:-0.02em; color:var(--ink);
+  }
+  .waitlist-sub{ margin:18px 0 0; max-width:420px; font-size:16px; line-height:1.5; color:var(--gray); }
+
+  .wl-switch{
+    display:inline-flex; padding:4px; margin-bottom:16px;
+    border-radius:12px; background:#EDEDED;
+  }
+  .wl-switch label{ position:relative; cursor:pointer; }
+  .wl-switch input{ position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
+  .wl-switch span{
+    display:block; padding:9px 16px; border-radius:9px;
+    font-size:13px; font-weight:600; color:var(--gray);
+    transition:background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .wl-switch input:checked + span{ background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+  .wl-switch input:focus-visible + span{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  .wl-body{ display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:10px; }
+  .waitlist-form[data-mode="contact"] .wl-body{ grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); }
+  .waitlist-form[data-mode="contact"] .wl-message,
+  .waitlist-form[data-mode="contact"] .wl-submit{ grid-column:1 / -1; }
+  .waitlist-form[data-mode="contact"] .wl-submit{ justify-self:start; }
+  .wl-field[hidden]{ display:none; }
+  .wl-field input, .wl-field textarea{
+    display:block; width:100%; box-sizing:border-box;
+    font:inherit; font-size:15px; color:var(--ink);
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; outline:none;
+    transition:border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .wl-field textarea{ min-height:132px; resize:vertical; line-height:1.5; }
+  .wl-field input::placeholder, .wl-field textarea::placeholder{ color:var(--gray-dim); }
+  .wl-field input:focus, .wl-field textarea:focus{ border-color:var(--ink); box-shadow:0 0 0 3px rgba(36,36,36,0.08); }
+  .wl-submit{
+    font:inherit; font-size:14px; font-weight:600;
+    color:#fff; background:var(--ink); border:0; border-radius:12px;
+    padding:14px 22px; cursor:pointer; white-space:nowrap;
+    transition:transform 0.2s ease, opacity 0.2s ease;
+  }
+  .wl-submit:hover{ transform:scale(1.03); }
+  .wl-submit:disabled{ opacity:0.5; cursor:default; transform:none; }
+  .wl-honey{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+  .wl-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .wl-status{ min-height:1.5em; margin:14px 0 0; font-size:14px; color:var(--gray); }
+  .wl-status.is-ok{ color:var(--ink); }
+  .wl-status a{ color:var(--ink); }
+
+  @media (max-width:900px){
+    .waitlist{ padding:8px 24px 88px; }
+    .waitlist-inner{ grid-template-columns:minmax(0, 1fr); gap:32px; padding-top:44px; }
+  }
+  @media (max-width:520px){
+    .waitlist{ padding-left:16px; padding-right:16px; }
+    .wl-body,
+    .waitlist-form[data-mode="contact"] .wl-body{ grid-template-columns:minmax(0, 1fr); }
+    .wl-submit, .waitlist-form[data-mode="contact"] .wl-submit{ justify-self:stretch; }
+  }
+
   @media (max-width:720px){
     .team-section{ padding:32px 24px 76px; }
     /* everything centred: the heading and each person in their column */
@@ -1861,7 +1939,7 @@
       <li><a href="#top"><span>Product</span></a></li>
       <li><a href="#story"><span>How it works</span></a></li>
     </ul>
-    <a class="nav-cta-pill" href="#preorder">Pre-order</a>
+    <a class="nav-cta-pill" href="#waitlist">Join waitlist</a>
     <!-- phones only: opens the links above as a dropdown (see the nav script) -->
     <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -2300,7 +2378,31 @@
   </div>
 </section>
 
-<footer id="preorder">
+<section class="waitlist" id="waitlist" aria-labelledby="waitlistTitle">
+  <div class="waitlist-inner">
+    <div class="waitlist-heading">
+      <span class="team-kicker">Early access</span>
+      <h2 class="waitlist-title" id="waitlistTitle">Be first to train with Actus.</h2>
+      <p class="waitlist-sub">Join the waitlist for launch news and early access, or drop us a note.</p>
+    </div>
+    <form class="waitlist-form" id="waitlistForm" data-mode="waitlist" action="https://formsubmit.co/hello@actus.bio" method="POST">
+      <div class="wl-switch" role="radiogroup" aria-label="What would you like to do?">
+        <label><input type="radio" name="type" value="waitlist" checked><span>Join waitlist</span></label>
+        <label><input type="radio" name="type" value="contact"><span>Contact us</span></label>
+      </div>
+      <div class="wl-body">
+        <label class="wl-field wl-contact" hidden><span class="wl-sr">Name</span><input type="text" name="name" placeholder="Name" autocomplete="name" disabled></label>
+        <label class="wl-field"><span class="wl-sr">Email</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
+        <label class="wl-field wl-contact wl-message" hidden><span class="wl-sr">Message</span><textarea name="message" placeholder="How can we help?" rows="4" required disabled></textarea></label>
+        <button type="submit" class="wl-submit">Join waitlist</button>
+      </div>
+      <input type="text" name="_honey" class="wl-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="wl-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
   <div>© 2026 Actus Biotech. All rights reserved.</div>
   <div class="footer-contacts">
     <a href="mailto:hello@actus.bio">hello@actus.bio</a>
@@ -2309,6 +2411,59 @@
     <a href="mailto:teams@actus.bio">teams@actus.bio</a>
   </div>
 </footer>
+
+<script>
+  /* Waitlist / contact form: the switch shows the contact-only fields
+     (disabled when hidden, so they're neither required nor sent), and
+     the form posts to FormSubmit, which emails it to hello@actus.bio.
+     If that fails, the status line points to the address instead. */
+  (function(){
+    const form = document.getElementById('waitlistForm');
+    if (!form) return;
+    const ENDPOINT = 'https://formsubmit.co/ajax/hello@actus.bio';
+    const btn = form.querySelector('.wl-submit');
+    const status = form.querySelector('.wl-status');
+    const say = (html, ok) => { status.innerHTML = html; status.classList.toggle('is-ok', !!ok); };
+    const setMode = (mode) => {
+      form.dataset.mode = mode;
+      form.querySelectorAll('.wl-contact').forEach(el => {
+        el.hidden = mode !== 'contact';
+        el.querySelector('input, textarea').disabled = mode !== 'contact';
+      });
+      btn.textContent = mode === 'contact' ? 'Send message' : 'Join waitlist';
+      say('');
+    };
+    form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value); });
+    setMode(form.querySelector('[name="type"]:checked').value);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      if (data._honey) return;
+      delete data._honey;
+      const contact = form.dataset.mode === 'contact';
+      data._subject = contact ? 'New message from actus.bio' : 'New waitlist sign-up on actus.bio';
+      data._template = 'table';
+      btn.disabled = true;
+      say('Sending…');
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || String(out.success) !== 'true') throw new Error(out.message || 'failed');
+        form.querySelectorAll('input:not([type="radio"]), textarea').forEach(f => { f.value = ''; });
+        say(contact ? 'Thanks — we’ll get back to you soon.' : 'You’re on the list. We’ll be in touch.', true);
+      } catch (err) {
+        say('Something went wrong. Email us at <a href="mailto:hello@actus.bio">hello@actus.bio</a> instead.');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  })();
+</script>
 
 <script type="importmap">
   {
@@ -3348,7 +3503,7 @@
 </script>
 
 <script>
-  const revealSections = document.querySelectorAll('.hero, .panel, .team-section, footer');
+  const revealSections = document.querySelectorAll('.hero, .panel, .team-section, .waitlist, footer');
   const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -4528,7 +4683,7 @@
     requestAnimationFrame(smoothScrollTick);
   }
 
-  /* In-page links (logo, Home, nav, Pre-order): drop whatever scrolling
+  /* In-page links (logo, Home, nav, Join waitlist): drop whatever scrolling
      is still queued up — wheel smoothing or a glide — before jumping,
      otherwise it drags the page straight back and the click looks dead. */
   // Desktop: the shared hover pill (.nav-hover) follows the mouse from
