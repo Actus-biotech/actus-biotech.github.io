@@ -740,13 +740,13 @@
     display:flex; align-items:center;
     pointer-events:none;
   }
-  /* The features: the text starts on the page's own left line (the
-     1180px column the science and the product sit in), the gallery runs
-     from beside it right off the screen's edge, and the title's top lines
-     up with the cards' (the column is stretched to the row's height). */
+  /* The features: the text starts right under the logo (the same left
+     edge), the gallery runs from beside it right off the screen's edge,
+     and the title's top lines up with the cards' (the column is
+     stretched to the row's height) — one full-width row, no empty side. */
   .story-rip .story-content{
     max-width:none; align-items:stretch;
-    padding:0 0 0 max(var(--frame-gap), (100vw - 1180px) / 2);
+    padding:0 0 0 calc(var(--frame-gap) + var(--corner-inset));
     justify-content:flex-start; gap:clamp(40px, 5vw, 96px);
   }
   .story-rip .story-text-col{
