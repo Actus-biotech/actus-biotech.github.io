@@ -715,61 +715,10 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     overflow:hidden;
     transition: background-color 0.7s ease;
-    /* transparent, not an opaque color — so the traveling photo (which sits
-       behind it, see .traveling-bg-image below) actually shows through
-       instead of being covered by a solid panel background */
   }
-  /* Shared background photo — a single fixed layer, not two separate ones,
-     so it reads as one object physically travelling: while the "Wear it."
-     sticky panel is still scrolling up into place (before it locks), only
-     the sliver of it that has actually scrolled into view is revealed —
-     like a curtain rising from the bottom — rather than the whole photo
-     popping in the instant any part of the section is technically within
-     reach. Once fully in place it slides left as you scroll — held at the
-     same vertical level throughout — settling into its resting spot for
-     the "Know it all!" step, where it just stays put. A true BACKGROUND:
-     z-index is negative, so real content (title text, metric numbers)
-     always renders on top of it unconditionally — normal in-flow content
-     always paints above negative z-index elements, no ambiguity — while it
-     still sits above the page's own root background. Low opacity acts as
-     the "mask" — the photo reads as a texture, not a full-strength image. */
-  .traveling-bg-image{
-    position:fixed; top:0; left:0;
-    width:100vw; height:100vh;
-    background-size:cover; background-position:center;
-    opacity:0;
-    clip-path: inset(100% 0 0 0);
-    z-index:-1; pointer-events:none;
-    /* its own GPU layer: panning / fading it every frame is then just
-       compositing, not repainting a full-screen photo (and the page with it) */
-    will-change:transform, opacity;
-  }
-  /* Rides along with the photo (identical size/position/transform) and
-     fades its trailing edge into the page's own background color, so the
-     boundary between "photo" and the plain space revealed beside it is a
-     seamless, exact color match rather than the photo's own (slightly
-     different) edge tone meeting the page background abruptly. Invisible
-     while the photo is still full-screen behind "Wear it." — it only
-     fades in as the pan actually gets underway. */
-  .traveling-bg-fade{
-    position:fixed; top:0; left:0;
-    width:100vw; height:100vh;
-    background:linear-gradient(to right, transparent 72%, var(--bg) 96%);
-    opacity:0;
-    z-index:-1; pointer-events:none;
-    will-change:transform, opacity;
-  }
-  /* phones: a much longer, softer feather (the cropped photo has no pale
-     margin of its own to blend into the page) */
-  @media (max-width:900px){
-    .traveling-bg-fade{ background:linear-gradient(to right, transparent 30%, var(--bg) 92%); }
-  }
-  /* Content row. "Wear it." uses it as-is: just its title, centered.
-     "Let it sense!" has its own layer (.story-rip, stacked over the same
-     panel) that always holds its final two-column layout — text on one
-     side, the gallery on the other. Scroll drives where each piece of it
-     sits (see the story-rip script): they start off-screen to the right
-     and slide in one after another as "Wear it." drifts out to the left. */
+  /* Content row: the features layer (.story-rip, over the pinned panel)
+     holds a two-column layout — "Only with Actus" on one side, the
+     gallery on the other. */
   .story-content{
     position:relative; z-index:1;
     width:100%; max-width:1300px; margin:0 auto; padding:0 40px;
@@ -791,7 +740,6 @@
     display:flex; align-items:center;
     pointer-events:none;
   }
-  .story-rip [data-rip-piece], .story-wear{ will-change:translate, opacity; }
   .story-rip .story-content{
     justify-content:space-between;
   }
@@ -866,18 +814,23 @@
   /* Stage wraps just the track + its two arrows, so the arrows center on
      the track's own height regardless of the scrollbar sitting below it. */
   .story-gallery-stage{ position:relative; }
-  /* Focus reel (see updateReel in the story script): once "Let it sense!"
-     has landed, further scrolling pushes the arm photo out, and the tabs
-     take over the middle of the screen one at a time — scroll-scrubbed,
-     so no CSS transitions, and no longer clipped to the gallery column. */
+  /* Focus reel (see updateReel in the story script): opened with
+     "Explore features", the tabs take over the middle of the screen one
+     at a time — driven frame by frame, so no CSS transitions, and no
+     longer clipped to the gallery column. */
   .story-rip.is-reel .story-gallery{ overflow:visible; }
   /* the tabs' titles (and the shade behind them) are only for the gallery
      before "Explore features": they fade out as the reel opens (--reel-in,
      0 → 1, set by updateReel) and stay gone while browsing it */
   .story-gallery-tab-label, .story-gallery-tab::after{ opacity:calc(1 - var(--reel-in, 0)); }
   /* will-change off: otherwise the browser keeps the tab rasterized at its
-     small size and the focused (scaled-up) one renders blurry */
-  .story-rip.is-reel .story-gallery-tab{ transition:none; will-change:auto; }
+     small size and the focused (scaled-up) one renders blurry. Repainted
+     as they move, then — and the browser's repaint box for a scaled card
+     could fall a hair short of its antialiased bottom edge, leaving a
+     faint line behind at every spot it passed through. A transparent 1px
+     outline (drawn outside the box, so never clipped or seen) makes that
+     box a pixel bigger all round, so the edge is always cleaned up. */
+  .story-rip.is-reel .story-gallery-tab{ transition:none; will-change:auto; outline:1px solid transparent; }
   .story-rip .story-text-col{ transform-origin:left top; }
   /* A big title that takes a slot in the reel of its own, just before a
      tab (set on that tab as data-title-before), and moves along it like
@@ -926,8 +879,7 @@
     .story-reel-cap-title{ margin-bottom:8px; font-size:16px; }
     .story-reel-cap-desc{ font-size:clamp(26px, 7.6vw, 36px); }
   }
-  /* Gallery controls, bottom centre. Shown once "Let it sense!" has landed
-     (.is-browsable on the rip layer). On the first view (.is-start) it's a
+  /* Gallery controls, bottom centre. On the first view (.is-start) it's a
      single "Explore features →" pill. Going in, it morphs in two beats:
      the pill shrinks down into the progress bar (.story-reel-explore is
      both), then the back and next circles grow out of the bar's two ends
@@ -940,15 +892,13 @@
     position:absolute; left:50%; bottom:clamp(32px, 7vh, 72px); z-index:5;
     translate:-50% 0;
     display:flex; align-items:center;
-    opacity:0; pointer-events:none;
-    transition:opacity 0.2s ease;
+    pointer-events:auto;
     --nav-btn:48px; --nav-bar:96px; --nav-gap:14px;
     --nav-ease:cubic-bezier(.4, 0, .2, 1);
     --nav-out:cubic-bezier(.2, .8, .2, 1);
     --bar-t:0.42s;   /* pill ⇄ bar */
     --circ-t:0.42s;  /* circles growing out / folding in */
   }
-  .story-rip.is-browsable .story-reel-nav{ opacity:1; pointer-events:auto; }
   .story-reel-btn{
     flex:0 0 auto;
     height:var(--nav-btn); width:var(--nav-btn); padding:0;
@@ -1052,11 +1002,9 @@
     transform:translateY(0);
     opacity:1;
   }
-  /* "Only with / Actus": two deliberate lines, a touch smaller than "Wear it." so
-     "Only with" fits its column on one line */
+  /* "Only with / Actus": two deliberate lines, a touch smaller than the
+     base title so "Only with" fits its column on one line */
   .story-title-sense{ font-size:clamp(44px, 6.6vw, 104px); line-height:0.98; white-space:nowrap; }
-  .story-title.out{ transform:translateY(var(--exit-y, -38px)); opacity:0; }
-  .story-title.enter-start{ transform:translateY(var(--enter-y, 30px)); opacity:0; }
   /* Optional subtext under a story title — empty (and collapsed) for steps
      that don't set data-subtitle, crossfading in step with the title for
      the ones that do. */
@@ -1071,8 +1019,6 @@
     opacity:1;
   }
   .story-subtitle:empty{ display:none; }
-  .story-subtitle.out{ transform:translateY(var(--exit-y, -38px)); opacity:0; }
-  .story-subtitle.enter-start{ transform:translateY(var(--enter-y, 30px)); opacity:0; }
   .story-rip .story-subtitle{
     margin:14px 0 0; text-align:left; max-width:460px;
     font-size:clamp(17px, 1.9vw, 25px); line-height:1.45;
@@ -1080,23 +1026,16 @@
   @media (max-width:900px){
     .story-rip .story-subtitle{ text-align:center; margin:20px auto 0; max-width:520px; }
   }
-  .story-step{ height:100vh; scroll-snap-align: start; }
-  /* phones / tablets scrub the "Wear it." → "Only with Actus" switch with a
-     finger (no wheel-triggered switch there), so a full screen per step
-     was a long haul; this keeps it to about one screen and a bit */
-  @media (max-width:900px){ .story-step{ height:55vh; } }
 
   /* PHONES — the features, plain (window.actusPhone is the same query).
-     The pinned "Wear it." → "Only with Actus" story, its travelling photo
-     and the focus reel are desktop only: heavy, and built for a wheel. On
+     The pinned features and their focus reel are desktop only: heavy, and built for a wheel. On
      a phone the section is just its title and a row of equal, flat
      feature cards, swiped sideways with the browser's own scrolling
      (snapping card to card) — nothing scales, fades or tilts. The cards
      are built from the story's tabs by the phone-features script. */
   .m-features{ display:none; }
   @media (max-width:900px), (pointer:coarse) and (max-height:500px){
-    .story-sticky, .story-step, .story-gallery-steps,
-    .traveling-bg-image, .traveling-bg-fade{ display:none; }
+    .story-sticky, .story-gallery-steps{ display:none; }
     .m-features{ display:block; padding:64px 0 16px; }
   }
   .m-features-title{
@@ -2013,12 +1952,6 @@
 <div class="reload-curtain" id="reloadCurtain" aria-hidden="true"><span class="reload-curtain-text">A new era of bio‑wearables</span></div>
 <!-- Loading screen (see the loader script) -->
 <div class="site-loader" id="siteLoader" aria-hidden="true"><span class="site-loader-text">Meet Actus</span></div>
-<!-- Single traveling background photo — shared between the "Wear it." title
-     and the metrics panel below it; JS pans/fades it as you scroll (see the
-     bottom script block). Fixed + placed first so it stacks under all real
-     content regardless of which section is currently on screen. -->
-<div class="traveling-bg-image" id="travelingBgImage" aria-hidden="true"></div>
-<div class="traveling-bg-fade" id="travelingBgFade" aria-hidden="true"></div>
 
 <!-- Actus logo mark (assets/actus_w_logo.svg), top-left (back to the black-screen pre-header) -->
 <a class="site-logo" href="#intro" aria-label="Actus — back to the start">
@@ -2085,20 +2018,13 @@
 
 <section class="story" id="story">
   <div class="story-sticky" id="storyPanel">
-    <div class="story-content story-wear" id="storyWear">
-      <div class="story-text-col">
-        <div class="story-title-track">
-          <span class="story-title enter-start" id="storyTitle">Wear it.</span>
-        </div>
-      </div>
-    </div>
     <div class="story-rip" id="storyRip">
      <div class="story-content">
       <div class="story-text-col">
         <div class="story-title-track">
-          <span class="story-title story-title-sense" data-rip-piece>Only with<br>Actus</span>
+          <span class="story-title story-title-sense">Only with<br>Actus</span>
         </div>
-        <span class="story-subtitle" data-rip-piece>Actus senses your muscles and movements.</span>
+        <span class="story-subtitle">Actus senses your muscles and movements.</span>
       </div>
       <div class="story-gallery" id="storyGallery">
         <div class="story-gallery-stage">
@@ -2136,14 +2062,9 @@
      </div>
     </div>
   </div>
-  <!-- Scroll length only: "Wear it." holds over the first, "Let it sense!"
-       slides in from the right across the pinned stretch (see the
-       story-rip script). -->
-  <div class="story-step" data-bg-image="assets/photo1.jpeg"></div>
-  <div class="story-step"></div>
-  <!-- A short extra pinned hold once "Let it sense!" has landed, then the
-       section un-pins (height set by the gallery script). The gallery is
-       browsed with its buttons or sideways input, not by scrolling. -->
+  <!-- Scroll length only: the features stay pinned for a short hold, then
+       the section un-pins (height set by the gallery script). The gallery
+       is browsed with its buttons or sideways input, not by scrolling. -->
   <div class="story-gallery-steps" id="storyGallerySteps" aria-hidden="true"></div>
   <!-- Phones: the features as a plain row of cards (see .m-features),
        filled by the phone-features script just below -->
@@ -3485,7 +3406,7 @@
 </script>
 
 <script>
-  /* "Let it sense!" perspective carousel — all 7 feature categories. Every
+  /* The features' perspective carousel — all 7 feature categories. Every
      tab gets a slot d = its distance from the focused tab: d=0 is the
      big focused tab at the left, d=1..VISIBLE-1 recede to the right
      (each smaller, dimmer, tilted a bit further away), d=-1 is the tab
@@ -3564,7 +3485,7 @@
       layout();
     }
 
-    // A short extra hold on "Let it sense!" before the section un-pins
+    // A short hold on the features before the section un-pins
     // (the gallery-steps spacer at the end of the story section). The
     // gallery itself is browsed with the buttons / sideways input (see the
     // focus reel in the story script), never by vertical scrolling.
@@ -3572,7 +3493,7 @@
     const stepsEl = document.getElementById('storyGallerySteps');
     if (stepsEl) stepsEl.style.height = `${GALLERY_HOLD_VH}vh`;
 
-    // the story script drives the focus reel from scroll position
+    // the story script drives the focus reel
     window.actusGallery = {
       count: n,
       tabs,
@@ -3580,11 +3501,11 @@
       poseOf,
       relayout: layout
     };
-    // Warm the tabs up before the switch brings them on: the browser only
-    // starts autoplaying a video once it's on screen, so otherwise all of
-    // them start decoding at once in the switch's first frames (and the
-    // photos get decoded then too). From a screen away from the story,
-    // they're already playing; far from it, they're paused again.
+    // Warm the tabs up before they come on screen: the browser only starts
+    // autoplaying a video once it's on screen, so otherwise all of them
+    // start decoding at once as the section arrives (and the photos get
+    // decoded then too). From a screen away from the story, they're
+    // already playing; far from it, they're paused again.
     const storySec = document.getElementById('story');
     const warmVideos = tabs.map(t => t.querySelector('video')).filter(Boolean);
     const warmImgs = tabs.map(t => t.querySelector('img')).filter(Boolean);
@@ -3789,225 +3710,20 @@
     }
   })();
 
-  const titleEl = document.getElementById('storyTitle');
-  const steps = document.querySelectorAll('.story-step');
-
-  /* Single traveling background photo, shared by the "Wear it." title and
-     the metrics panel below it — one element physically moving, not two
-     separate ones handing off. Seeded once from the step's own data
-     attribute (its title is likewise set directly below rather than via
-     the queue, since nothing has scrolled yet). */
-  const travelingBg = document.getElementById('travelingBgImage');
-  const travelingBgFade = document.getElementById('travelingBgFade');
-  const MASK_OPACITY = 0.26; // the "mask" behind "Wear it." — photo reads as a faint texture, not a full image
-  const REVEALED_OPACITY = 0.8; // full strength, once panned into the metrics panel — the mask goes away
-  const firstStepImage = steps[0] && steps[0].dataset.bgImage;
-  if (travelingBg && firstStepImage) {
-    travelingBg.style.backgroundImage = `url("${firstStepImage}")`;
-  }
-
-  /* Scroll-linked travel, in three phases:
-     1) Entrance — while the sticky panel is still scrolling up into place
-        (before it locks at the top), only the portion of it that has
-        actually scrolled into view is revealed, via clip-path, like a
-        curtain rising from the bottom of the screen. It reaches fully
-        revealed exactly when the panel locks — you only ever see "the
-        full version" once you've fully scrolled down to it.
-     2) Pan — over the "Wear it." → "Let it sense!" switch, the photo slides
-        LAND_PAN of the way left, held at the same vertical level, while the
-        low-opacity "mask" over it fades away (full strength once landed).
-     3) Out — from the moment "Let it sense!" has landed, scrolling on
-        carries it the rest of the way out to the left in one even,
-        unbroken slide, finishing a little way into the section scrolling
-        off (EXIT_SPEED_FACTOR). Opening the features reel pushes it out too.
-     Visibility itself is a hard on/off (no fade) exactly while the story
-     section is on screen — never lingering over any other part of the
-     page. Everything is driven straight off scroll position rather than a
-     fixed-duration animation, so it always lines up exactly with where
-     you are on the page. */
   const panReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const panStep = steps[0]; // "Wear it." — drives the entrance + main pan
-  const lastPanStep = steps[steps.length - 1]; // "Move it." — drives the fast exit
   const storyEl2 = document.getElementById('story');
-  // The pinned story = the "Wear it." / "Let it sense!" part, then the
-  // gallery's own stretch (#storyGallerySteps). Everything timed as a
-  // fraction of the pin (WEAR_OUT, RIP_*, the photo pan, the glide)
-  // measures the first part only, so the gallery stretch doesn't slow it.
-  const gallerySteps = document.getElementById('storyGallerySteps');
-  function storyCoreLen(storyHeight){
-    return Math.max(1, storyHeight - window.innerHeight - (gallerySteps ? gallerySteps.offsetHeight : 0));
-  }
-  // While the "Wear it." ⇄ "Let it sense!" switch plays (playStorySwitch,
-  // further down), its progress comes from the switch's own clock, not the
-  // scroll position — see storyProgress
-  let storyAnimP = null;
-  // Once "Let it sense!" has landed, the story never goes back to "Wear it."
-  // (until the page is reloaded): it stays landed, scrolling up just
-  // scrolls the page, and the switch's stretch of scroll is skipped (see
-  // the "past it" scroll listener further down). Wheel / trackpad only —
-  // a finger still scrubs through the switch as before.
-  let storyPassed = false, lastInputTouch = false;
-  window.addEventListener('touchstart', () => { lastInputTouch = true; }, { passive: true });
-  window.addEventListener('wheel', () => { lastInputTouch = false; }, { passive: true });
-  const passedNow = () => storyPassed && !lastInputTouch;
-  // 0..1 through the pinned story's first part (unclamped)
-  function storyProgress(rect){
-    if (storyAnimP !== null) return storyAnimP;
-    const raw = -rect.top / storyCoreLen(rect.height);
-    return passedNow() ? Math.max(raw, bgLandP) : raw;
-  }
-  const PAN_START = 0.04; // where "Wear it." rests (= WEAR_OUT[0] below); the pan only starts there…
-  const PAN_HOLD = 0.03;  // …plus this much more (well over the settle glide's "close enough" EDGE)
-  const NARROW_PAN_DONE = 0.5; // phones: progress by which the photo is gone (≈ the "Let it sense!" title landing)…
-  const NARROW_PAN_DRIFT = 45; // …and how far left (% of its width) it drifts while fading out
-  const EXIT_SPEED_FACTOR = 0.35; // the photo is fully out this far (fraction of the screen height) into the section scrolling away
-  // Desktop: how far left (% of its width) the photo has slid once
-  // "Let it sense!" has landed. From there, it carries on left in one
-  // straight, unbroken slide tied to the page scroll — no pause — and is
-  // fully out EXIT_SPEED_FACTOR of a screen into the section scrolling away.
-  const LAND_PAN = 38;
-  let bgLandP = 0.78; // story progress where "Let it sense!" has landed (= ripEnd(), kept up to date by updateRip)
-  // 0..1: the focus reel pushing the photo the rest of the way out (set by updateReel)
-  let reelBgOut = 0;
-  let lastBgClip = '';
-  function updateBgPan(){
-    if (!travelingBg || !panStep || !lastPanStep || !storyEl2 || window.actusPhone.matches) return; // (phones: no photo, see .m-features)
-    const storyRect = storyEl2.getBoundingClientRect();
-
-    let p = 0; // phones: 0..1 through the pinned stretch
-    let land = 0; // 0..1: "Wear it." → "Let it sense!" landed
-    let out = 0; // 0..1: from there, the page scroll carrying it the rest of the way out
-    let exitProgress = 0; // phones: 0..1 out, once the section starts scrolling away
-    if (!panReduceMotion.matches) {
-      const vh = window.innerHeight;
-      // starts from where "Wear it." rests (PAN_START, not the very top), so
-      // the photo is exactly in place — no gap at the right edge — whenever
-      // "Wear it." is showing, including after gliding back up to it
-      // (plus PAN_HOLD of slack)
-      const from = PAN_START + PAN_HOLD;
-      const sp = storyProgress(storyRect);
-      p = Math.min(1, Math.max(0, (sp - from) / (1 - from)));
-      land = Math.min(1, Math.max(0, (sp - from) / (bgLandP - from)));
-      // the rest: from the page-scroll position where "Let it sense!" landed
-      // to EXIT_SPEED_FACTOR of a screen into the section scrolling away —
-      // the pinned stretch, the gallery's hold and that bit of the exit as
-      // one even run (not while the switch's own clock is driving it)
-      if (storyAnimP === null) {
-        const core = storyCoreLen(storyRect.height);
-        const landAt = bgLandP * core, outAt = storyRect.height - vh + EXIT_SPEED_FACTOR * vh;
-        out = Math.min(1, Math.max(0, (-storyRect.top - landAt) / Math.max(1, outAt - landAt)));
-      }
-      exitProgress = Math.min(1, Math.max(0, (vh - storyRect.bottom) / (vh * EXIT_SPEED_FACTOR)));
-    }
-
-    // Phones: the photo is cropped to fill the tall screen, which cuts off
-    // its own pale right side — so sliding it would drag a hard skin-to-
-    // white edge across. Instead it drifts a little way left while fading
-    // out (gone by the time "Let it sense!" has slid in), with its trailing
-    // edge feathered from the start (NARROW_PAN_* / the fade layer below).
-    const narrowPan = window.innerWidth <= 900;
-    const k = narrowPan ? Math.min(1, p / NARROW_PAN_DONE) : 0; // phones: 0 → 1 across the drift
-    let shift;
-    if (narrowPan) shift = NARROW_PAN_DRIFT * k + 50 * Math.max(exitProgress, reelBgOut);
-    else {
-      const base = LAND_PAN * land + (100 - LAND_PAN) * out;
-      shift = base + (100 - base) * reelBgOut; // (the features reel pushes it out the rest of the way)
-    }
-    const panTransform = `translateX(${-shift}%)`;
-    travelingBg.style.transform = panTransform;
-    // the curtain's edge sits exactly on the section's top edge, in pixels
-    // (not a share of the layer's height: on iPhones that 100vh layer and
-    // the visible screen differ by the address bar, which shows and hides
-    // as you scroll, so the edge drifted away from the hero above it)
-    const clipTop = panReduceMotion.matches ? 0 : Math.round(Math.max(0, storyRect.top));
-    const clip = `inset(${clipTop}px 0 0 0)`;
-    if (clip !== lastBgClip) { lastBgClip = clip; travelingBg.style.clipPath = clip; } // (a clip change repaints the photo — skip it when it's the same)
-
-    // the mask fades out over the switch — dim behind "Wear it.", full
-    // strength once "Let it sense!" has landed
-    const reveal = narrowPan ? p : land;
-    const revealedOpacity = MASK_OPACITY + (REVEALED_OPACITY - MASK_OPACITY) * reveal;
-    const active = storyRect.top < window.innerHeight && storyRect.bottom > 0;
-    const fadeAway = narrowPan ? Math.pow(1 - k, 1.6) : 1; // phones: dissolving as it drifts
-    travelingBg.style.opacity = active ? String(revealedOpacity * fadeAway) : '0';
-
-    // the edge-fade rides along with the photo, only showing up once the
-    // pan is actually underway (invisible during the plain "Wear it." view)
-    if (travelingBgFade) {
-      travelingBgFade.style.transform = panTransform;
-      // (phones: straight away, so its edge is never a hard line)
-      travelingBgFade.style.opacity = active ? String(narrowPan ? Math.min(1, k * 12) : land) : '0';
-    }
-    // (the gallery's buttons stay as they are when the section scrolls
-    // away: they ride off with the cards, under the navbar)
-  }
-  updateBgPan();
-  // (on scroll it's run by updateRip, below — once per scroll, not twice)
-  window.addEventListener('resize', updateBgPan);
-
-  const BASE_DURATION = 550; // ms — the "Wear it." title's first rise-in
-
-  function setTiming(el, duration){
-    el.style.transition = `transform ${duration}ms cubic-bezier(.33,.1,.2,1), opacity ${Math.round(duration*0.85)}ms ease`;
-  }
-
-  /* "Wear it." → "Let it sense!", tied straight to scroll (no timed
-     transition): across the pinned stretch — the same 0..1 progress the
-     arm photo pans on — "Wear it." drifts left and fades while the
-     "Let it sense!" pieces slide in from off-screen right, one after
-     another: title, subtitle, then the gallery tabs (focused first, then
-     each receding one). Each piece decelerates into its final spot; the
-     last lands at RIP_DONE, and the finished view then holds for the
-     rest of the pin before the section scrolls away. Scrolling back up
-     plays it all in reverse. Pieces move via `translate`, which stacks
-     on top of their own `transform` (e.g. the carousel's), untouched. */
-  const ripLayer = document.getElementById('storyRip');
-  const wearLayer = document.getElementById('storyWear');
-  const RIP_START = 0.12;  // progress where the first piece starts moving
-  const RIP_STAGGER = 0.05; // progress between consecutive pieces starting
-  const RIP_PIECE = 0.36;  // progress each piece takes to travel in
-  const WEAR_OUT = [PAN_START, 0.4]; // progress range "Wear it." drifts out over
-  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  /* The features ("Only with Actus" and the gallery), pinned for a short
+     hold (#storyGallerySteps) and browsed as a focus reel, below. */
+  const featuresLayer = document.getElementById('storyRip');
   const clamp01 = v => Math.min(1, Math.max(0, v));
-  function ripPieces(){
-    // Gallery tabs in carousel order (data-slot from the carousel layout);
-    // hidden ones are invisible anyway, so they just ride along with the last
-    const tabs = Array.from(ripLayer.querySelectorAll('.story-gallery-tab'))
-      .filter(t => !t.classList.contains('is-hidden'))
-      .sort((a, b) => a.dataset.slot - b.dataset.slot);
-    return [...ripLayer.querySelectorAll('[data-rip-piece]'), ...tabs];
+  function updateStory(){
+    if (!featuresLayer || window.actusPhone.matches) return; // (phones: the plain cards instead, see .m-features)
+    updateGallery();
   }
-  function updateRip(){
-    if (!ripLayer || !storyEl2 || window.actusPhone.matches) return; // (phones: the plain cards instead, see .m-features)
-    const rect = storyEl2.getBoundingClientRect();
-    const rawP = storyProgress(rect);
-    // scrolled past the landed end by hand (keyboard, scrollbar): past it too
-    if (storyAnimP === null && -rect.top / storyCoreLen(rect.height) >= bgLandP - 0.002) storyPassed = true;
-    let p = clamp01(rawP);
-    const reduce = panReduceMotion.matches;
-    const travel = window.innerWidth;
-
-    if (wearLayer) {
-      const w = reduce ? (p > 0.4 ? 1 : 0) : easeOut(clamp01((p - WEAR_OUT[0]) / (WEAR_OUT[1] - WEAR_OUT[0])));
-      wearLayer.style.translate = `${-w * travel * 0.35}px 0`;
-      wearLayer.style.opacity = String(1 - w);
-    }
-
-    const pieces = ripPieces();
-    pieces.forEach((el, k) => {
-      const t = reduce ? (p > 0.4 ? 1 : 0)
-        : easeOut(clamp01((p - RIP_START - k * RIP_STAGGER) / RIP_PIECE));
-      el.style.translate = t >= 1 ? '' : `${(1 - t) * travel}px 0`;
-    });
-    updateGallery(rawP, storyCoreLen(rect.height));
-    bgLandP = ripEnd();
-    updateBgPan(); // picks up reelBgOut
-  }
-  /* Focus reel, opened from the first "Let it sense!" view with the
+  /* Focus reel, opened from the first features view with the
      next button (or sideways input, see "Browsing the reel" below):
-     1) In (m 0→1): the arm photo slides the rest of the way out to the
-        left; "Let it sense!" slides out past the left edge, fading; the
-        first tab grows into the middle of the screen, the next one peeking
+     1) In (m 0→1): "Only with Actus" slides out past the left edge,
+        fading; the first tab grows into the middle of the screen, the next one peeking
         in small from the right edge. Its line fades in to the left of it
         (phones: above it).
      2) Tabs (f 0→n-1): the focused tab slides out past the left edge
@@ -4022,10 +3738,6 @@
   const REEL_NARROW_BOTTOM = 150; // …and below it (for the gallery controls); the tab is centred in between
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const mix = (a, b, t) => a + (b - a) * t;
-  // story progress where every "Let it sense!" piece has landed
-  function ripEnd(){
-    return RIP_START + (ripPieces().length - 1) * RIP_STAGGER + RIP_PIECE;
-  }
   // The reel's sequence, one stop each: every tab, with a title item
   // slotted in before any tab that has a data-title-before. A title moves
   // through the reel just like a tab (peeking in at the right, centred,
@@ -4040,16 +3752,15 @@
   }
   /* Browsing the reel: only on purpose, never by vertical scroll. The
      reel's position H runs 0 → REEL_IN (the way in: H = 0 is the first
-     "Let it sense!" view) and then one unit per item. The previous / next
+     features view) and then one unit per item. The previous / next
      buttons, the left / right arrow keys and a sideways finger swipe step
      one unit; a trackpad swipe or Shift + mouse wheel moves continuously
-     (REEL_PX_PER_ITEM of sideways scroll per unit). All of it works once
-     "Let it sense!" has landed. Once in it, scrolling up or down just
-     scrolls the page on, as past any section (see reelScrollOff). */
+     (REEL_PX_PER_ITEM of sideways scroll per unit), while the features are
+     pinned on screen. Once in it, scrolling up or down just scrolls the
+     page on, as past any section (see reelScrollOff). */
   const REEL_PX_PER_ITEM = 450;
-  const REEL_READY_EARLY = 0.12; // story progress before the end at which the controls appear (everything's ~95% in place by then)
   const REEL_SWIPE_PX = 40;  // a finger swipe this far sideways = one step
-  let reelH = 0, reelHTarget = 0, reelHRaf = 0, reelReady = false;
+  let reelH = 0, reelHTarget = 0, reelHRaf = 0;
   const reelNav = document.getElementById('storyReelNav');
   const reelPrev = document.getElementById('storyReelPrev');
   const reelNext = document.getElementById('storyReelNext');
@@ -4057,16 +3768,16 @@
   const reelProgress = document.getElementById('storyReelProgress');
   function reelMaxH(){ return REEL_IN + reelItems().length - 1; }
   function reelActive(){
-    if (!reelReady || !ripLayer || window.actusPhone.matches) return false;
+    if (!featuresLayer || window.actusPhone.matches) return false;
     // still pinned on screen (not scrolled mostly away)
-    const b = ripLayer.getBoundingClientRect(), mid = window.innerHeight / 2;
+    const b = featuresLayer.getBoundingClientRect(), mid = window.innerHeight / 2;
     return b.top < mid && b.bottom > mid;
   }
   function reelHTick(){
     reelHRaf = 0;
     reelH += (reelHTarget - reelH) * 0.14;
     if (Math.abs(reelHTarget - reelH) < 0.001) reelH = reelHTarget;
-    updateRip();
+    updateStory();
     if (reelH !== reelHTarget) reelHRaf = requestAnimationFrame(reelHTick);
   }
   function reelGoTo(t){
@@ -4109,7 +3820,7 @@
     // the pill rides off with the section as it scrolls away, so it can be
     // clicked part-way past it: bring the section back to its pinned spot
     // and open the features on the way
-    if (reelReady && !reelActive() && storyEl2 && !window.actusPhone.matches) {
+    if (!reelActive() && storyEl2 && !window.actusPhone.matches) {
       const r = storyEl2.getBoundingClientRect();
       window.actusSmoothTo(r.top + window.scrollY + r.height - window.innerHeight);
       reelGoTo(1);
@@ -4155,7 +3866,7 @@
   const REEL_CAP_FADE = 0.25;
   const smoothstep = t => t * t * (3 - 2 * t);
   const reelCopy = document.getElementById('storyReelCopy');
-  const ripTextCol = ripLayer && ripLayer.querySelector('.story-text-col');
+  const ripTextCol = featuresLayer && featuresLayer.querySelector('.story-text-col');
   let reelOn = false, reelCaps = null;
   // one caption per tab: its label (the feature's name) over its line
   function reelCaptions(g){
@@ -4180,16 +3891,9 @@
     if (reelCaps) reelCaps.forEach(c => { c.style.opacity = '0'; c.style.visibility = 'hidden'; });
   }
   let titleW = 0, titleWKey = ''; // the title's own (unscaled) text width, and what it was measured for
-  function updateGallery(p, coreLen){
+  function updateGallery(){
     const g = window.actusGallery;
     if (!g) return;
-    // "Let it sense!" (as good as) landed = the reel can be browsed: the
-    // controls come up while the last tabs are still settling, rather than
-    // after the very end of the switch's slow landing
-    reelReady = p >= ripEnd() - REEL_READY_EARLY;
-    ripLayer.classList.toggle('is-browsable', reelReady);
-    // scrolled back up into "Wear it." → "Let it sense!": back to the first view
-    if (!reelReady && reelHTarget !== 0) reelGoTo(0);
     updateReel(g, clamp01(reelH / REEL_IN), Math.max(0, reelH - REEL_IN));
     // progress bar: how far through the items, the first one counting as a step
     if (reelProgress) {
@@ -4198,12 +3902,11 @@
     }
   }
   function updateReel(g, m, f){
-    reelBgOut = m;
-    ripLayer.style.setProperty('--reel-in', String(m));
+    featuresLayer.style.setProperty('--reel-in', String(m));
     if (m <= 0) {
       if (reelOn) {
         reelOn = false;
-        ripLayer.classList.remove('is-reel');
+        featuresLayer.classList.remove('is-reel');
         g.relayout();
       }
       if (ripTextCol) { ripTextCol.style.translate = ''; ripTextCol.style.opacity = ''; }
@@ -4211,19 +3914,19 @@
       if (reelInterlude) reelInterlude.style.opacity = '0';
       return;
     }
-    if (!reelOn) { reelOn = true; ripLayer.classList.add('is-reel'); }
+    if (!reelOn) { reelOn = true; featuresLayer.classList.add('is-reel'); }
 
-    // Everything measured against the rip layer (= the pinned screen), so
+    // Everything measured against the features layer (= the pinned screen), so
     // it all rides along when the section finally scrolls away
-    const box = ripLayer.getBoundingClientRect();
+    const box = featuresLayer.getBoundingClientRect();
     const tr = g.track.getBoundingClientRect();
     const w = g.tabs[0].offsetWidth, h = g.tabs[0].offsetHeight;
-    // (where "Let it sense!" leaves to, read now with the rest: reading
+    // (where "Only with Actus" leaves to, read now with the rest: reading
     // layout after writing the tabs' styles below would force a relayout
     // every frame)
     const colGoneX = ripTextCol ? -(ripTextCol.offsetLeft + ripTextCol.parentElement.offsetLeft) - ripTextCol.offsetWidth - 60 : 0;
     const narrow = box.width <= 900;
-    // phones: smaller, and up under "Let it sense!" so the copy fits below
+    // phones: smaller, and up under the title so the copy fits below
     const bigH = Math.min(box.height * (narrow ? 0.42 : REEL_BIG_H), box.width * 0.62 / 0.72);
     const big = bigH / h, peek = big * REEL_PEEK_SCALE;
     // desktop: the focused card and its caption, side by side, centred as
@@ -4322,32 +4025,16 @@
       }
     }
 
-    // "Let it sense!": slides out past the left edge, fading, as the first
+    // "Only with Actus": slides out past the left edge, fading, as the first
     // tab grows in — gone by the time it's in focus
     if (ripTextCol) {
       ripTextCol.style.translate = `${mix(0, colGoneX, m)}px 0`;
       ripTextCol.style.opacity = String(1 - m);
     }
   }
-  updateRip();
-  window.addEventListener('scroll', updateRip, { passive: true });
-  window.addEventListener('resize', updateRip);
-
-  /* First entry into the section: show just the background for a
-     beat, then reveal the first title with the normal rise-in. */
-  const INTRO_DELAY = 100; // ms of background-only before the first title appears
-  const introObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        introObserver.disconnect();
-        setTimeout(() => {
-          setTiming(titleEl, BASE_DURATION);
-          titleEl.classList.remove('enter-start');
-        }, INTRO_DELAY);
-      }
-    });
-  }, { threshold: 0.1 });
-  introObserver.observe(document.querySelector('.story'));
+  updateStory();
+  window.addEventListener('scroll', updateStory, { passive: true });
+  window.addEventListener('resize', updateStory);
 
   /* Scrolling: native, except the timed glides below (see the wheel handler) */
   let currentScroll = window.scrollY;
@@ -4368,15 +4055,6 @@
   // plays the whole black → white transition as one glide when clicked.
   // Set INTRO_AUTO_GLIDE back to true to have a scroll play it too.
   const INTRO_GLIDE_MS = 1500;   // full black → white transition
-  // The "Wear it." → "Let it sense!" switch: once "Wear it." is in place,
-  // any scroll down plays the whole switch (up plays it back) — always over
-  // STORY_SWITCH_MS on the same curve, however fast or hard you scroll (see
-  // playStorySwitch). (The gallery after it just follows the scroll.)
-  const STORY_SWITCH_MS = 1400;
-  // a quick, soft start (it answers the scroll straight away) and a long
-  // gentle landing
-  const STORY_SWITCH_CURVE = [0.3, 0, 0.2, 1];
-  const STORY_AUTO_GLIDE = true;
   // Pushing on hard while a glide runs: once you've scrolled this many px
   // further the same way, it hurries — finishes in GLIDE_HURRY_FACTOR of
   // its time from its current speed. A small scroll still plays the slow,
@@ -4446,86 +4124,11 @@
     const top = introWrapEl.getBoundingClientRect().top + window.scrollY;
     return { top, end: top + introSpacerEl.offsetHeight };
   }
-  // "Wear it." fully shown (top) … every "Let it sense!" piece landed (end),
-  // as page-scroll positions and as story progress (topP, endP)
-  function storyBounds(){
-    if (!ripLayer || !storyEl2 || window.actusPhone.matches) return null;
-    const top = storyEl2.getBoundingClientRect().top + window.scrollY;
-    const pinned = storyCoreLen(storyEl2.offsetHeight);
-    const topP = WEAR_OUT[0], endP = ripEnd();
-    return { top: top + topP * pinned, end: top + endP * pinned, topP, endP };
-  }
-  /* The switch itself is an animation on a clock, not a scroll: the
-     story's progress runs from where it is to the far end over
-     STORY_SWITCH_MS, every frame just transforms and opacity, the same
-     speed every time. Scrolling the other way mid-switch turns it around
-     from wherever it is.
-     Meanwhile the page is HELD in place (storyHoldY): once a trackpad
-     swipe has started scrolling the page, the browser won't let its rest
-     (the coasting) be cancelled, so it would carry the page on underneath
-     the switch — and, once landed, straight past the whole section. Any
-     such movement is put straight back. The hold sits mid-way through the
-     pinned stretch during the switch (nothing on screen moves with it —
-     the panel is pinned, the photo fixed), then on the switch's own end
-     once it lands, until that same swipe has stopped (STORY_HOLD_GAP_MS
-     without a wheel event) or a new scroll starts. */
-  const STORY_HOLD_GAP_MS = 180;
-  // Back to "Wear it." runs on STORY_SWITCH_CURVE; on to "Let it sense!"
-  // runs on its mirror image, so the forward switch is exactly the
-  // backward one played in reverse (same gentle start, same gentle landing
-  // for every piece) rather than a jolt off the mark
-  const storySwitchEaseBack = cubicBezier(...STORY_SWITCH_CURVE);
-  const storySwitchEase = (u, down) => down ? 1 - storySwitchEaseBack(1 - u) : storySwitchEaseBack(u);
-  let storySwitch = null; // { from, to, ms, start, endY }
-  let storyHoldY = null, storyHoldTimer = 0;
-  function holdStoryAt(y){
-    storyHoldY = y;
-    if (Math.abs(window.scrollY - y) > 1) {
-      currentScroll = targetScroll = y;
-      window.scrollTo(0, y);
-    }
-  }
-  window.addEventListener('scroll', () => {
-    if (storyHoldY !== null && Math.abs(window.scrollY - storyHoldY) > 1) window.scrollTo(0, storyHoldY);
-  }, { passive: true });
-  // the landed switch: keep holding until the swipe that played it is over
-  function armStoryRelease(){
-    clearTimeout(storyHoldTimer);
-    storyHoldTimer = setTimeout(releaseStory, STORY_HOLD_GAP_MS);
-  }
-  // hand the story back to the scroll position (and the page back to you)
-  function releaseStory(){
-    clearTimeout(storyHoldTimer);
-    storySwitch = null;
-    storyHoldY = null;
-    if (storyAnimP !== null) { storyAnimP = null; updateRip(); }
-    syncWheel();
-  }
   function jumpTo(y){
     window.actusJumpAt = performance.now(); // (no landing / holds catching it)
     currentScroll = targetScroll = y;
     window.scrollTo(0, y);
   }
-  /* Past "Wear it." (passedNow): the stretch of scroll the switch used to
-     take is skipped — the panel is pinned at both its ends and shows the
-     same landed view, so the jump doesn't show. Scrolling up from "Let it
-     sense!" heads straight out of the top of it (the panel sliding down
-     off the screen like any section), and scrolling down into it from
-     above lands straight on its landed end (the arm photo then sliding out
-     as you carry on). The features reel stays on whichever one you were
-     at, however far you scroll away and back. */
-  let passPrevY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY, prev = passPrevY;
-    passPrevY = y;
-    if (!passedNow() || storySwitch || storyHoldY !== null || navTo !== null || window.actusPhone.matches) return;
-    const r = storyEl2.getBoundingClientRect();
-    const top = r.top + y, landY = top + bgLandP * storyCoreLen(r.height);
-    if (y > top + 0.5 && y < landY - 0.5) {
-      jumpTo(Math.round(y < prev ? top - (landY - y) : landY + (y - top)));
-      passPrevY = window.scrollY;
-    }
-  }, { passive: true });
   /* The features reel is a horizontal strip in an ordinary page: once
      you're in it (past its first view), scrolling up or down just scrolls
      the page on, with no dead pinned stretch first — a jump (which
@@ -4535,63 +4138,10 @@
     if (r.top > 0.5 || r.bottom < window.innerHeight - 0.5) return; // not pinned: it's scrolling like a section already
     const top = Math.round(r.top + window.scrollY);
     const pinEnd = Math.round(top + r.height - window.innerHeight);
-    clearTimeout(storyHoldTimer);
-    storyHoldY = null;
-    glideLanded = null;
-    storyAnimP = null;
-    storyPassed = true;
     if (down) { if (window.scrollY < pinEnd - 1) jumpTo(pinEnd); }
     else if (window.scrollY > top + 1) jumpTo(top);
-    updateRip();
+    updateStory();
     syncWheel();
-  }
-  // Arriving at the story from either side (down from above "Wear it.",
-  // up from below "Let it sense!"), however hard the scroll: the page
-  // stops right on that end and holds there for the rest of that swipe —
-  // it never carries on into the switch, let alone past it. The next
-  // scroll plays the switch.
-  function landStory(atEnd, dir, step){
-    const sb = storyBounds();
-    if (!sb) return;
-    clearTimeout(storyHoldTimer);
-    storySwitch = null;
-    storyAnimP = atEnd ? sb.endP : sb.topP;
-    updateRip();
-    holdStoryAt(Math.round(atEnd ? sb.end : sb.top));
-    glideLanded = { dir, at: performance.now(), step };
-    armStoryRelease();
-    syncWheel();
-  }
-  function playStorySwitch(down){
-    const sb = storyBounds();
-    if (!sb) return;
-    clearTimeout(storyHoldTimer);
-    const from = storyAnimP !== null ? storyAnimP : storyProgress(storyEl2.getBoundingClientRect());
-    const to = down ? sb.endP : sb.topP;
-    // a part-way switch takes proportionally less time (same speed)
-    const ms = panReduceMotion.matches ? 0 : STORY_SWITCH_MS * Math.min(1, Math.abs(to - from) / (sb.endP - sb.topP));
-    const running = !!storySwitch;
-    introGlide = null; navTo = null;
-    storySwitch = { from, to, ms, start: performance.now(), endY: Math.round(down ? sb.end : sb.top) };
-    storyAnimP = from;
-    holdStoryAt(Math.round((sb.top + sb.end) / 2));
-    if (!running) requestAnimationFrame(storySwitchTick); // a turn-around reuses the running loop
-    syncWheel();
-  }
-  function storySwitchTick(now){
-    const s = storySwitch;
-    if (!s) return;
-    const u = s.ms > 0 ? Math.min(1, Math.max(0, (now - s.start) / s.ms)) : 1;
-    storyAnimP = s.from + (s.to - s.from) * storySwitchEase(u, s.to > s.from);
-    updateRip();
-    if (u < 1) { requestAnimationFrame(storySwitchTick); return; }
-    // landed: the page moves to the switch's end (still held there, with
-    // the story showing that same end) until the swipe is over
-    storySwitch = null;
-    storyAnimP = s.to;
-    if (s.to > s.from) storyPassed = true; // landed on "Let it sense!": no going back now
-    holdStoryAt(s.endY);
-    armStoryRelease();
   }
   // glide to `to`; `back` is the other end (a turn-around heads there);
   // fullMs = how long the whole stretch takes (a partial one, proportionally less)
@@ -4599,7 +4149,7 @@
   // is easing there: no snapping may redirect it on the way. Cleared on
   // arrival, or as soon as you scroll yourself.
   let navTo = null;
-  window.actusGliding = () => !!introGlide || !!storySwitch || storyHoldY !== null || navTo !== null;
+  window.actusGliding = () => !!introGlide || navTo !== null;
   // ease to y with the plain wheel smoothing, so scrolling during it
   // simply adds on; `nav` = a click's destination (see navTo)
   // the coach section's hold on a feature: stop dead at y (dropping any
@@ -4608,7 +4158,6 @@
   let wheelLockUntil = 0, wheelLockDir = 0;
   window.actusHoldAt = function(y, ms, dir){
     introGlide = null; navTo = null; glidePush = 0;
-    if (storyHoldY !== null) releaseStory();
     currentScroll = targetScroll = y; // a running smooth-scroll frame now just lands here
     window.scrollTo(0, y);
     wheelLockUntil = performance.now() + ms;
@@ -4662,9 +4211,9 @@
   // Vertical scrolling is the browser's own, native scrolling everywhere —
   // the page moves exactly as far as you scroll it, at the speed you scroll
   // it. This handler only steps in for: the loading screen (no scrolling
-  // yet), sideways input (browses the gallery), and the "Wear it." →
-  // "Let it sense!" switch (STORY_AUTO_GLIDE, playStorySwitch). The intro's glide is off
-  // (INTRO_AUTO_GLIDE), so the black curtain just follows the scroll.
+  // yet), sideways input (browses the gallery) and the intro's glide when
+  // it plays. The intro's glide is off (INTRO_AUTO_GLIDE), so the black
+  // curtain just follows the scroll.
   // One wheel gesture = wheel events with no gap over WHEEL_GESTURE_GAP_MS
   // (a trackpad swipe and its coasting, or a spin of a mouse wheel). Its
   // axis is set by its first event: a sideways swipe stays sideways all
@@ -4687,7 +4236,7 @@
     if (document.documentElement.classList.contains('is-loading') || document.documentElement.classList.contains('is-restoring')) { e.preventDefault(); return; } // still on the loading screen / reload curtain
     const gest = wheelGesture(e);
     if (reelActive()) {
-      // "Let it sense!" / the features are up. A sideways gesture browses
+      // The features are up. A sideways gesture browses
       // the features and never scrolls the page — its up / down wobble
       // and coasting included.
       if (gest.axis === 'x') {
@@ -4709,27 +4258,16 @@
     navTo = null; // you're scrolling yourself again
     // In the features reel (past its first view), up or down just scrolls
     // the page (see reelScrollOff)
-    if (reelHTarget > 0 && !storySwitch && !window.actusPhone.matches) { reelScrollOff(e.deltaY > 0); return; }
-    if (storySwitch) {
-      // mid-switch: the other way turns it around; the same way changes
-      // nothing (it never speeds up or skips ahead)
-      e.preventDefault();
-      glideLanded = { dir: Math.sign(e.deltaY), at: performance.now(), step: Math.abs(e.deltaY) };
-      if (Math.sign(e.deltaY) !== Math.sign(storySwitch.to - storySwitch.from)) playStorySwitch(e.deltaY > 0);
-      return;
-    }
+    if (reelHTarget > 0 && !window.actusPhone.matches) { reelScrollOff(e.deltaY > 0); return; }
     if (glideLanded && !introGlide) {
       const now = performance.now(), step = Math.abs(e.deltaY);
       const sameScroll = Math.sign(e.deltaY) === glideLanded.dir && now - glideLanded.at < GLIDE_LAND_GAP_MS && step <= glideLanded.step * GLIDE_LAND_RISE + 1;
       if (sameScroll) {
         e.preventDefault(); glideLanded.at = now; glideLanded.step = step;
-        if (storyHoldY !== null) armStoryRelease(); // the switch's swipe still coasting: keep holding
         return;
       }
       glideLanded = null;
     }
-    // a new scroll after the switch landed: the page is yours again
-    if (storyHoldY !== null && !storySwitch) releaseStory();
     if (introGlide) {
       // mid-glide: the other way turns it around; the same way lets it
       // carry on — and a hard push the same way hurries it (see GLIDE_HURRY_PX)
@@ -4748,17 +4286,6 @@
       if (e.deltaY > 0 && y >= ib.top - 1 && y < ib.end - 1) { e.preventDefault(); startIntroGlide(ib.end, ib.top, INTRO_GLIDE_MS); glideLanded = startedBy; return; }
       if (e.deltaY < 0 && y > ib.top + 1 && y <= ib.end + 1) { e.preventDefault(); startIntroGlide(ib.top, ib.end, INTRO_GLIDE_MS); glideLanded = startedBy; return; }
     }
-    // past "Wear it.": plain scrolling (see the "past it" listener)
-    const sb = STORY_AUTO_GLIDE && !passedNow() ? storyBounds() : null;
-    if (sb) {
-      // a scroll that would carry the page across an end of the switch
-      // lands on that end instead (see landStory)
-      const d = e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY;
-      if (d > 0 && y < sb.top - 1 && y + d > sb.top + 1) { e.preventDefault(); landStory(false, 1, Math.abs(e.deltaY)); return; }
-      if (d < 0 && y > sb.end + 1 && y + d < sb.end - 1) { e.preventDefault(); landStory(true, -1, Math.abs(e.deltaY)); return; }
-      if (e.deltaY > 0 && y >= sb.top - 1 && y < sb.end - 1) { e.preventDefault(); playStorySwitch(true); glideLanded = startedBy; return; }
-      if (e.deltaY < 0 && y > sb.top + 1 && y <= sb.end + 1) { e.preventDefault(); playStorySwitch(false); glideLanded = startedBy; return; }
-    }
     // anything else: let the browser scroll the page normally
   }
   // A wheel listener that can cancel scrolling (passive: false) makes
@@ -4766,14 +4293,13 @@
   // scrolls — and the fixed logo + nav pill visibly jitter against the
   // page while the curtain lifts. So onWheel is only attached while it
   // can actually cancel something: the loading screen, a glide, and
-  // everything past the curtain (the "Wear it." glide, the gallery's
-  // sideways swipes). Through the curtain itself it's off, and the page
+  // everything past the curtain (the gallery's sideways swipes). Through the curtain itself it's off, and the page
   // scrolls on the browser's fast path.
   let wheelOn = false;
   let introEndY = Infinity;
   function measureIntroEnd(){ const ib = introBounds(); introEndY = ib ? ib.end : -Infinity; }
   function syncWheel(){
-    const need = document.documentElement.classList.contains('is-loading') || document.documentElement.classList.contains('is-restoring') || !!introGlide || !!storySwitch || storyHoldY !== null || !!glideLanded || window.scrollY >= introEndY - 1;
+    const need = document.documentElement.classList.contains('is-loading') || document.documentElement.classList.contains('is-restoring') || !!introGlide || !!glideLanded || window.scrollY >= introEndY - 1;
     if (need === wheelOn) return;
     wheelOn = need;
     if (need) window.addEventListener('wheel', onWheel, { passive: false });
@@ -4829,8 +4355,8 @@
 
   // The section you're in lights its link (see .nav-current): whichever
   // section is under a line 40% of the way down the screen. Each link
-  // covers one unbroken stretch of the page, in order: the "Wear it."
-  // story and its feature gallery, the science, then the product (the
+  // covers one unbroken stretch of the page, in order: the features,
+  // the science, then the product (the
   // pill-sized lab and the "No matter what you do" panel), the team.
   (function(){
     const list = document.querySelector('.nav-links');
@@ -4889,11 +4415,10 @@
   /* In-page links (logo, nav, Join waitlist): the page glides there
      instead of jumping — on the intro's curve (a soft start, a long gentle
      settle), longer for a longer trip but never more than NAV_GLIDE_MAX_MS.
-     First whatever scrolling is still queued up (wheel smoothing, a glide,
-     the story's hold) is dropped, or it would drag the page straight back.
-     On the way, navTo marks the trip so nothing snaps, lands or skips it
-     anywhere (the story switch, its skipped stretch); a scroll or touch of
-     your own takes over at once. Reduced motion: straight there. */
+     First whatever scrolling is still queued up (wheel smoothing, a glide)
+     is dropped, or it would drag the page straight back. On the way, navTo
+     marks the trip so nothing snaps it anywhere; a scroll or touch of your
+     own takes over at once. Reduced motion: straight there. */
   const NAV_GLIDE_MIN_MS = 650, NAV_GLIDE_MAX_MS = 1500, NAV_GLIDE_MS_PER_PX = 0.12;
   let navGlide = null;
   function navGlideTick(now){
@@ -4920,7 +4445,6 @@
     if (!target) return;
     e.preventDefault();
     introGlide = null;
-    if (storyHoldY !== null) releaseStory();
     glidePush = 0; glideLanded = null;
     const y = Math.round(clamp(target.getBoundingClientRect().top + window.scrollY, 0, maxScroll()));
     const from = window.scrollY;
@@ -4942,12 +4466,10 @@
   });
 
   /* Snapping when scrolling stops: only the black-screen intro (see
-     introZone) and the "Wear it." → "Let it sense!" switch (see zone)
-     snap. The gallery after it never does; it stays wherever you stop.
-     Wheel / trackpad only: on touch the page just follows the finger. The glide reuses
-     the smooth-scroll easing above, so it feels like the rest of the page. */
+     introZone), and only with INTRO_AUTO_GLIDE on. Wheel / trackpad only:
+     on touch the page just follows the finger. The glide reuses the
+     smooth-scroll easing above, so it feels like the rest of the page. */
   (function(){
-    if (!ripLayer || !storyEl2) return;
     const SETTLE_MS = 0;   // this long without scroll events = stopped
     const EDGE = 0.004;      // progress tolerance at either end of the zone
     let lastY = window.scrollY;
@@ -4968,7 +4490,6 @@
     }, { passive: true });
     window.addEventListener('touchstart', (e) => {
       byTouch = true; touching = true; touchY = e.touches[0].clientY;
-      if (storyHoldY !== null) releaseStory(); // never hold the page against a finger
     }, { passive: true });
     window.addEventListener('touchmove', (e) => {
       const y = e.touches[0].clientY;
@@ -4981,7 +4502,7 @@
     // screen and the white hero — glide on to whichever you were heading
     // toward. Only while the intro is on (not under reduced motion), and
     // not on touch: there the glide fought the finger and a flick's
-    // coasting, so the page felt stuck between the hero and "Wear it.".
+    // coasting, so the page felt stuck between the black screen and the hero.
     const introEl = document.documentElement.classList.contains('intro-on') && document.getElementById('intro');
     const introSpacer = introEl && introEl.querySelector('.intro-spacer');
     function introZone(){
@@ -4990,33 +4511,10 @@
       const pinnedLength = Math.max(1, introSpacer.offsetHeight);
       return { toScroll: p => top + p * pinnedLength, p: (window.scrollY - top) / pinnedLength };
     }
-    // No resting halfway between "Wear it." and "Let it sense!": stopped
-    // while both are partly on screen (anywhere between "Wear it." starting
-    // to fade and the last "Let it sense!" piece landing), it finishes the
-    // switch toward whichever side you were heading — down finishes
-    // "Let it sense!", up returns to "Wear it.".
-    function zone(){
-      const top = storyEl2.getBoundingClientRect().top + window.scrollY;
-      const pinnedLength = storyCoreLen(storyEl2.offsetHeight);
-      const lastPiece = ripPieces().length - 1;
-      return {
-        toScroll: p => top + p * pinnedLength,
-        p: (window.scrollY - top) / pinnedLength,
-        start: WEAR_OUT[0],                                   // "Wear it." fully shown, nothing of "Let it sense!" yet
-        end: RIP_START + lastPiece * RIP_STAGGER + RIP_PIECE  // every "Let it sense!" piece landed
-      };
-    }
     function settle(){
       // a timed glide is already taking the page somewhere on purpose
-      // (the intro, the story switch) — let it land
-      if (byTouch || touching || panReduceMotion.matches || introGlide || storySwitch || storyHoldY !== null || passedNow() || navTo !== null || window.actusDragging) return;
-      const z = STORY_AUTO_GLIDE && !window.actusPhone.matches ? zone() : null;
-      if (z && z.p > z.start + EDGE && z.p < z.end - EDGE) {
-        // stopped mid-way through "Wear it." → "Let it sense!": finish
-        // with the same switch a wheel plays
-        playStorySwitch(lastDir > 0);
-        return;
-      }
+      // (the intro, a nav link) — let it land
+      if (byTouch || touching || panReduceMotion.matches || introGlide || navTo !== null || window.actusDragging) return;
       const iz = introZone();
       if (!INTRO_AUTO_GLIDE || !iz || iz.p <= EDGE || iz.p >= 1 - EDGE) return; // not mid-intro
       const target = Math.round(iz.toScroll(lastDir > 0 ? 1 : 0)); // 1 = white hero, 0 = black screen
@@ -5031,22 +4529,7 @@
       clearTimeout(settleTimer);
       settleTimer = setTimeout(settle, SETTLE_MS);
     }
-    // The same landing when the browser scrolled across an end of the
-    // switch without the wheel handler getting a say (a swipe's coasting
-    // can't be cancelled once it has started scrolling the page)
-    let lastWheelStep = 100;
-    window.addEventListener('wheel', (e) => { if (e.deltaY) lastWheelStep = Math.abs(e.deltaY); }, { passive: true });
-    function catchCrossing(prev, y){
-      if (byTouch || touching || window.actusDragging || storySwitch || storyHoldY !== null || passedNow() || reelHTarget > 0 || introGlide || navTo !== null) return;
-      if (!STORY_AUTO_GLIDE || panReduceMotion.matches) return;
-      if (performance.now() - lastInputAt > 300 || performance.now() - (window.actusJumpAt || -1e9) < 300) return; // only a wheel / trackpad scroll
-      const sb = storyBounds();
-      if (!sb) return;
-      if (y > prev && prev < sb.top - 1 && y > sb.top + 1) landStory(false, 1, lastWheelStep);
-      else if (y < prev && prev > sb.end + 1 && y < sb.end - 1) landStory(true, -1, lastWheelStep);
-    }
     window.addEventListener('scroll', () => {
-      catchCrossing(lastY, window.scrollY);
       const y = window.scrollY;
       // Fallback for scrolling with no wheel/touch behind it (scrollbar
       // drag, keyboard): use the page's own movement, ignoring tiny jitter.
