@@ -1881,17 +1881,28 @@
   .wl-field input::placeholder, .wl-field textarea::placeholder{ color:var(--gray-dim); }
   .wl-field input:focus, .wl-field textarea:focus{ border-color:var(--ink); box-shadow:0 0 0 3px rgba(36,36,36,0.08); }
   /* both labels stacked in one cell, so the button is always as wide as
-     the longer one (the email never changes width) and they crossfade */
+     the longer one (the email never changes width). Switching to Contact
+     us, "Join waitlist" slides out through the right edge and then "Send
+     message" slides in from the left; back, the same in reverse. Each
+     label is the width of the button's content box, so moving it by its
+     width plus the padding takes it fully out of the (clipped) button. */
   .wl-submit{
-    display:grid; place-items:center; height:50px; box-sizing:border-box;
+    display:grid; align-items:center; height:50px; box-sizing:border-box;
     font:inherit; font-size:14px; font-weight:600;
     color:#fff; background:var(--ink); border:0; border-radius:12px;
-    padding:0 22px; cursor:pointer; white-space:nowrap;
+    padding:0 22px; cursor:pointer; white-space:nowrap; overflow:hidden;
     transition:transform 0.2s ease, opacity 0.2s ease;
   }
-  .wl-label{ grid-area:1 / 1; transition:opacity 0.3s ease; }
-  .waitlist-form[data-mode="waitlist"] .wl-label[data-for="contact"],
-  .waitlist-form[data-mode="contact"] .wl-label[data-for="waitlist"]{ opacity:0; }
+  .wl-label{
+    grid-area:1 / 1; text-align:center;
+    transition:transform 0.5s cubic-bezier(0.22,1,0.36,1) 0.12s;
+  }
+  .waitlist-form[data-mode="waitlist"] .wl-label[data-for="contact"]{
+    transform:translateX(calc(-100% - 22px)); transition-delay:0s;
+  }
+  .waitlist-form[data-mode="contact"] .wl-label[data-for="waitlist"]{
+    transform:translateX(calc(100% + 22px)); transition-delay:0s;
+  }
   .wl-submit:hover{ transform:scale(1.03); }
   .wl-submit:disabled{ opacity:0.5; cursor:default; transform:none; }
   .wl-honey{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
