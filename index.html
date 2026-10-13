@@ -231,8 +231,19 @@
   /* first landing: appear in place instead of sliding in from wherever
      it was last left */
   .nav-hover.is-snap{ transition:opacity 0.25s ease; }
-  /* "Home" stands out from the other links: a touch bigger, white, bolder */
-  .nav-links a.nav-home{ font-size:15px; font-weight:600; color:#fff; }
+  /* The section you're in (see the nav script): its link turns white and
+     a small dot under it glides from link to link as you scroll, on the
+     hover pill's curve; none lit (and no dot) on the hero, the intro and
+     the waitlist */
+  .nav-links a.is-current{ color:#fff; }
+  .nav-current{
+    position:absolute; top:0; left:0; z-index:-1;
+    width:4px; height:4px; border-radius:50%; background:#fff;
+    opacity:0; pointer-events:none;
+    transition:transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease;
+  }
+  .nav-current.is-on{ opacity:1; }
+  .nav-current.is-snap{ transition:opacity 0.25s ease; }
   .nav-cta-pill{
     position:relative; z-index:1;
     font-family:var(--sans); font-weight:600; font-size:13px;
@@ -273,7 +284,7 @@
     .nav-links a{ display:flex; padding:12px 14px; font-size:15px; }
     /* the dropdown keeps a plain per-link highlight */
     .nav-links a:hover{ background:rgba(255,255,255,0.1); }
-    .nav-hover{ display:none; }
+    .nav-hover, .nav-current{ display:none; }
   }
 
   /* HERO */
@@ -1646,9 +1657,16 @@
     .eco-grid::-webkit-scrollbar{ display:none; }
     .eco-card{ scroll-snap-align:start; }
     .is-eco .coach-copy{ padding:16px 20px 22px; }
+    /* the film on top with its chapter pills right under it (so you can
+       hop between them while watching), then the words. .ai-copy steps
+       aside (display:contents) so its pills can move up next to the film. */
     .coach-panel.is-ai:not([hidden]){ display:flex; flex-direction:column; }
-    .ai-media{ order:-1; }
-    .ai-copy{ padding:4px 20px 24px; }
+    .ai-media{ order:-2; }
+    .ai-copy{ display:contents; }
+    .ai-chapters{ order:-1; margin:2px 20px 0; max-width:none; }
+    .ai-kicker{ align-self:flex-start; margin:24px 20px 0; }
+    .ai-copy h3, .ai-copy p{ margin-left:20px; margin-right:20px; }
+    .ai-copy p:last-of-type{ margin-bottom:24px; }
     .ai-chapter{ font-size:12px; padding:6px 11px 6px 9px; }
   }
 
@@ -1998,9 +2016,9 @@
 <div class="header-wrap">
   <header>
     <ul class="nav-links">
-      <li><a class="nav-home" href="#top"><span>Home</span></a></li>
-      <li><a href="#top"><span>Product</span></a></li>
-      <li><a href="#story"><span>How it works</span></a></li>
+      <li><a href="#story"><span>Product</span></a></li>
+      <li><a href="#science"><span>Science</span></a></li>
+      <li><a href="#team"><span>Team</span></a></li>
     </ul>
     <a class="nav-cta-pill" href="#waitlist">Join waitlist</a>
     <!-- phones only: opens the links above as a dropdown (see the nav script) -->
@@ -3687,11 +3705,18 @@
       if (inView && cur) play(videoOf(cur));
     }, { threshold:0.15 }).observe(section);
     // The coach film's chapter pills: the one for the part playing is lit;
-    // clicking one jumps the film there (and plays it, if it had stopped)
+    // clicking one jumps the film there (and plays it, if it had stopped).
+    // A jump lands SEEK_PAST in, not on the chapter's first frame: the
+    // chapter before's side cards are still fading out for up to 0.2s
+    // after it starts (see motion/actus-coach.html), so landing right on it
+    // flashed them for a few frames. The film also opens from black over
+    // its first 0.5s, so the first chapter lands after that.
+    const SEEK_PAST = 0.25, FILM_FADE_IN = 0.5;
     const film = section.querySelector('.ai-media video');
     const chapters = Array.from(section.querySelectorAll('.ai-chapter'));
     if (film && chapters.length) {
       const marks = chapters.map((c) => parseFloat(c.dataset.at));
+      const landAt = marks.map((m) => Math.max(m + SEEK_PAST, FILM_FADE_IN));
       const light = () => {
         let k = 0;
         marks.forEach((m, i) => { if (film.currentTime >= m - 0.05) k = i; });
@@ -3700,7 +3725,7 @@
       film.addEventListener('timeupdate', light);
       film.addEventListener('seeked', light);
       chapters.forEach((c, i) => c.addEventListener('click', () => {
-        film.currentTime = marks[i];
+        film.currentTime = landAt[i];
         light();
         if (film.paused) play(film);
       }));
@@ -4479,7 +4504,7 @@
   window.addEventListener('scroll', () => {
     const y = window.scrollY, prev = passPrevY;
     passPrevY = y;
-    if (!passedNow() || storySwitch || storyHoldY !== null || window.actusPhone.matches) return;
+    if (!passedNow() || storySwitch || storyHoldY !== null || navTo !== null || window.actusPhone.matches) return;
     const r = storyEl2.getBoundingClientRect();
     const top = r.top + y, landY = top + bgLandP * storyCoreLen(r.height);
     if (y > top + 0.5 && y < landY - 0.5) {
@@ -4763,9 +4788,6 @@
     requestAnimationFrame(smoothScrollTick);
   }
 
-  /* In-page links (logo, Home, nav, Join waitlist): drop whatever scrolling
-     is still queued up — wheel smoothing or a glide — before jumping,
-     otherwise it drags the page straight back and the click looks dead. */
   // Desktop: the shared hover pill (.nav-hover) follows the mouse from
   // link to link, and fades out when it leaves the links
   (function(){
@@ -4791,6 +4813,49 @@
     list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget)) hide(); });
   })();
 
+  // The section you're in lights its link (see .nav-current): whichever
+  // section is under a line 40% of the way down the screen. The coach
+  // and the "No matter what you do" panel are the product too.
+  (function(){
+    const list = document.querySelector('.nav-links');
+    if (!list) return;
+    const linkFor = { story: '#story', coach: '#story', capability: '#story', science: '#science', team: '#team' };
+    const sections = ['intro', 'top', 'story', 'science', 'coach', 'capability', 'team', 'waitlist']
+      .map(id => document.getElementById(id)).filter(Boolean);
+    const links = [...list.querySelectorAll('a[href^="#"]')];
+    const dot = document.createElement('span');
+    dot.className = 'nav-current';
+    dot.setAttribute('aria-hidden', 'true');
+    list.appendChild(dot);
+    let current = null, raf = 0;
+    function light(a){
+      if (current) { current.classList.remove('is-current'); current.removeAttribute('aria-current'); }
+      current = a;
+    }
+    function update(){
+      raf = 0;
+      const line = window.innerHeight * 0.4;
+      let here = null;
+      for (const sec of sections) if (sec.getBoundingClientRect().top <= line) here = sec;
+      const a = here && linkFor[here.id] ? links.find(l => l.getAttribute('href') === linkFor[here.id]) : null;
+      if (a === current) return;
+      light(a);
+      if (!a) { dot.classList.remove('is-on'); return; }
+      a.classList.add('is-current');
+      a.setAttribute('aria-current', 'location');
+      const first = !dot.classList.contains('is-on');
+      dot.classList.toggle('is-snap', first);
+      dot.style.transform = `translate(${a.offsetLeft + a.offsetWidth / 2 - 2}px, ${a.offsetTop + a.offsetHeight - 4}px)`;
+      if (first) dot.offsetWidth; // apply the jump before fading in
+      dot.classList.add('is-on');
+    }
+    const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', queue, { passive: true });
+    // the links move with the layout: re-place the dot from scratch
+    window.addEventListener('resize', () => { light(null); dot.classList.remove('is-on'); queue(); });
+    update();
+  })();
+
   // Phones: the menu button opens / closes the nav links; picking one, or
   // tapping anywhere else, closes it again
   (function(){
@@ -4805,6 +4870,32 @@
     });
   })();
 
+  /* In-page links (logo, nav, Join waitlist): the page glides there
+     instead of jumping — on the intro's curve (a soft start, a long gentle
+     settle), longer for a longer trip but never more than NAV_GLIDE_MAX_MS.
+     First whatever scrolling is still queued up (wheel smoothing, a glide,
+     the story's hold) is dropped, or it would drag the page straight back.
+     On the way, navTo marks the trip so nothing snaps, lands or skips it
+     anywhere (the story switch, its skipped stretch); a scroll or touch of
+     your own takes over at once. Reduced motion: straight there. */
+  const NAV_GLIDE_MIN_MS = 650, NAV_GLIDE_MAX_MS = 1500, NAV_GLIDE_MS_PER_PX = 0.12;
+  let navGlide = null;
+  function navGlideTick(now){
+    const g = navGlide;
+    if (!g) return;
+    if (navTo !== g.to) { navGlide = null; return; } // you scrolled: it's yours again
+    const u = Math.min(1, (now - g.start) / g.ms);
+    const y = g.from + (g.to - g.from) * introGlideEase(u);
+    currentScroll = targetScroll = y;
+    window.actusJumpAt = now; // (nothing on the way catches it)
+    window.scrollTo(0, y);
+    if (u < 1) { requestAnimationFrame(navGlideTick); return; }
+    navGlide = null;
+    navTo = null;
+    syncWheel();
+  }
+  ['touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, () => { if (navGlide) navTo = null; }, { passive: true }));
+
   document.addEventListener('click', (e) => {
     const link = e.target.closest && e.target.closest('a[href^="#"]');
     if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -4815,11 +4906,23 @@
     introGlide = null;
     if (storyHoldY !== null) releaseStory();
     glidePush = 0; glideLanded = null;
-    const y = clamp(target.getBoundingClientRect().top + window.scrollY, 0, maxScroll());
-    currentScroll = targetScroll = y; // a running smooth-scroll frame now just lands here
-    window.actusJumpAt = performance.now(); // (so nothing on the way, e.g. the coach hold, catches the jump)
-    window.scrollTo(0, y);
+    const y = Math.round(clamp(target.getBoundingClientRect().top + window.scrollY, 0, maxScroll()));
+    const from = window.scrollY;
     if (location.hash !== hash) history.pushState(null, '', hash);
+    if (panReduceMotion.matches || Math.abs(y - from) < 2) {
+      navGlide = null; navTo = null;
+      currentScroll = targetScroll = y; // a running smooth-scroll frame now just lands here
+      window.actusJumpAt = performance.now(); // (so nothing on the way catches the jump)
+      window.scrollTo(0, y);
+      return;
+    }
+    const ms = clamp(NAV_GLIDE_MIN_MS + Math.abs(y - from) * NAV_GLIDE_MS_PER_PX, NAV_GLIDE_MIN_MS, NAV_GLIDE_MAX_MS);
+    const running = !!navGlide;
+    navTo = y;
+    navGlide = { from, to: y, ms, start: performance.now() };
+    currentScroll = targetScroll = from;
+    syncWheel();
+    if (!running) requestAnimationFrame(navGlideTick); // a second click mid-way reuses the running loop
   });
 
   /* Snapping when scrolling stops: only the black-screen intro (see
