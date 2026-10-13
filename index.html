@@ -2460,13 +2460,16 @@
 
 <script>
   /* Waitlist / contact form: the switch picks the mode (data-mode on the
-     form, which the CSS animates from), and the form posts to FormSubmit,
-     which emails it to hello@actus.bio. If that fails, the status line
-     points to the address instead. */
+     form, which the CSS animates from). Join waitlist adds the email to
+     the waitlist in Kit (its form 10042241, the same endpoint Kit's own
+     embed posts to: double opt-in, so Kit emails them a link to confirm).
+     Contact us posts to FormSubmit, which emails it to hello@actus.bio.
+     If either fails, the status line points to the address instead. */
   (function(){
     const form = document.getElementById('waitlistForm');
     if (!form) return;
-    const ENDPOINT = 'https://formsubmit.co/ajax/hello@actus.bio';
+    const KIT_ENDPOINT = 'https://app.kit.com/forms/10042241/subscriptions';
+    const CONTACT_ENDPOINT = 'https://formsubmit.co/ajax/hello@actus.bio';
     const btn = form.querySelector('.wl-submit');
     const status = form.querySelector('.wl-status');
     const say = (html, ok) => { status.innerHTML = html; status.classList.toggle('is-ok', !!ok); };
@@ -2498,26 +2501,45 @@
     form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value); });
     setMode(form.querySelector('[name="type"]:checked').value);
 
+    // Join waitlist → Kit. Its answer: "success" (on the list, pending
+    // their confirmation), "quarantined" (Kit wants a quick human check at
+    // its url first) or field errors.
+    async function joinWaitlist(email){
+      const body = new FormData();
+      body.append('email_address', email);
+      body.append('referrer', document.referrer);
+      body.append('host', location.href);
+      const res = await fetch(KIT_ENDPOINT, { method: 'POST', body, headers: { 'Accept': 'application/json' } });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(res.statusText || 'failed');
+      if (out.status === 'success') return 'Almost there — check your inbox to confirm your email.';
+      if (out.status === 'quarantined' && out.url) return `One more step: <a href="${encodeURI(out.url)}" target="_blank" rel="noopener">confirm you’re human</a> to join.`;
+      throw new Error('failed');
+    }
+    // Contact us → FormSubmit → hello@actus.bio
+    async function sendMessage(data){
+      const res = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ ...data, _subject: 'New message from actus.bio', _template: 'table' })
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || String(out.success) !== 'true') throw new Error(out.message || 'failed');
+      return 'Thanks — we’ll get back to you soon.';
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(form));
       if (data._honey) return;
       delete data._honey;
       const contact = form.dataset.mode === 'contact';
-      data._subject = contact ? 'New message from actus.bio' : 'New waitlist sign-up on actus.bio';
-      data._template = 'table';
       btn.disabled = true;
       say('Sending…');
       try {
-        const res = await fetch(ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        const out = await res.json().catch(() => ({}));
-        if (!res.ok || String(out.success) !== 'true') throw new Error(out.message || 'failed');
+        const done = contact ? await sendMessage(data) : await joinWaitlist(data.email);
         form.querySelectorAll('input:not([type="radio"]), textarea').forEach(f => { f.value = ''; });
-        say(contact ? 'Thanks — we’ll get back to you soon.' : 'You’re on the list. We’ll be in touch.', true);
+        say(done, true);
       } catch (err) {
         say('Something went wrong. Email us at <a href="mailto:hello@actus.bio">hello@actus.bio</a> instead.');
       } finally {
