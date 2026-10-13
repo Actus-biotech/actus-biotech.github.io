@@ -1819,16 +1819,16 @@
   }
   .waitlist-sub{ margin:18px 0 0; max-width:420px; font-size:16px; line-height:1.5; color:var(--gray); }
 
-  /* The switch: two equal halves. The white thumb glides to the picked
-     one and a faint hover pill follows the mouse — the same glide and
-     easing as the navbar's hover pill (.nav-hover). */
+  /* The switch: two equal halves, 4px apart. The white thumb glides to
+     the picked one and a faint hover pill follows the mouse — the same
+     glide and easing as the navbar's hover pill (.nav-hover). */
   .wl-switch{
     position:relative; z-index:0;
-    display:inline-grid; grid-template-columns:1fr 1fr; padding:4px; margin-bottom:16px;
+    display:inline-grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; margin-bottom:16px;
     border-radius:12px; background:#EDEDED;
   }
   .wl-thumb, .wl-hover{
-    position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 4px);
+    position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 6px);
     border-radius:9px; pointer-events:none;
     transition:transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease;
   }
@@ -1837,7 +1837,7 @@
   .wl-hover.is-on{ opacity:1; }
   .wl-hover.is-snap{ transition:opacity 0.25s ease; }
   .waitlist-form[data-mode="contact"] .wl-thumb,
-  .wl-switch[data-hover="contact"] .wl-hover{ transform:translateX(100%); }
+  .wl-switch[data-hover="contact"] .wl-hover{ transform:translateX(calc(100% + 4px)); }
   .wl-switch label{ position:relative; cursor:pointer; }
   .wl-switch input{ position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
   .wl-switch span{
@@ -1852,14 +1852,13 @@
      Message sit under the email and are always laid out, just invisible
      on the waitlist side — so the form is the same height either way and
      nothing below it moves. Switching to Contact us slides them in from
-     the left, one after the other, and the button glides down next to
-     the message (see the waitlist script). */
+     the left, one after the other. The button stays put and only its
+     label changes. */
   .wl-body{ display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:10px; }
   .wl-email{ grid-area:1 / 1; }
   .wl-name{ grid-area:2 / 1; }
   .wl-message{ grid-area:3 / 1; }
   .wl-submit{ grid-area:1 / 2; align-self:start; }
-  .waitlist-form[data-mode="contact"] .wl-submit{ grid-area:3 / 2; align-self:end; }
   .wl-contact{
     opacity:0; transform:translateX(-28px); visibility:hidden; pointer-events:none;
     transition:opacity 0.3s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0.4s;
@@ -1905,19 +1904,15 @@
     .waitlist{ padding:8px 24px 88px; }
     .waitlist-inner{ grid-template-columns:minmax(0, 1fr); gap:32px; padding-top:44px; }
   }
-  /* Phones: one column — the button under the email for the waitlist,
-     under the message for Contact us (margins instead of a row gap, so
-     the row it leaves empty takes no room) */
+  /* Phones: one column — the button under the email either way, the
+     contact fields under it */
   @media (max-width:520px){
     .waitlist{ padding-left:16px; padding-right:16px; }
     .wl-switch{ display:grid; }
-    .wl-body{ grid-template-columns:minmax(0, 1fr); row-gap:0; }
-    .wl-body > *{ margin-top:10px; }
-    .wl-body > .wl-email{ margin-top:0; }
+    .wl-body{ grid-template-columns:minmax(0, 1fr); }
     .wl-submit{ grid-area:2 / 1; }
     .wl-name{ grid-area:3 / 1; }
     .wl-message{ grid-area:4 / 1; }
-    .waitlist-form[data-mode="contact"] .wl-submit{ grid-area:5 / 1; }
   }
 
   @media (max-width:720px){
@@ -2473,7 +2468,6 @@
     const status = form.querySelector('.wl-status');
     const say = (html, ok) => { status.innerHTML = html; status.classList.toggle('is-ok', !!ok); };
     const labels = form.querySelectorAll('.wl-label');
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)');
     // The switch's hover pill, as on the navbar: follows the mouse from
     // half to half, appears in place where you first land, fades on leave
     const sw = form.querySelector('.wl-switch');
@@ -2490,24 +2484,15 @@
     sw.addEventListener('mouseleave', () => hover.classList.remove('is-on'));
 
     // Contact-only fields are disabled on the waitlist side, so they're
-    // neither required nor sent. The button changes grid cell, so it's
-    // glided from where it was (FLIP) instead of jumping.
-    const setMode = (mode, animate) => {
-      const from = btn.getBoundingClientRect();
+    // neither required nor sent
+    const setMode = (mode) => {
       form.dataset.mode = mode;
       form.querySelectorAll('.wl-contact input, .wl-contact textarea').forEach(f => { f.disabled = mode !== 'contact'; });
       labels.forEach(l => l.setAttribute('aria-hidden', String(l.dataset.for !== mode)));
       say('');
-      if (!animate || still.matches || !btn.animate) return;
-      const to = btn.getBoundingClientRect();
-      const dx = from.left - to.left, dy = from.top - to.top;
-      if (dx || dy) btn.animate(
-        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
-        { duration: 600, easing: 'cubic-bezier(0.22,1,0.36,1)' }
-      );
     };
-    form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value, true); });
-    setMode(form.querySelector('[name="type"]:checked').value, false);
+    form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value); });
+    setMode(form.querySelector('[name="type"]:checked').value);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
