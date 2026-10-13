@@ -1866,7 +1866,9 @@
      nothing below it moves. Switching to Contact us slides them in from
      the left, one after the other. The button stays put and only its
      label changes. */
-  .wl-body{ display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:10px; }
+  /* (a last row always kept for the status line, so the form is the
+     same height either way) */
+  .wl-body{ display:grid; grid-template-columns:minmax(0, 1fr) auto; grid-template-rows:auto auto auto minmax(1.5em, auto); gap:10px; }
   .wl-email{ grid-area:1 / 1; }
   .wl-name{ grid-area:2 / 1; }
   .wl-message{ grid-area:3 / 1; }
@@ -1920,7 +1922,12 @@
   .wl-submit:disabled{ opacity:0.5; cursor:default; transform:none; }
   .wl-honey{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
   .wl-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-  .wl-status{ min-height:1.5em; margin:14px 0 0; font-size:14px; color:var(--gray); }
+  /* The status line ("Sending…", "Almost there…"): right under what you
+     just filled in — under the email on the waitlist side (over the
+     contact fields' empty, invisible room), under the message for
+     Contact us (the row kept for it) */
+  .wl-status{ grid-column:1 / -1; grid-row:2; align-self:start; min-height:1.5em; margin:2px 0 0; font-size:14px; color:var(--gray); }
+  .waitlist-form[data-mode="contact"] .wl-status{ grid-row:4; }
   .wl-status.is-ok{ color:var(--ink); }
   .wl-status a{ color:var(--ink); }
 
@@ -1933,10 +1940,12 @@
   @media (max-width:520px){
     .waitlist{ padding-left:16px; padding-right:16px; }
     .wl-switch{ display:grid; }
-    .wl-body{ grid-template-columns:minmax(0, 1fr); }
+    .wl-body{ grid-template-columns:minmax(0, 1fr); grid-template-rows:auto auto auto auto minmax(1.5em, auto); }
     .wl-submit{ grid-area:2 / 1; }
     .wl-name{ grid-area:3 / 1; }
     .wl-message{ grid-area:4 / 1; }
+    .wl-status{ grid-row:3; }
+    .waitlist-form[data-mode="contact"] .wl-status{ grid-row:5; }
   }
 
   @media (max-width:720px){
@@ -2441,9 +2450,9 @@
         <label class="wl-field wl-contact wl-name"><span class="wl-sr">Name</span><input type="text" name="name" placeholder="Name" autocomplete="name" disabled></label>
         <label class="wl-field wl-contact wl-message"><span class="wl-sr">Message</span><textarea name="message" placeholder="How can we help?" rows="4" required disabled></textarea></label>
         <button type="submit" class="wl-submit"><span class="wl-label" data-for="waitlist">Join waitlist</span><span class="wl-label" data-for="contact" aria-hidden="true">Send message</span></button>
+        <p class="wl-status" role="status" aria-live="polite"></p>
       </div>
       <input type="text" name="_honey" class="wl-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <p class="wl-status" role="status" aria-live="polite"></p>
     </form>
   </div>
 </section>
