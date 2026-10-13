@@ -712,8 +712,9 @@
   /* The pinned features screen's geometry (desktop): the cards sit
      centred, 42vh tall in the first view; the reel's focused card is 56vh
      (in a narrow window, as tall as its width allows — see updateReel).
-     The gallery controls sit --reel-nav-gap under whichever is showing,
-     and the next section starts right under the lower spot (the empty
+     The gallery controls sit --reel-nav-gap under the reel's card, the
+     lower of the two, so they never move and nothing reaches them; the
+     next section starts right under them (the empty
      bottom of the pinned screen is pulled in by the negative margin, so
      the science doesn't sit a whole empty strip further down). */
   .story{
@@ -902,11 +903,10 @@
      centred throughout. On the last item (.is-end) the next circle folds
      back into the bar the same way. */
   .story-reel-nav{
-    /* (under the reel's focused card; on the first view, under the cards
-       — see .is-start below — gliding between the two as it morphs) */
+    /* (one spot for both views: under the reel's focused card, which
+       reaches lower than the first view's cards) */
     position:absolute; left:50%; top:calc(var(--reel-card-low) + var(--reel-nav-gap)); z-index:5;
     translate:-50% 0;
-    transition:top var(--bar-t) var(--nav-ease);
     display:flex; align-items:center;
     pointer-events:auto;
     --nav-btn:48px; --nav-bar:96px; --nav-gap:14px;
@@ -915,7 +915,6 @@
     --bar-t:0.42s;   /* pill ⇄ bar */
     --circ-t:0.42s;  /* circles growing out / folding in */
   }
-  .story-reel-nav.is-start{ top:calc(71vh + var(--reel-nav-gap)); }
   .story-reel-btn{
     flex:0 0 auto;
     height:var(--nav-btn); width:var(--nav-btn); padding:0;
@@ -2061,9 +2060,9 @@
       <div class="story-gallery" id="storyGallery">
         <div class="story-gallery-stage">
           <div class="story-gallery-track" id="storyGalleryTrack">
-            <div class="story-gallery-tab" data-desc="Train the muscles you mean to."><video src="assets/F1.mp4" autoplay muted loop playsinline aria-label="Muscle-specific optimization"></video><span class="story-gallery-tab-label">Muscle-Specific Optimization</span></div>
-            <div class="story-gallery-tab" data-desc="Clean form, every single rep."><video src="assets/F2.mp4" autoplay muted loop playsinline aria-label="Form correction"></video><span class="story-gallery-tab-label">Form Correction</span></div>
-            <div class="story-gallery-tab" data-desc="Every joint, tracked in motion."><video src="assets/F3.mp4" autoplay muted loop playsinline aria-label="Pose estimation"></video><span class="story-gallery-tab-label">Pose Estimation</span></div>
+            <div class="story-gallery-tab" data-desc="Train the muscles you mean to."><video src="assets/F1.mp4" muted loop playsinline preload="metadata" aria-label="Muscle-specific optimization"></video><span class="story-gallery-tab-label">Muscle-Specific Optimization</span></div>
+            <div class="story-gallery-tab" data-desc="Clean form, every single rep."><video src="assets/F2.mp4" muted loop playsinline preload="metadata" aria-label="Form correction"></video><span class="story-gallery-tab-label">Form Correction</span></div>
+            <div class="story-gallery-tab" data-desc="Every joint, tracked in motion."><video src="assets/F3.mp4" muted loop playsinline preload="metadata" aria-label="Pose estimation"></video><span class="story-gallery-tab-label">Pose Estimation</span></div>
             <div class="story-gallery-tab" data-desc="Know when to push, and when to stop."><img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&w=500&q=80" alt="Fatigue detection"><span class="story-gallery-tab-label">Fatigue Detection</span></div>
             <div class="story-gallery-tab" data-desc="Every rep counted for you."><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=500&q=80" alt="Automatic rep count"><span class="story-gallery-tab-label">Automatic Rep Count</span></div>
             <div class="story-gallery-tab" data-title-before="And also, all the standard metrics." data-desc="Your heart, measured — not estimated."><img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=500&q=80" alt="ECG"><span class="story-gallery-tab-label">ECG</span></div>
@@ -3525,30 +3524,50 @@
     const stepsEl = document.getElementById('storyGallerySteps');
     if (stepsEl) stepsEl.style.height = `${GALLERY_HOLD_VH}vh`;
 
+    // Which tabs' videos play: all of them on the first view; in the focus
+    // reel only the focused one (set by the story script), restarted from
+    // its beginning each time it comes into focus, so each feature plays
+    // as its own short clip (-1: none, a title is up). And only from a
+    // screen away from the story on (they're already playing as it comes
+    // into view, rather than all starting to decode at once as it
+    // arrives); far from it, they're all paused.
+    const tabVideos = tabs.map(t => t.querySelector('video'));
+    let near = false, videoFocus = null; // null = all
+    const playVideo = v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    function syncVideos(){
+      tabVideos.forEach((v, i) => {
+        if (!v) return;
+        const on = near && (videoFocus === null || videoFocus === i);
+        if (on && v.paused) playVideo(v);
+        else if (!on && !v.paused) v.pause();
+      });
+    }
+    function setVideoFocus(i){
+      if (i === videoFocus) return;
+      videoFocus = i;
+      const v = i !== null && tabVideos[i];
+      if (v) v.currentTime = 0;
+      syncVideos();
+    }
+
     // the story script drives the focus reel
     window.actusGallery = {
       count: n,
       tabs,
       track,
       poseOf,
-      relayout: layout
+      relayout: layout,
+      setVideoFocus
     };
-    // Warm the tabs up before they come on screen: the browser only starts
-    // autoplaying a video once it's on screen, so otherwise all of them
-    // start decoding at once as the section arrives (and the photos get
-    // decoded then too). From a screen away from the story, they're
-    // already playing; far from it, they're paused again.
+    // Warm the photos up too, decoded before they come on screen
     const storySec = document.getElementById('story');
-    const warmVideos = tabs.map(t => t.querySelector('video')).filter(Boolean);
     const warmImgs = tabs.map(t => t.querySelector('img')).filter(Boolean);
+    if (!window.IntersectionObserver) { near = !window.actusPhone.matches; syncVideos(); }
     if (storySec && window.IntersectionObserver) {
       new IntersectionObserver((entries) => {
         // (phones show the plain cards instead — see .m-features)
-        const near = entries[entries.length - 1].isIntersecting && !window.actusPhone.matches;
-        warmVideos.forEach(v => {
-          if (near && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
-          else if (!near && !v.paused) v.pause();
-        });
+        near = entries[entries.length - 1].isIntersecting && !window.actusPhone.matches;
+        syncVideos();
         if (near) warmImgs.forEach(img => { if (img.decode) img.decode().catch(() => {}); });
       }, { rootMargin: '100% 0px' }).observe(storySec);
     }
@@ -3941,6 +3960,7 @@
         featuresLayer.classList.remove('is-reel');
         g.relayout();
       }
+      if (g.setVideoFocus) g.setVideoFocus(null); // the first view: all of them play
       if (ripTextCol) { ripTextCol.style.translate = ''; ripTextCol.style.opacity = ''; }
       hideCaptions();
       if (reelInterlude) reelInterlude.style.opacity = '0';
@@ -3989,6 +4009,9 @@
     }
     // where each item sits in the sequence (titles take a slot of their own)
     const items = reelItems();
+    // only the item in focus plays its video (-1: a title, none)
+    const focusItem = items[Math.min(items.length - 1, Math.round(f))];
+    if (g.setVideoFocus) g.setVideoFocus(focusItem && focusItem.tab !== undefined ? focusItem.tab : -1);
     const seqOfTab = [];
     let titleSeq = -1, titleText = '';
     items.forEach((it, k) => {
