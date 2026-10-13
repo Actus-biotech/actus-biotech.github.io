@@ -8,6 +8,7 @@ Source for [actus.bio](https://actus.bio), the ACTUS landing page. It's a static
 index.html                    The whole page: markup, styles and scripts
 actus_3d.glb                  3D model of the device, rendered with three.js
 assets/                       Videos (.mp4), logo, favicon and photos
+tools/waitlist-sheet.gs       Google Apps Script behind the waitlist sheet (set-up steps inside)
 CNAME                         Custom domain for GitHub Pages (actus.bio). Don't remove.
 .nojekyll                     Serves files as-is, without Jekyll processing. Don't remove.
 .github/workflows/deploy.yml  Publishes main to the gh-pages branch on every push

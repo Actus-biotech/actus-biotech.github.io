@@ -2470,15 +2470,17 @@
 <script>
   /* Waitlist / contact form: the switch picks the mode (data-mode on the
      form, which the CSS animates from). Join waitlist adds the email to
-     the waitlist in Kit (its form 10042241, the same endpoint Kit's own
-     embed posts to: double opt-in, so Kit emails them a link to confirm).
-     Contact us posts to FormSubmit, which emails it to hello@actus.bio.
-     If either fails, the status line points to the address instead. */
+     the waitlist Google Sheet (through its Apps Script web app — the
+     script is tools/waitlist-sheet.gs); Contact us posts to FormSubmit,
+     which emails it to hello@actus.bio. If either fails, the status line
+     points to the address instead. */
   (function(){
     const form = document.getElementById('waitlistForm');
     if (!form) return;
-    const KIT_ENDPOINT = 'https://app.kit.com/forms/10042241/subscriptions';
-    const CONTACT_ENDPOINT = 'https://formsubmit.co/ajax/hello@actus.bio';
+    // the sheet's web app URL (…/exec); until it's set, sign-ups are
+    // emailed to hello@actus.bio through FormSubmit like messages
+    const WAITLIST_SHEET = 'https://script.google.com/macros/s/AKfycbxokddUBd8glYIRiV04NaiOzwzWcUBwXh70Foo1SURVf5X0bwDqIVMYEngwXzZLPKZq/exec';
+    const ENDPOINT = 'https://formsubmit.co/ajax/hello@actus.bio';
     const btn = form.querySelector('.wl-submit');
     const status = form.querySelector('.wl-status');
     const say = (html, ok) => { status.innerHTML = html; status.classList.toggle('is-ok', !!ok); };
@@ -2510,31 +2512,25 @@
     form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value); });
     setMode(form.querySelector('[name="type"]:checked').value);
 
-    // Join waitlist → Kit. Its answer: "success" (on the list, pending
-    // their confirmation), "quarantined" (Kit wants a quick human check at
-    // its url first) or field errors.
-    async function joinWaitlist(email){
-      const body = new FormData();
-      body.append('email_address', email);
-      body.append('referrer', document.referrer);
-      body.append('host', location.href);
-      const res = await fetch(KIT_ENDPOINT, { method: 'POST', body, headers: { 'Accept': 'application/json' } });
+    // Join waitlist → the sheet (a simple form post, so no CORS preflight;
+    // the script answers { ok: true } — also for an email already on it)
+    async function addToSheet(email){
+      const res = await fetch(WAITLIST_SHEET, {
+        method: 'POST',
+        body: new URLSearchParams({ email, page: location.href, referrer: document.referrer })
+      });
       const out = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(res.statusText || 'failed');
-      if (out.status === 'success') return 'Almost there — check your inbox to confirm your email.';
-      if (out.status === 'quarantined' && out.url) return `One more step: <a href="${encodeURI(out.url)}" target="_blank" rel="noopener">confirm you’re human</a> to join.`;
-      throw new Error('failed');
+      if (!res.ok || out.ok !== true) throw new Error(out.error || 'failed');
     }
-    // Contact us → FormSubmit → hello@actus.bio
-    async function sendMessage(data){
-      const res = await fetch(CONTACT_ENDPOINT, {
+    // FormSubmit → hello@actus.bio
+    async function send(data, subject){
+      const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ ...data, _subject: 'New message from actus.bio', _template: 'table' })
+        body: JSON.stringify({ ...data, _subject: subject, _template: 'table' })
       });
       const out = await res.json().catch(() => ({}));
       if (!res.ok || String(out.success) !== 'true') throw new Error(out.message || 'failed');
-      return 'Thanks — we’ll get back to you soon.';
     }
 
     form.addEventListener('submit', async (e) => {
@@ -2546,9 +2542,11 @@
       btn.disabled = true;
       say('Sending…');
       try {
-        const done = contact ? await sendMessage(data) : await joinWaitlist(data.email);
+        if (contact) await send(data, 'New message from actus.bio');
+        else if (WAITLIST_SHEET) await addToSheet(data.email);
+        else await send(data, 'New waitlist sign-up on actus.bio');
         form.querySelectorAll('input:not([type="radio"]), textarea').forEach(f => { f.value = ''; });
-        say(done, true);
+        say(contact ? 'Thanks — we’ll get back to you soon.' : 'You’re on the list. We’ll be in touch.', true);
       } catch (err) {
         say('Something went wrong. Email us at <a href="mailto:hello@actus.bio">hello@actus.bio</a> instead.');
       } finally {
