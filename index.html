@@ -1114,7 +1114,9 @@
      its last line level with the panel's bottom edge. */
   .science{
     --science-max:1180px;
-    padding:clamp(32px, 5vh, 56px) calc(var(--frame-gap) + 0px) clamp(60px, 10vh, 120px);
+    /* the same room above the frame (from the features' controls) as
+       below it (to the black coach section) */
+    padding:clamp(60px, 10vh, 120px) calc(var(--frame-gap) + 0px);
   }
   .science-frame{
     position:relative;
