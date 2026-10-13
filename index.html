@@ -1819,26 +1819,57 @@
   }
   .waitlist-sub{ margin:18px 0 0; max-width:420px; font-size:16px; line-height:1.5; color:var(--gray); }
 
+  /* The switch: two equal halves. The white thumb glides to the picked
+     one and a faint hover pill follows the mouse — the same glide and
+     easing as the navbar's hover pill (.nav-hover). */
   .wl-switch{
-    display:inline-flex; padding:4px; margin-bottom:16px;
+    position:relative; z-index:0;
+    display:inline-grid; grid-template-columns:1fr 1fr; padding:4px; margin-bottom:16px;
     border-radius:12px; background:#EDEDED;
   }
+  .wl-thumb, .wl-hover{
+    position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 4px);
+    border-radius:9px; pointer-events:none;
+    transition:transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease;
+  }
+  .wl-thumb{ z-index:-1; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+  .wl-hover{ z-index:-2; background:rgba(0,0,0,0.05); opacity:0; }
+  .wl-hover.is-on{ opacity:1; }
+  .wl-hover.is-snap{ transition:opacity 0.25s ease; }
+  .waitlist-form[data-mode="contact"] .wl-thumb,
+  .wl-switch[data-hover="contact"] .wl-hover{ transform:translateX(100%); }
   .wl-switch label{ position:relative; cursor:pointer; }
   .wl-switch input{ position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
   .wl-switch span{
-    display:block; padding:9px 16px; border-radius:9px;
+    display:block; padding:9px 16px; border-radius:9px; text-align:center;
     font-size:13px; font-weight:600; color:var(--gray);
-    transition:background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    transition:color 0.2s ease;
   }
-  .wl-switch input:checked + span{ background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+  .wl-switch label:hover span, .wl-switch input:checked + span{ color:var(--ink); }
   .wl-switch input:focus-visible + span{ outline:2px solid var(--ink); outline-offset:2px; }
 
+  /* The fields: the email and the button share the first row; Name and
+     Message sit under the email and are always laid out, just invisible
+     on the waitlist side — so the form is the same height either way and
+     nothing below it moves. Switching to Contact us slides them in from
+     the left, one after the other, and the button glides down next to
+     the message (see the waitlist script). */
   .wl-body{ display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:10px; }
-  .waitlist-form[data-mode="contact"] .wl-body{ grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); }
-  .waitlist-form[data-mode="contact"] .wl-message,
-  .waitlist-form[data-mode="contact"] .wl-submit{ grid-column:1 / -1; }
-  .waitlist-form[data-mode="contact"] .wl-submit{ justify-self:start; }
-  .wl-field[hidden]{ display:none; }
+  .wl-email{ grid-area:1 / 1; }
+  .wl-name{ grid-area:2 / 1; }
+  .wl-message{ grid-area:3 / 1; }
+  .wl-submit{ grid-area:1 / 2; align-self:start; }
+  .waitlist-form[data-mode="contact"] .wl-submit{ grid-area:3 / 2; align-self:end; }
+  .wl-contact{
+    opacity:0; transform:translateX(-28px); visibility:hidden; pointer-events:none;
+    transition:opacity 0.3s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0.4s;
+  }
+  .wl-message.wl-contact{ transition-delay:0s, 0s, 0.4s; }
+  .waitlist-form[data-mode="contact"] .wl-contact{
+    opacity:1; transform:none; visibility:visible; pointer-events:auto;
+    transition:opacity 0.45s ease 0.06s, transform 0.6s cubic-bezier(0.22,1,0.36,1) 0.06s, visibility 0s;
+  }
+  .waitlist-form[data-mode="contact"] .wl-message.wl-contact{ transition-delay:0.16s, 0.16s, 0s; }
   .wl-field input, .wl-field textarea{
     display:block; width:100%; box-sizing:border-box;
     font:inherit; font-size:15px; color:var(--ink);
@@ -1846,15 +1877,22 @@
     padding:14px 16px; outline:none;
     transition:border-color 0.2s ease, box-shadow 0.2s ease;
   }
-  .wl-field textarea{ min-height:132px; resize:vertical; line-height:1.5; }
+  .wl-field input{ height:50px; }
+  .wl-field textarea{ height:132px; resize:none; line-height:1.5; }
   .wl-field input::placeholder, .wl-field textarea::placeholder{ color:var(--gray-dim); }
   .wl-field input:focus, .wl-field textarea:focus{ border-color:var(--ink); box-shadow:0 0 0 3px rgba(36,36,36,0.08); }
+  /* both labels stacked in one cell, so the button is always as wide as
+     the longer one (the email never changes width) and they crossfade */
   .wl-submit{
+    display:grid; place-items:center; height:50px; box-sizing:border-box;
     font:inherit; font-size:14px; font-weight:600;
     color:#fff; background:var(--ink); border:0; border-radius:12px;
-    padding:14px 22px; cursor:pointer; white-space:nowrap;
+    padding:0 22px; cursor:pointer; white-space:nowrap;
     transition:transform 0.2s ease, opacity 0.2s ease;
   }
+  .wl-label{ grid-area:1 / 1; transition:opacity 0.3s ease; }
+  .waitlist-form[data-mode="waitlist"] .wl-label[data-for="contact"],
+  .waitlist-form[data-mode="contact"] .wl-label[data-for="waitlist"]{ opacity:0; }
   .wl-submit:hover{ transform:scale(1.03); }
   .wl-submit:disabled{ opacity:0.5; cursor:default; transform:none; }
   .wl-honey{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
@@ -1867,11 +1905,19 @@
     .waitlist{ padding:8px 24px 88px; }
     .waitlist-inner{ grid-template-columns:minmax(0, 1fr); gap:32px; padding-top:44px; }
   }
+  /* Phones: one column — the button under the email for the waitlist,
+     under the message for Contact us (margins instead of a row gap, so
+     the row it leaves empty takes no room) */
   @media (max-width:520px){
     .waitlist{ padding-left:16px; padding-right:16px; }
-    .wl-body,
-    .waitlist-form[data-mode="contact"] .wl-body{ grid-template-columns:minmax(0, 1fr); }
-    .wl-submit, .waitlist-form[data-mode="contact"] .wl-submit{ justify-self:stretch; }
+    .wl-switch{ display:grid; }
+    .wl-body{ grid-template-columns:minmax(0, 1fr); row-gap:0; }
+    .wl-body > *{ margin-top:10px; }
+    .wl-body > .wl-email{ margin-top:0; }
+    .wl-submit{ grid-area:2 / 1; }
+    .wl-name{ grid-area:3 / 1; }
+    .wl-message{ grid-area:4 / 1; }
+    .waitlist-form[data-mode="contact"] .wl-submit{ grid-area:5 / 1; }
   }
 
   @media (max-width:720px){
@@ -2387,14 +2433,16 @@
     </div>
     <form class="waitlist-form" id="waitlistForm" data-mode="waitlist" action="https://formsubmit.co/hello@actus.bio" method="POST">
       <div class="wl-switch" role="radiogroup" aria-label="What would you like to do?">
+        <span class="wl-hover" aria-hidden="true"></span>
+        <span class="wl-thumb" aria-hidden="true"></span>
         <label><input type="radio" name="type" value="waitlist" checked><span>Join waitlist</span></label>
         <label><input type="radio" name="type" value="contact"><span>Contact us</span></label>
       </div>
       <div class="wl-body">
-        <label class="wl-field wl-contact" hidden><span class="wl-sr">Name</span><input type="text" name="name" placeholder="Name" autocomplete="name" disabled></label>
-        <label class="wl-field"><span class="wl-sr">Email</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
-        <label class="wl-field wl-contact wl-message" hidden><span class="wl-sr">Message</span><textarea name="message" placeholder="How can we help?" rows="4" required disabled></textarea></label>
-        <button type="submit" class="wl-submit">Join waitlist</button>
+        <label class="wl-field wl-email"><span class="wl-sr">Email</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
+        <label class="wl-field wl-contact wl-name"><span class="wl-sr">Name</span><input type="text" name="name" placeholder="Name" autocomplete="name" disabled></label>
+        <label class="wl-field wl-contact wl-message"><span class="wl-sr">Message</span><textarea name="message" placeholder="How can we help?" rows="4" required disabled></textarea></label>
+        <button type="submit" class="wl-submit"><span class="wl-label" data-for="waitlist">Join waitlist</span><span class="wl-label" data-for="contact" aria-hidden="true">Send message</span></button>
       </div>
       <input type="text" name="_honey" class="wl-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
       <p class="wl-status" role="status" aria-live="polite"></p>
@@ -2413,10 +2461,10 @@
 </footer>
 
 <script>
-  /* Waitlist / contact form: the switch shows the contact-only fields
-     (disabled when hidden, so they're neither required nor sent), and
-     the form posts to FormSubmit, which emails it to hello@actus.bio.
-     If that fails, the status line points to the address instead. */
+  /* Waitlist / contact form: the switch picks the mode (data-mode on the
+     form, which the CSS animates from), and the form posts to FormSubmit,
+     which emails it to hello@actus.bio. If that fails, the status line
+     points to the address instead. */
   (function(){
     const form = document.getElementById('waitlistForm');
     if (!form) return;
@@ -2424,17 +2472,42 @@
     const btn = form.querySelector('.wl-submit');
     const status = form.querySelector('.wl-status');
     const say = (html, ok) => { status.innerHTML = html; status.classList.toggle('is-ok', !!ok); };
-    const setMode = (mode) => {
+    const labels = form.querySelectorAll('.wl-label');
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // The switch's hover pill, as on the navbar: follows the mouse from
+    // half to half, appears in place where you first land, fades on leave
+    const sw = form.querySelector('.wl-switch');
+    const hover = sw.querySelector('.wl-hover');
+    sw.addEventListener('mouseover', (e) => {
+      const input = e.target.closest('label') && e.target.closest('label').querySelector('input');
+      if (!input) return;
+      const first = !hover.classList.contains('is-on');
+      hover.classList.toggle('is-snap', first);
+      sw.dataset.hover = input.value;
+      if (first) hover.offsetWidth; // apply the jump before fading in
+      hover.classList.add('is-on');
+    });
+    sw.addEventListener('mouseleave', () => hover.classList.remove('is-on'));
+
+    // Contact-only fields are disabled on the waitlist side, so they're
+    // neither required nor sent. The button changes grid cell, so it's
+    // glided from where it was (FLIP) instead of jumping.
+    const setMode = (mode, animate) => {
+      const from = btn.getBoundingClientRect();
       form.dataset.mode = mode;
-      form.querySelectorAll('.wl-contact').forEach(el => {
-        el.hidden = mode !== 'contact';
-        el.querySelector('input, textarea').disabled = mode !== 'contact';
-      });
-      btn.textContent = mode === 'contact' ? 'Send message' : 'Join waitlist';
+      form.querySelectorAll('.wl-contact input, .wl-contact textarea').forEach(f => { f.disabled = mode !== 'contact'; });
+      labels.forEach(l => l.setAttribute('aria-hidden', String(l.dataset.for !== mode)));
       say('');
+      if (!animate || still.matches || !btn.animate) return;
+      const to = btn.getBoundingClientRect();
+      const dx = from.left - to.left, dy = from.top - to.top;
+      if (dx || dy) btn.animate(
+        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
+        { duration: 600, easing: 'cubic-bezier(0.22,1,0.36,1)' }
+      );
     };
-    form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value); });
-    setMode(form.querySelector('[name="type"]:checked').value);
+    form.addEventListener('change', (e) => { if (e.target.name === 'type') setMode(e.target.value, true); });
+    setMode(form.querySelector('[name="type"]:checked').value, false);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
