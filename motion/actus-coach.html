@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Actus Coach — motion graphic</title>
+<!--
+  The Actus Coach film: the source of assets/actus-coach.mp4 (rendered
+  frame by frame by motion/render.mjs). One clock drives everything:
+  render(t) sets every element for time t, so any frame can be drawn on
+  its own. Open this page in a browser to watch it live (?t=12 starts it
+  at 12s, ?still=12 freezes it there).
+
+  Scenes (start times in SCENES below):
+    1 Live coaching       voice mode: a set, then the sensor buzz
+    2 Every workout        the post-workout chat and its report
+    3 A plan built around you   an injury, and the week rewritten
+    4 Insights from your EMG    a plateau, and three swaps to pick from
+    5 Motivation, 24/7     the last set, and the research
+    6 Ask anything         a question, then "add it to Monday"
+    7 Speaks your language English, French, Chinese, Spanish
+    8 End card             the globe and the name
+-->
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  :root{
+    --bg:#121214;
+    --ink:#242424; --gray:#9A9A9A;
+    --grad:linear-gradient(90deg, #8B3DFF, #EC2678 62%, #FF5E3A);
+    --sans:'Helvetica Neue', Helvetica, Arial, 'PingFang SC', sans-serif;
+  }
+  html, body{ background:var(--bg); }
+  body{ font-family:var(--sans); -webkit-font-smoothing:antialiased; overflow:hidden; }
+  #stage{ position:relative; width:1200px; height:1200px; overflow:hidden; background:var(--bg); }
+
+  /* a soft coloured glow that follows the phone */
+  .glow{
+    position:absolute; left:0; top:0; width:900px; height:900px; margin:-450px 0 0 -450px;
+    background:radial-gradient(closest-side, rgba(236,38,120,0.20), rgba(139,61,255,0.10) 50%, rgba(139,61,255,0.03) 75%, transparent);
+    pointer-events:none;
+  }
+
+  /* the chapter pill, top centre */
+  .chapter{
+    position:absolute; left:50%; top:52px; height:58px; transform:translateX(-50%);
+    display:flex; align-items:center; gap:14px; padding:0 28px 0 16px; border-radius:999px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);
+    color:#fff; white-space:nowrap;
+  }
+  .chapter-num{
+    display:grid; place-items:center; width:34px; height:34px; border-radius:50%;
+    background:var(--grad); font-size:14px; font-weight:800; letter-spacing:-0.02em;
+  }
+  .chapter-text{ font-size:24px; font-weight:700; letter-spacing:-0.015em; }
+
+  /* ---- the phone (the site's light iPhone, drawn 2.2× up) ---- */
+  /* (scaled 2.2× about a point 40% down it — 188px — so its top lands at 150px) */
+  .phone-wrap{ position:absolute; left:600px; top:376px; width:0; height:0; perspective:2200px; }
+  .phone{
+    position:absolute; left:-113px; top:0; width:226px; height:470px; padding:6px;
+    border-radius:42px; background:linear-gradient(160deg, #FFFFFF, #E9E9EC);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.07), 0 30px 70px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.2);
+    transform-origin:50% 40%;
+  }
+  .screen{ position:relative; height:100%; overflow:hidden; border-radius:36px; background:#fff; color:var(--ink); }
+  .island{ position:absolute; z-index:6; top:10px; left:50%; width:42px; height:18px; margin-left:-21px; border-radius:9px; background:#111; }
+  .status{
+    position:absolute; z-index:6; top:10px; height:18px; left:26px; right:22px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:9.5px; font-weight:600; line-height:1;
+  }
+  .icons{ display:flex; align-items:center; gap:4px; }
+  .wifi{ display:block; width:12.7px; height:9px; }
+  .battery{ width:17px; height:8px; border-radius:2.5px; border:1px solid currentColor; padding:1px; }
+  .battery::after{ content:''; display:block; width:75%; height:100%; border-radius:1px; background:currentColor; }
+  #globe{ position:absolute; z-index:5; inset:0; width:100%; height:100%; pointer-events:none; }
+
+  /* voice mode */
+  .voice{ position:absolute; inset:0; }
+  .voice-head{ position:absolute; top:36px; left:0; right:0; text-align:center; }
+  .who{ display:block; font-size:8.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); }
+  .ctx{
+    display:inline-block; margin-top:5px; padding:3px 9px; border-radius:999px;
+    background:#F1F1F3; color:var(--ink); font-size:9px; font-weight:600; white-space:nowrap;
+  }
+  .ctx.is-buzz{ background:var(--grad); color:#fff; }
+  .caption{
+    position:absolute; top:166px; left:15px; right:15px; text-align:center;
+    font-size:12.5px; font-weight:600; line-height:1.4; letter-spacing:-0.005em;
+  }
+  .caption span{ color:#D3D3D8; }
+  .caption span.on{ color:var(--ink); }
+
+  /* chat mode */
+  .chat{ position:absolute; inset:0; background:#F6F6F8; }
+  .chat-head{
+    position:absolute; z-index:3; top:0; left:0; right:0; padding:34px 14px 8px;
+    display:flex; align-items:center; gap:8px;
+    background:rgba(246,246,248,0.96); border-bottom:1px solid rgba(0,0,0,0.05);
+  }
+  .avatar{ flex:0 0 auto; width:24px; height:24px; }
+  .chat-name{ display:block; font-size:10.5px; font-weight:700; line-height:1.1; }
+  .chat-sub{ display:block; font-size:8px; line-height:1.3; color:var(--gray); }
+  .thread{ position:absolute; top:78px; left:10px; right:10px; display:flex; flex-direction:column; gap:6px; }
+  .msg{
+    align-self:flex-start; max-width:86%; padding:7px 10px;
+    border-radius:14px 14px 14px 5px; background:#fff; color:var(--ink);
+    font-size:10.5px; font-weight:500; line-height:1.38;
+    box-shadow:0 1px 2px rgba(0,0,0,0.05);
+    transform-origin:left bottom;
+  }
+  .msg.me{ align-self:flex-end; border-radius:14px 14px 5px 14px; transform-origin:right bottom; background:var(--grad); color:#fff; }
+  .typing{ display:flex; gap:3px; padding:9px 11px; }
+  .typing i{ width:4px; height:4px; border-radius:50%; background:#B8B8B8; }
+
+  /* the report card (a link preview) */
+  .card{ position:relative; width:88%; padding:0; overflow:hidden; }
+  .card-preview{ position:relative; height:78px; padding:9px 12px 0; overflow:hidden; background:linear-gradient(135deg, #F1EBFF, #FFEAF2 58%, #FFF0E8); }
+  .card-shine{ position:absolute; inset:0; background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.75) 50%, transparent 70%); }
+  .sheet{ height:100%; padding:7px 8px 0; border-radius:7px 7px 0 0; background:#fff; box-shadow:0 1px 4px rgba(60,30,110,0.1); }
+  .sk{ display:block; height:4px; border-radius:2px; background:#E4E4EA; }
+  .sk + .sk{ margin-top:3px; width:38%; background:#EFEFF3; }
+  .minis{ display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:7px; }
+  .minis svg{ display:block; width:100%; height:30px; border-radius:4px; background:#F6F6F9; }
+  .card-meta{ display:flex; align-items:center; gap:7px; padding:7px 9px 8px; }
+  .card-icon{ flex:0 0 auto; display:grid; place-items:center; width:20px; height:20px; border-radius:6px; background:linear-gradient(135deg, #8B3DFF, #EC2678 60%, #FF5E3A); }
+  .card-text{ flex:1 1 auto; min-width:0; line-height:1.2; }
+  .card-text b{ display:block; font-size:9.5px; font-weight:700; }
+  .card-text span{ display:block; font-size:8px; color:var(--gray); }
+  .card-open{ flex:0 0 auto; font-size:14px; line-height:1; color:#B8B8B8; }
+  .tap{ position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:rgba(139,61,255,0.25); pointer-events:none; opacity:0; }
+
+  /* a list inside a coach message (the plan, the trap exercises) */
+  .list{ width:88%; padding:9px 10px 8px; }
+  .list-title{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .list-title b{ font-size:10.5px; font-weight:700; }
+  .list-title small{ font-size:8px; color:var(--gray); }
+  .row{ position:relative; display:flex; align-items:center; gap:7px; padding:5px 0; border-top:1px solid #F0F0F3; font-size:9.5px; }
+  .row:first-of-type{ border-top:0; }
+  .bullet{ flex:0 0 auto; width:15px; height:15px; border-radius:5px; background:#F1F1F4; display:grid; place-items:center; font-size:9px; font-weight:800; color:#fff; }
+  .bullet.g{ background:var(--grad); }
+  .row-text{ position:relative; flex:1 1 auto; height:13px; }
+  .row-text span{ position:absolute; left:0; top:0; white-space:nowrap; }
+  .old{ color:var(--ink); }
+  .strike{ position:absolute; left:0; top:6.5px; height:1.3px; width:100%; background:#EC2678; transform-origin:left center; }
+  .new{ font-weight:700; }
+  .row-meta{ flex:0 0 auto; font-size:8px; color:var(--gray); }
+
+  /* quick replies (the curl swaps) */
+  .chips{ align-self:flex-end; display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+  .chip{
+    position:relative; padding:6px 11px; border-radius:999px; font-size:9.5px; font-weight:600;
+    background:#fff; color:#6B3DD9; box-shadow:inset 0 0 0 1px #DCCBFF;
+  }
+  .chip.picked{ background:var(--grad); color:#fff; box-shadow:none; }
+
+  /* ---- floating cards, around the phone ---- */
+  .fcard{
+    position:absolute; padding:26px 28px; border-radius:30px;
+    background:rgba(30,30,33,0.92); border:1px solid rgba(255,255,255,0.09);
+    box-shadow:0 30px 70px rgba(0,0,0,0.5);
+    color:#fff;
+  }
+  .f-kicker{ display:block; font-size:16px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.5); }
+  .f-title{ display:block; margin-top:6px; font-size:28px; font-weight:800; letter-spacing:-0.02em; line-height:1.1; }
+  .f-sub{ display:block; margin-top:8px; font-size:19px; line-height:1.35; color:rgba(255,255,255,0.62); }
+  .grad-text{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+  /* reps */
+  #repCard{ left:56px; top:430px; width:250px; }
+  .rep-num{ position:relative; height:110px; margin-top:6px; overflow:hidden; }
+  .rep-num span{ position:absolute; left:0; top:0; font-size:104px; font-weight:800; letter-spacing:-0.05em; line-height:1; }
+  .rep-of{ font-size:21px; color:rgba(255,255,255,0.55); }
+  /* the sensor buzz */
+  #buzzCard{ left:56px; top:470px; width:260px; text-align:center; }
+  .buzz-art{ position:relative; height:150px; }
+  .buzz-pill{ position:absolute; left:50%; top:50%; width:46px; height:92px; margin:-46px 0 0 -23px; border-radius:23px; background:linear-gradient(160deg, #3A3A3E, #1A1A1C); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.15); }
+  .buzz-pill::after{ content:''; position:absolute; left:50%; bottom:14px; width:12px; height:3px; margin-left:-6px; border-radius:2px; background:var(--grad); }
+  .buzz-ring{ position:absolute; left:50%; top:50%; width:46px; height:92px; margin:-46px 0 0 -23px; border-radius:30px; border:2px solid #EC2678; opacity:0; }
+  /* the report, opened */
+  #reportCard{ right:28px; top:330px; width:300px; }
+  .stat{ display:flex; justify-content:space-between; align-items:baseline; padding:14px 0; border-top:1px solid rgba(255,255,255,0.08); }
+  .stat:first-of-type{ margin-top:12px; }
+  .stat span{ font-size:19px; color:rgba(255,255,255,0.62); }
+  .stat b{ font-size:26px; font-weight:800; letter-spacing:-0.02em; }
+  .bar2{ display:flex; height:10px; margin-top:-4px; border-radius:6px; overflow:hidden; gap:3px; }
+  .bar2 i{ display:block; height:100%; border-radius:6px; }
+  /* plan updated */
+  #planChip{ right:52px; top:690px; display:flex; align-items:center; gap:14px; padding:18px 24px 18px 18px; border-radius:999px; }
+  .shield{ width:44px; height:44px; border-radius:50%; background:var(--grad); display:grid; place-items:center; }
+  #planChip b{ font-size:22px; font-weight:800; letter-spacing:-0.01em; }
+  #planChip small{ display:block; font-size:16px; color:rgba(255,255,255,0.55); }
+  /* the EMG trend */
+  #emgCard{ left:44px; top:250px; width:430px; }
+  .chart{ position:relative; height:300px; margin-top:22px; }
+  .chart-bars{ position:absolute; left:0; right:104px; bottom:34px; top:0; display:flex; align-items:flex-end; gap:14px; }
+  .cbar{ position:relative; flex:1 1 0; height:100%; display:flex; align-items:flex-end; }
+  .cbar i{ display:block; width:100%; border-radius:14px; background:linear-gradient(to top, #8B3DFF, #EC2678 70%, #FF5E3A); transform-origin:bottom; }
+  .cbar.ghost i{ background:none; border:2.5px dashed rgba(255,255,255,0.45); }
+  .cbar em{ position:absolute; left:0; right:0; bottom:-32px; text-align:center; font-style:normal; font-size:17px; color:rgba(255,255,255,0.5); }
+  .cbar b{ position:absolute; z-index:1; left:0; right:0; text-align:center; font-size:18px; font-weight:800; }
+  .plateau{ position:absolute; left:-6px; right:96px; height:0; border-top:2.5px dashed rgba(255,255,255,0.55); transform-origin:left center; }
+  .plateau span{ position:absolute; left:calc(100% + 12px); top:-11px; font-size:16px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.8); }
+  /* motivation */
+  #coachedCard{ left:40px; top:400px; width:300px; }
+  #coachedCard .big{ display:block; font-size:40px; font-weight:800; letter-spacing:-0.03em; line-height:1.02; }
+  .cite{ display:block; margin-top:16px; font-size:18px; line-height:1.4; color:rgba(255,255,255,0.5); }
+  #always{ right:22px; top:440px; width:310px; text-align:center; background:none; border:0; box-shadow:none; }
+  #always .huge{ display:block; font-size:132px; font-weight:800; letter-spacing:-0.06em; line-height:0.9; }
+  #always span{ display:block; margin-top:12px; font-size:24px; font-weight:700; color:rgba(255,255,255,0.75); }
+  /* Monday */
+  #calCard{ right:40px; top:300px; width:420px; }
+  .week{ display:flex; gap:8px; margin-top:18px; }
+  .day{ flex:1 1 0; height:62px; border-radius:16px; display:grid; place-items:center; background:rgba(255,255,255,0.05); font-size:18px; font-weight:700; color:rgba(255,255,255,0.5); }
+  .day.on{ background:var(--grad); color:#fff; }
+  .cal-list{ margin-top:16px; display:flex; flex-direction:column; gap:10px; }
+  .cal-item{ display:flex; justify-content:space-between; align-items:center; padding:15px 18px; border-radius:18px; background:rgba(255,255,255,0.05); font-size:20px; font-weight:600; }
+  .cal-item small{ font-size:17px; color:rgba(255,255,255,0.5); font-weight:500; }
+  .cal-item.new{ background:linear-gradient(90deg, rgba(139,61,255,0.35), rgba(236,38,120,0.35)); box-shadow:inset 0 0 0 1.5px rgba(236,38,120,0.7); }
+  /* languages */
+  #langs{ left:70px; top:430px; width:300px; height:300px; }
+  .lang{ position:absolute; left:0; top:0; font-size:40px; font-weight:800; letter-spacing:-0.03em; white-space:nowrap; }
+  .lang-bar{ position:absolute; left:-24px; top:0; width:6px; height:44px; border-radius:3px; background:var(--grad); }
+  #hello{ right:30px; top:480px; width:310px; height:200px; overflow:hidden; text-align:right; }
+  #hello span{ position:absolute; right:0; top:0; font-size:76px; font-weight:800; letter-spacing:-0.04em; line-height:1.1; white-space:nowrap; }
+
+  /* the end card */
+  #lockup{ position:absolute; inset:0; text-align:center; pointer-events:none; }
+  #bigGlobe{ position:absolute; left:300px; top:190px; width:600px; height:600px; }
+  #lockup h1{ position:absolute; left:0; right:0; top:720px; font-size:110px; font-weight:800; letter-spacing:-0.045em; color:#fff; }
+  #lockup p{ position:absolute; left:0; right:0; top:860px; font-size:34px; font-weight:500; letter-spacing:-0.01em; color:rgba(255,255,255,0.65); }
+
+  /* the bottom of the frame fades out (the phone runs off it) */
+  .floor{ position:absolute; left:0; right:0; bottom:0; height:180px; background:linear-gradient(to top, var(--bg) 18%, transparent); pointer-events:none; }
+  #fade{ position:absolute; inset:0; background:var(--bg); pointer-events:none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="glow" id="glow"></div>
+
+  <!-- floating cards -->
+  <div class="fcard" id="repCard"><span class="f-kicker">Reps, counted</span><div class="rep-num" id="repNum"><span>7</span><span>8</span><span>9</span></div><span class="rep-of">of 10 · Lat pulldown</span></div>
+  <div class="fcard" id="buzzCard"><div class="buzz-art"><i class="buzz-ring"></i><i class="buzz-ring"></i><i class="buzz-ring"></i><i class="buzz-pill" id="buzzPill"></i></div><span class="f-title">Left sensor</span><span class="f-sub">Buzzes when you hit the target</span></div>
+  <div class="fcard" id="reportCard">
+    <span class="f-kicker">Workout report</span><span class="f-title">Upper body</span>
+    <div class="stat"><span>Effort</span><b class="grad-text">92%</b></div>
+    <div class="stat"><span>Left–right balance</span><b>47 / 53</b></div>
+    <div class="bar2"><i style="width:47%;background:#8B3DFF"></i><i style="width:53%;background:#EC2678"></i></div>
+    <div class="stat" style="margin-top:12px"><span>Best set</span><b>Set 3</b></div>
+  </div>
+  <div class="fcard" id="planChip"><span class="shield"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v5.6c0 4.6-3.1 8.6-7.5 10.4C7.6 19.7 4.5 15.7 4.5 11.1V5.5z"/><path d="M8.6 12l2.4 2.4 4.6-4.8"/></svg></span><span><b>Plan updated</b><small>Lower back protected</small></span></div>
+  <div class="fcard" id="emgCard">
+    <span class="f-kicker">Biceps · EMG activation</span><span class="f-title">Barbell curl, last 4 weeks</span>
+    <div class="chart">
+      <div class="chart-bars">
+        <div class="cbar"><b>58</b><i style="height:58%"></i><em>Wk 1</em></div>
+        <div class="cbar"><b>69</b><i style="height:69%"></i><em>Wk 2</em></div>
+        <div class="cbar"><b>71</b><i style="height:71%"></i><em>Wk 3</em></div>
+        <div class="cbar"><b>71</b><i style="height:71%"></i><em>Wk 4</em></div>
+        <div class="cbar ghost"><b>80</b><i style="height:80%"></i><em>Next</em></div>
+      </div>
+      <div class="plateau" id="plateau"><span>Plateau</span></div>
+    </div>
+  </div>
+  <div class="fcard" id="coachedCard"><span class="big">Coached lifters get <span class="grad-text">stronger, faster.</span></span><span class="cite">Supervised training led to greater strength gains than training alone (Mazzetti et al., 2000).</span></div>
+  <div class="fcard" id="always"><span class="huge grad-text">24/7</span><span>In your corner, every set</span></div>
+  <div class="fcard" id="calCard">
+    <span class="f-kicker">This week</span><span class="f-title">Monday · Upper body</span>
+    <div class="week"><span class="day on">M</span><span class="day">T</span><span class="day">W</span><span class="day">T</span><span class="day">F</span><span class="day">S</span><span class="day">S</span></div>
+    <div class="cal-list">
+      <div class="cal-item">Bench press <small>4 × 8</small></div>
+      <div class="cal-item">Lat pulldown <small>3 × 10</small></div>
+      <div class="cal-item new" id="calNew">Face pulls <small style="color:rgba(255,255,255,0.8)">3 × 12</small></div>
+    </div>
+  </div>
+  <div class="fcard" id="langs" style="background:none;border:0;box-shadow:none;padding:0">
+    <i class="lang-bar" id="langBar"></i>
+    <span class="lang">English</span><span class="lang">Français</span><span class="lang">中文</span><span class="lang">Español</span>
+  </div>
+  <div class="fcard" id="hello" style="background:none;border:0;box-shadow:none;padding:0">
+    <span class="grad-text">Hello</span><span class="grad-text">Bonjour</span><span class="grad-text">你好</span><span class="grad-text">Hola</span>
+  </div>
+
+  <!-- the phone -->
+  <div class="phone-wrap" id="phoneWrap">
+    <div class="phone" id="phone">
+      <div class="screen" id="screen">
+        <div class="island"></div>
+        <div class="status"><span>9:41</span><span class="icons"><svg class="wifi" viewBox="0.97 1.1 16.06 11.4"><path d="M2.07 5.07A9.8 9.8 0 0 1 15.93 5.07M4.47 7.47A6.4 6.4 0 0 1 13.53 7.47" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M9 12L6.6 9.6A3.4 3.4 0 0 1 11.4 9.6Z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg><span class="battery"></span></span></div>
+
+        <div class="voice" id="voice">
+          <div class="voice-head"><span class="who">Actus Coach</span><span class="ctx" id="ctx"></span></div>
+          <div class="caption" id="caption"></div>
+        </div>
+
+        <div class="chat" id="chat">
+          <div class="chat-head"><span class="avatar" id="avatar"></span><span><span class="chat-name">Actus Coach</span><span class="chat-sub" id="chatSub">Post-workout</span></span></div>
+
+          <!-- 2: the workout, summed up -->
+          <div class="thread" id="thSummary">
+            <div class="msg">Great session today, Bia! 💪</div>
+            <div class="msg">Your analysis is ready: effort, left–right balance, best sets and more.</div>
+            <div class="msg">Here's your full report:</div>
+            <div class="msg card" id="reportMsg">
+              <div class="card-preview"><div class="sheet"><span class="sk" style="width:58%"></span><span class="sk"></span>
+                <div class="minis">
+                  <svg viewBox="0 0 60 30" preserveAspectRatio="none"><path d="M4 8 L14 9 L22 11 L30 13 L38 17 L46 20 L56 23" fill="none" stroke="#242424" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 24 L14 23 L22 21 L30 19 L38 15 L46 12 L56 8" fill="none" stroke="#EC2678" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 60 30" preserveAspectRatio="none"><rect x="8" y="14" width="7" height="13" rx="3.5" fill="#C9C9CF"/><rect x="20" y="5" width="7" height="22" rx="3.5" fill="#EC2678"/><rect x="32" y="18" width="7" height="9" rx="3.5" fill="#C9C9CF"/><rect x="44" y="12" width="7" height="15" rx="3.5" fill="#C9C9CF"/></svg>
+                </div></div><i class="card-shine" id="shine"></i></div>
+              <div class="card-meta">
+                <span class="card-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M2 8V5M5 8V2M8 8V4"/></svg></span>
+                <span class="card-text"><b>Workout report</b><span>Upper body · 7 insights</span></span>
+                <span class="card-open">›</span>
+              </div>
+              <i class="tap" id="reportTap" style="left:64%;top:48%"></i>
+            </div>
+            <div class="msg typing"><i></i><i></i><i></i></div>
+          </div>
+
+          <!-- 3: a plan built around an injury -->
+          <div class="thread" id="thPlan">
+            <div class="msg me">I strained my lower back deadlifting yesterday 😣</div>
+            <div class="msg">Sorry to hear that, Bia. I've rewritten Thursday to keep the load off your lower back:</div>
+            <div class="msg list" id="planList">
+              <div class="list-title"><b>Thursday · Legs</b><small>Updated</small></div>
+              <div class="row"><span class="bullet" id="b1">1</span><span class="row-text"><span class="old" id="o1">Barbell deadlift</span><i class="strike" id="s1"></i><span class="new" id="n1">Hip thrust</span></span><span class="row-meta">3 × 10</span></div>
+              <div class="row"><span class="bullet" id="b2">2</span><span class="row-text"><span class="old" id="o2">Back squat</span><i class="strike" id="s2"></i><span class="new" id="n2">Leg press</span></span><span class="row-meta">4 × 8</span></div>
+              <div class="row" id="r3"><span class="bullet g">+</span><span class="row-text"><span class="new">Bird dog</span></span><span class="row-meta">3 × 10</span></div>
+            </div>
+            <div class="msg typing"><i></i><i></i><i></i></div>
+          </div>
+
+          <!-- 4: what the EMG says -->
+          <div class="thread" id="thEmg">
+            <div class="msg">I looked at your biceps EMG over the past 4 weeks. 📈</div>
+            <div class="msg">Activation has plateaued on barbell curls. Swap them for one of these?</div>
+            <div class="chips" id="chips">
+              <span class="chip">Incline dumbbell curl</span>
+              <span class="chip" id="pickChip">Bayesian cable curl<i class="tap" id="chipTap" style="left:50%;top:50%"></i></span>
+              <span class="chip">Hammer curl</span>
+            </div>
+            <div class="msg">Swapped ✓ Bayesian cable curls start Wednesday.</div>
+            <div class="msg typing"><i></i><i></i><i></i></div>
+          </div>
+
+          <!-- 6: ask anything -->
+          <div class="thread" id="thAsk">
+            <div class="msg me">Which exercises target the trapezius?</div>
+            <div class="msg list">
+              <div class="list-title"><b>For your traps</b><small>3 picks</small></div>
+              <div class="row"><span class="bullet g">1</span><span class="row-text"><span class="new">Barbell shrugs</span></span><span class="row-meta">Upper</span></div>
+              <div class="row"><span class="bullet g">2</span><span class="row-text"><span class="new">Face pulls</span></span><span class="row-meta">Middle</span></div>
+              <div class="row"><span class="bullet g">3</span><span class="row-text"><span class="new">Prone Y-raises</span></span><span class="row-meta">Lower</span></div>
+            </div>
+            <div class="msg me">Can you add face pulls to my Monday workout?</div>
+            <div class="msg">Done ✓ Face pulls, 3 × 12, added to Monday.</div>
+            <div class="msg typing"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+
+        <canvas id="globe"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="lockup"><canvas id="bigGlobe"></canvas><h1>Actus <span class="grad-text">Coach</span></h1><p>Your AI personal trainer. Any time, any language.</p></div>
+
+  <div class="chapter" id="chapter"><span class="chapter-num" id="chapterNum">1</span><span class="chapter-text" id="chapterText"></span></div>
+  <div class="floor"></div>
+  <div id="fade"></div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, u) => a + (b - a) * u;
+const eio = (u) => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;   // ease in-out
+const eo = (u) => 1 - Math.pow(1 - u, 3);                                      // ease out
+const back = (u) => { const c = 1.6; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+// an element that comes in at `a` and leaves at `b`: returns 0 → 1 → 0
+function inOut(t, a, b, fin = 0.45, fout = 0.35){ return Math.min(eo(seg(t, a, a + fin)), 1 - eio(seg(t, b - fout, b))); }
+function pop(el, k, { dy = 26, scale = 0.94, blur = 10, dx = 0 } = {}){
+  el.style.opacity = k.toFixed(3);
+  el.style.transform = `translate(${(1 - k) * dx}px, ${(1 - k) * dy}px) scale(${lerp(scale, 1, k)})`;
+  el.style.filter = k < 1 ? `blur(${((1 - k) * blur).toFixed(2)}px)` : 'none';
+  el.style.visibility = k <= 0.001 ? 'hidden' : 'visible';
+}
+
+/* ---------- the timeline ---------- */
+const SCENES = [
+  { at: 0.0,  title: 'Live coaching' },
+  { at: 9.8,  title: 'Every workout, summed up' },
+  { at: 19.2, title: 'A plan built around you' },
+  { at: 27.4, title: 'Insights from your EMG' },
+  { at: 36.4, title: 'Motivation, 24/7' },
+  { at: 42.6, title: 'Ask anything' },
+  { at: 52.0, title: 'Speaks your language' },
+  { at: 58.8, title: null },              // the end card
+];
+const S = SCENES.map((s) => s.at);
+const DURATION = 63.2;
+window.DURATION = DURATION;
+window.CHAPTERS = SCENES.filter((s) => s.title).map((s) => ({ at: s.at, title: s.title }));
+
+// spoken lines (voice mode): when the context chip changes, when each word is said
+function line(at, end, ctx, parts, wps = 0.21, opts = {}){
+  const words = [], talk = [], buzz = [];
+  let t = parts.start;
+  parts.say.forEach((p) => {
+    if (p.buzz) { buzz.push([t, t + p.buzz]); t += p.buzz; return; }
+    const chunks = opts.chars ? p.split('|') : p.split(' ');
+    const s = t;
+    chunks.forEach((w) => { words.push({ w, at: t }); t += wps; });
+    talk.push([s, t + 0.15]);
+  });
+  return { at, end, ctx, words, talk, buzz, ...opts };
+}
+const LINES = [
+  line(0.5, 4.9, 'Lat pulldown · Set 3', { start: 0.9, say: ['One more rep, Bia. Push harder, I can see you have one more in you.'] }),
+  line(4.9, 9.9, 'Chest press · Set 2', { start: 5.2, say: ['Push harder with your left arm until the left sensor vibrates…', { buzz: 1.3 }, 'Great work!'] }),
+  line(S[4] + 0.6, S[5] + 0.1, 'Squat · Last set', { start: S[4] + 1.0, say: ["Last set, Bia. This is where you get stronger. Two more, let's go!"] }, 0.22),
+  line(S[6] + 0.9, S[6] + 2.25, 'English', { start: S[6] + 1.0, say: ['Great set! Rest for 90 seconds.'] }, 0.075, { lang: 0 }),
+  line(S[6] + 2.25, S[6] + 3.6, 'Français', { start: S[6] + 2.35, say: ['Superbe série ! Repose-toi 90 secondes.'] }, 0.075, { lang: 1 }),
+  line(S[6] + 3.6, S[6] + 4.95, '中文', { start: S[6] + 3.7, say: ['这组|练得|很棒！|休息|90|秒。'] }, 0.075, { lang: 2, chars: true }),
+  line(S[6] + 4.95, S[6] + 6.6, 'Español', { start: S[6] + 5.05, say: ['¡Gran serie! Descansa 90 segundos.'] }, 0.075, { lang: 3 }),
+];
+
+// the globe: up in the chat header (1) or big in the middle (0)
+function globeM(t){
+  const up = (a) => eio(seg(t, a, a + 0.9));
+  if (t < S[1]) return 0;
+  if (t < S[4]) return up(S[1]);
+  if (t < S[5]) return 1 - up(S[4]);
+  if (t < S[6]) return up(S[5]);
+  return 1 - up(S[6]);
+}
+
+// the phone's position: [time, x, y, rotateY, scale]
+const PHONE_KEYS = [
+  [0, 0, 0, 0, 1],
+  [S[3] + 0.1, 0, 0, 0, 1], [S[3] + 1.0, 175, 0, -11, 1],
+  [S[4] - 0.6, 175, 0, -11, 1], [S[4] + 0.3, 0, 0, 0, 1],
+  [S[5] + 5.6, 0, 0, 0, 1], [S[5] + 6.5, -175, 0, 11, 1],
+  [S[6] - 0.6, -175, 0, 11, 1], [S[6] + 0.3, 0, 0, 0, 1],
+  [S[7], 0, 0, 0, 1], [S[7] + 1.0, 0, 140, 0, 0.86],
+];
+function phonePose(t){
+  let k = 0;
+  while (k < PHONE_KEYS.length - 1 && t >= PHONE_KEYS[k + 1][0]) k++;
+  const a = PHONE_KEYS[k], b = PHONE_KEYS[Math.min(k + 1, PHONE_KEYS.length - 1)];
+  const u = b[0] > a[0] ? eio(seg(t, a[0], b[0])) : 0;
+  return { x: lerp(a[1], b[1], u), y: lerp(a[2], b[2], u), ry: lerp(a[3], b[3], u), s: lerp(a[4], b[4], u) };
+}
+
+/* chat threads: each item [element, shows at, typing from (coach) or null (Bia)] */
+function threadItems(id){ return Array.from($(id).querySelectorAll(':scope > .msg:not(.typing), :scope > .chips')); }
+const THREADS = [
+  { el: $('thSummary'), from: S[1] + 0.5, to: S[2] + 0.1, sub: 'Post-workout', items: threadItems('thSummary'),
+    times: [[S[1] + 1.8, S[1] + 1.0], [S[1] + 3.0, S[1] + 2.2], [S[1] + 4.2, S[1] + 3.6], [S[1] + 5.1, S[1] + 4.4]] },
+  { el: $('thPlan'), from: S[2] + 0.1, to: S[3] + 0.1, sub: 'Your plan', items: threadItems('thPlan'),
+    times: [[S[2] + 0.5, null], [S[2] + 2.0, S[2] + 1.1], [S[2] + 3.2, S[2] + 2.5]] },
+  { el: $('thEmg'), from: S[3] + 0.1, to: S[4] + 0.1, sub: 'Insights', items: threadItems('thEmg'),
+    times: [[S[3] + 1.3, S[3] + 0.6], [S[3] + 3.7, S[3] + 3.0], [S[3] + 4.6, null], [S[3] + 7.0, S[3] + 6.3]] },
+  { el: $('thAsk'), from: S[5] + 0.1, to: S[6] + 0.1, sub: 'Ask me anything', items: threadItems('thAsk'),
+    times: [[S[5] + 1.2, null], [S[5] + 2.7, S[5] + 1.8], [S[5] + 5.0, null], [S[5] + 6.5, S[5] + 5.7]] },
+];
+const scrollState = new Map();
+
+/* ---------- the globe ---------- */
+const N = 420, PTS = [];
+for (let i = 0; i < N; i++) {
+  const y = 1 - 2 * (i + 0.5) / N, r = Math.sqrt(1 - y * y), lon = i * 2.399963;
+  PTS.push({ x: Math.cos(lon) * r, y, z: Math.sin(lon) * r });
+}
+const STOPS = [[139, 61, 255], [236, 38, 120], [255, 94, 58]];
+const LUT = [];
+for (let i = 0; i < 48; i++) {
+  const f = i / 47 * (STOPS.length - 1), k = Math.min(STOPS.length - 2, Math.floor(f)), u = f - k;
+  LUT.push(`rgb(${STOPS[k].map((c, j) => Math.round(c + (STOPS[k + 1][j] - c) * u)).join(',')})`);
+}
+function drawGlobe(g, cx, cy, R, clock, amp, shake = 0, alpha = 1){
+  cx += shake * Math.sin(clock * 95) * 2.2;
+  const halo = g.createRadialGradient(cx, cy, R * 0.2, cx, cy, R * 1.9);
+  halo.addColorStop(0, `rgba(236,38,120,${((0.1 + 0.16 * amp) * alpha).toFixed(3)})`);
+  halo.addColorStop(1, 'rgba(139,61,255,0)');
+  g.fillStyle = halo; g.beginPath(); g.arc(cx, cy, R * 1.9, 0, 6.283); g.fill();
+  const ry = 0.6 + clock * 0.12, rx = 0.38;   // (turning slowly)
+  const cY = Math.cos(ry), sY = Math.sin(ry), cX = Math.cos(rx), sX = Math.sin(rx);
+  const dot = Math.max(0.7, R / 44 * 1.25);
+  for (const p of PTS) {
+    const x1u = p.x * cY - p.z * sY, z1u = p.x * sY + p.z * cY;
+    const y2u = p.y * cX - z1u * sX, z2u = p.y * sX + z1u * cX;
+    const d = 1 + amp * 0.09 * Math.sin(9 * Math.acos(clamp(z2u, -1, 1)) - clock * 10) + 0.025 * Math.sin(clock * 1.7);
+    const x1 = x1u * d, y2 = y2u * d;
+    const depth = (z2u + 1) / 2;
+    let c = ((x1 + 1) / 2 * 0.75 + (1 - y2) / 2 * 0.25 + 0.15 * Math.sin(clock * 0.6)) % 1;
+    if (c < 0) c += 1;
+    g.globalAlpha = (0.18 + 0.82 * depth) * alpha;
+    g.fillStyle = LUT[(c * 47) | 0];
+    g.beginPath(); g.arc(cx + x1 * R, cy - y2 * R, dot * (0.55 + 0.75 * depth), 0, 6.283); g.fill();
+  }
+  g.globalAlpha = 1;
+}
+const globe = $('globe'), gg = globe.getContext('2d');
+const big = $('bigGlobe'), bg = big.getContext('2d');
+const DPR = 2.4;   // (the phone is drawn 2.2× up)
+let SW = 0, SH = 0, nest = { x: 0, y: 0, r: 11 };
+function layout(){
+  const sc = $('screen');
+  SW = sc.offsetWidth; SH = sc.offsetHeight;
+  globe.width = Math.round(SW * DPR); globe.height = Math.round(SH * DPR);
+  const a = $('avatar');
+  nest = { x: a.offsetLeft + a.offsetWidth / 2 + a.parentElement.offsetLeft, y: a.offsetTop + a.offsetHeight / 2 + a.parentElement.offsetTop, r: a.offsetWidth / 2 - 1 };
+  big.width = 1200; big.height = 1200;   // (600px, drawn at 2×)
+}
+const home = () => ({ x: SW / 2, y: 114, r: 40 });
+
+// how much the coach is "talking" (0 … 1): a smoothed envelope around the talk spans
+function talkLevel(t, spans){
+  let v = 0;
+  for (const [a, b] of spans) v = Math.max(v, Math.min(seg(t, a - 0.15, a + 0.1), 1 - seg(t, b, b + 0.3)));
+  return v;
+}
+
+/* ---------- render(t): everything at time t ---------- */
+let shownLine = null;
+function render(t){
+  const clock = t;
+
+  // chapter pill: swaps at each scene, the number and title rising in
+  let si = 0; while (si < SCENES.length - 1 && t >= SCENES[si + 1].at) si++;
+  const sc = SCENES[si];
+  const chap = $('chapter');
+  if (sc.title) {
+    $('chapterText').textContent = sc.title; $('chapterNum').textContent = si + 1;
+    const next = SCENES[si + 1] ? SCENES[si + 1].at : DURATION;
+    const k = Math.min(eo(seg(t, sc.at + 0.05, sc.at + 0.5)), 1 - eio(seg(t, next - 0.3, next - 0.02)));
+    pop(chap, k, { dy: -14, blur: 8, scale: 0.92 });
+    chap.style.transform = `translateX(-50%) translateY(${((1 - k) * -14).toFixed(2)}px) scale(${lerp(0.92, 1, k).toFixed(3)})`;
+  } else pop(chap, 0);
+
+  // the phone: its pose, a gentle float, the buzz shake; the glow follows it
+  const pose = phonePose(t);
+  const fl = Math.sin(t * 0.9) * 5, tilt = Math.sin(t * 0.55) * 1.4;
+  const ln = LINES.find((l) => t >= l.at && t < l.end);
+  const buzzing = ln && ln.buzz.some(([a, b]) => t >= a && t < b);
+  const shakeX = buzzing ? Math.sin(t * 120) * 2.2 : 0;
+  const endK = eio(seg(t, S[7], S[7] + 1.0));
+  const phone = $('phone');
+  phone.style.transform = `translate(${(pose.x + shakeX).toFixed(2)}px, ${(pose.y + fl).toFixed(2)}px) rotateY(${(pose.ry + tilt).toFixed(2)}deg) rotateX(${(Math.sin(t * 0.4) * 1.2).toFixed(2)}deg) scale(${(2.2 * pose.s).toFixed(4)})`;
+  phone.style.opacity = (1 - endK).toFixed(3);
+  $('glow').style.transform = `translate(${600 + pose.x}px, ${560 + pose.y}px)`;
+  $('glow').style.opacity = (1 - endK * 0.6).toFixed(3);
+
+  // voice / chat
+  const m = globeM(t);
+  $('voice').style.opacity = clamp(1 - m * 1.8).toFixed(3);
+  $('chat').style.opacity = clamp((m - 0.3) * 1.8).toFixed(3);
+
+  // the spoken line: chip, caption words
+  const ctx = $('ctx'), cap = $('caption');
+  if (ln) {
+    if (shownLine !== ln) {
+      shownLine = ln;
+      cap.textContent = '';
+      ln.words.forEach((w) => { const s = document.createElement('span'); s.textContent = ln.chars ? w.w : `${w.w} `; cap.appendChild(s); });
+    }
+    Array.from(cap.children).forEach((s, i) => s.classList.toggle('on', t >= ln.words[i].at));
+    ctx.classList.toggle('is-buzz', !!buzzing);
+    ctx.textContent = buzzing ? 'Left sensor · bzz' : ln.ctx;
+    // in and out: the language lines slide and blur through quickly
+    const kin = eo(seg(t, ln.at, ln.at + (ln.lang != null ? 0.18 : 0.3)));
+    const kout = 1 - eio(seg(t, ln.end - (ln.lang != null ? 0.16 : 0.35), ln.end));
+    const k = Math.min(kin, kout);
+    cap.style.opacity = k.toFixed(3);
+    const dy = ln.lang != null ? (t < (ln.at + ln.end) / 2 ? (1 - kin) * 10 : -(1 - kout) * 10) : 0;
+    cap.style.transform = `translateY(${dy.toFixed(2)}px)`;
+    cap.style.filter = ln.lang != null && k < 1 ? `blur(${((1 - k) * 3).toFixed(2)}px)` : 'none';
+    ctx.style.opacity = '1';
+  } else {
+    cap.style.opacity = '0'; ctx.style.opacity = '0.0';
+  }
+  const amp = 0.12 + 0.88 * (ln ? talkLevel(t, ln.talk) * (0.55 + 0.45 * Math.abs(Math.sin(clock * 9.3) * Math.sin(clock * 4.1 + 1))) : 0);
+
+  // chat threads
+  let typingNow = false;
+  THREADS.forEach((th) => {
+    const vis = Math.min(eo(seg(t, th.from, th.from + 0.4)), 1 - eio(seg(t, th.to - 0.4, th.to)));
+    th.el.style.display = vis > 0 ? '' : 'none';
+    if (!(vis > 0)) return;
+    if (t >= th.from && t < th.to) $('chatSub').textContent = th.sub;
+    let typing = false;
+    th.items.forEach((el, i) => {
+      const [at, typeFrom] = th.times[i] || [1e9, null];
+      const on = t >= at;
+      el.style.display = on ? '' : 'none';
+      if (typeFrom != null && t >= typeFrom && t < at) typing = true;
+      if (on) {
+        const k = seg(t, at, at + 0.45);
+        el.style.opacity = eo(seg(t, at, at + 0.25)).toFixed(3);
+        el.style.transform = `translateY(${((1 - eo(k)) * 8).toFixed(2)}px) scale(${lerp(0.94, 1, back(k)).toFixed(4)})`;
+      }
+    });
+    const tp = th.el.querySelector('.typing');
+    tp.style.display = typing ? '' : 'none';
+    if (typing) {
+      typingNow = true;
+      Array.from(tp.children).forEach((d, j) => {
+        const ph = Math.sin((t * 6.3) - j * 0.95);
+        d.style.transform = `translateY(${(-Math.max(0, ph) * 3).toFixed(2)}px)`;
+        d.style.opacity = (0.5 + 0.5 * Math.max(0, ph)).toFixed(2);
+      });
+    }
+    // keep the newest message in view: slide the thread up by what no longer fits
+    const room = 372 - th.el.offsetTop;
+    const over = Math.max(0, th.el.offsetHeight - room);
+    const prev = scrollState.get(th.el) ?? over;
+    const cur = prev + (over - prev) * 0.22;
+    scrollState.set(th.el, cur);
+    th.el.style.transform = `translateY(${(-cur + (1 - vis) * (t < th.to - 0.4 ? 18 : -18)).toFixed(2)}px)`;
+    th.el.style.opacity = vis.toFixed(3);
+  });
+
+  // scene details inside the chat
+  // 2: the report card shimmers, then is tapped
+  const rAt = S[1] + 5.1;
+  $('shine').style.transform = `translateX(${lerp(-110, 110, eio(seg(t, rAt + 0.3, rAt + 1.3)))}%)`;
+  const tapK = seg(t, rAt + 1.6, rAt + 2.1);
+  $('reportTap').style.opacity = (tapK > 0 && tapK < 1 ? 1 - tapK : 0).toFixed(3);
+  $('reportTap').style.transform = `scale(${lerp(0, 2.4, eo(tapK))})`;
+  const press = Math.sin(Math.PI * seg(t, rAt + 1.6, rAt + 1.95));
+  $('reportMsg').style.scale = (1 - 0.035 * press).toFixed(4);
+
+  // 3: the plan rewrites itself
+  const P = S[2] + 3.2;
+  [[1, P + 0.9], [2, P + 1.7]].forEach(([n, at]) => {
+    const ks = eio(seg(t, at, at + 0.35)), kn = eo(seg(t, at + 0.4, at + 0.8));
+    $(`s${n}`).style.transform = `scaleX(${ks.toFixed(3)})`;
+    $(`o${n}`).style.opacity = (1 - kn).toFixed(3);
+    $(`o${n}`).style.transform = `translateX(${(-kn * 14).toFixed(2)}px)`;
+    $(`s${n}`).style.opacity = (1 - kn).toFixed(3);
+    $(`n${n}`).style.opacity = kn.toFixed(3);
+    $(`n${n}`).style.transform = `translateX(${((1 - kn) * 16).toFixed(2)}px)`;
+    $(`b${n}`).classList.toggle('g', t >= at + 0.4);
+  });
+  const r3 = $('r3'), k3 = seg(t, P + 2.6, P + 3.0);
+  r3.style.display = t >= P + 2.6 ? '' : 'none';
+  r3.style.opacity = eo(k3).toFixed(3);
+  r3.style.transform = `translateY(${((1 - eo(k3)) * 6).toFixed(2)}px)`;
+
+  // 4: the swaps come in one by one; one gets picked
+  const C = S[3] + 4.6;
+  Array.from($('chips').children).forEach((c, i) => {
+    const k = seg(t, C + i * 0.18, C + i * 0.18 + 0.4);
+    c.style.opacity = eo(k).toFixed(3);
+    c.style.transform = `translateX(${((1 - eo(k)) * 18).toFixed(2)}px) scale(${lerp(0.9, 1, back(k)).toFixed(4)})`;
+  });
+  const pickAt = C + 1.7;
+  $('pickChip').classList.toggle('picked', t >= pickAt + 0.15);
+  const ck = seg(t, pickAt, pickAt + 0.5);
+  $('chipTap').style.opacity = (ck > 0 && ck < 1 ? 1 - ck : 0).toFixed(3);
+  $('chipTap').style.transform = `scale(${lerp(0, 3, eo(ck))})`;
+
+  // ---- the floating cards ----
+  // 1: reps counting, then the buzz
+  pop($('repCard'), inOut(t, 1.0, 4.9), { dx: -30 });
+  // each number rolls up in as the one before rolls up out
+  const REPS = [-1, 2.2, 3.4, 1e9];
+  Array.from($('repNum').children).forEach((s, i) => {
+    const y = (1 - eo(seg(t, REPS[i], REPS[i] + 0.35))) * 110 - eo(seg(t, REPS[i + 1], REPS[i + 1] + 0.35)) * 110;
+    s.style.transform = `translateY(${y.toFixed(1)}px)`;
+  });
+  const bz = LINES[1].buzz[0];
+  pop($('buzzCard'), inOut(t, bz[0] - 0.5, 9.7), { dx: -30 });
+  Array.from(document.querySelectorAll('.buzz-ring')).forEach((r, i) => {
+    const u = ((t - bz[0]) * 1.6 + i / 3) % 1;
+    const on = t >= bz[0] && t < bz[1] + 0.4;
+    r.style.opacity = on ? ((1 - u) * 0.9).toFixed(3) : '0';
+    r.style.transform = `scale(${(1 + u * 1.25).toFixed(3)})`;
+  });
+  $('buzzPill').style.transform = buzzing ? `translateX(${(Math.sin(t * 130) * 3).toFixed(2)}px) rotate(${(Math.sin(t * 90) * 3).toFixed(2)}deg)` : 'none';
+
+  // 2: the report, opened
+  pop($('reportCard'), inOut(t, rAt + 2.0, S[2] + 0.2), { dx: 40 });
+  // 3: plan updated
+  pop($('planChip'), inOut(t, P + 3.3, S[3] + 0.2), { dx: 40 });
+  // 4: the EMG trend: bars rise, the plateau line draws, the projected bar dashes in
+  pop($('emgCard'), inOut(t, S[3] + 1.6, S[4] - 0.4), { dx: -40 });
+  Array.from(document.querySelectorAll('#emgCard .cbar')).forEach((b, i) => {
+    const at = i < 4 ? S[3] + 2.0 + i * 0.22 : C + 2.6;
+    const k = eo(seg(t, at, at + 0.6));
+    b.querySelector('i').style.transform = `scaleY(${k.toFixed(3)})`;
+    b.querySelector('b').style.opacity = seg(t, at + 0.4, at + 0.7).toFixed(3);
+    b.querySelector('b').style.bottom = `calc(${b.querySelector('i').style.height} - 30px)`;
+    if (i === 4) { b.style.opacity = seg(t, at - 0.1, at + 0.2).toFixed(3); }
+  });
+  const pl = $('plateau');
+  pl.style.bottom = `calc(34px + 0.71 * (100% - 34px))`;
+  pl.style.transform = `scaleX(${eio(seg(t, S[3] + 3.4, S[3] + 4.0)).toFixed(3)})`;
+  pl.style.opacity = (seg(t, S[3] + 3.4, S[3] + 3.5) * (1 - seg(t, C + 2.4, C + 2.7) * 0.6)).toFixed(3);
+  // 5: motivation
+  pop($('coachedCard'), inOut(t, S[4] + 1.6, S[5] + 0.1), { dx: -40 });
+  pop($('always'), inOut(t, S[4] + 2.4, S[5] + 0.1), { dx: 40, scale: 0.8 });
+  // 6: Monday
+  const A = S[5] + 6.5;
+  pop($('calCard'), inOut(t, A + 0.1, S[6] + 0.1), { dx: 40 });
+  const nk = seg(t, A + 0.8, A + 1.3);
+  $('calNew').style.opacity = eo(nk).toFixed(3);
+  $('calNew').style.transform = `translateY(${((1 - back(nk)) * -24).toFixed(2)}px) scale(${lerp(0.9, 1, back(nk)).toFixed(4)})`;
+  // 7: languages
+  const L0 = LINES[3].at;
+  const langK = inOut(t, L0 - 0.2, S[7] + 0.1);
+  pop($('langs'), langK, { dx: -40 });
+  pop($('hello'), langK, { dx: 40 });
+  const li = LINES.slice(3).findIndex((l) => t >= l.at && t < l.end);
+  const activeLang = li < 0 ? (t < L0 ? 0 : 3) : li;
+  // smooth index, so the list and the bar glide
+  let fIdx = 0;
+  LINES.slice(3).forEach((l, i) => { if (i > 0) fIdx += eio(seg(t, l.at - 0.15, l.at + 0.15)); });
+  Array.from(document.querySelectorAll('#langs .lang')).forEach((el, i) => {
+    const d = i - fIdx;
+    const on = 1 - clamp(Math.abs(d));
+    el.style.transform = `translateY(${(d * 64 + 128).toFixed(1)}px) scale(${lerp(0.62, 1, on).toFixed(3)})`;
+    el.style.transformOrigin = 'left center';
+    el.style.opacity = (lerp(0.28, 1, on) * (Math.abs(d) > 2.6 ? 0 : 1)).toFixed(3);
+    el.style.color = '#fff';
+  });
+  $('langBar').style.transform = 'translateY(128px)';
+  Array.from(document.querySelectorAll('#hello span')).forEach((el, i) => {
+    const d = i - fIdx;
+    el.style.transform = `translateY(${(d * 120 + 50).toFixed(1)}px)`;
+    el.style.opacity = (1 - clamp(Math.abs(d) * 1.4)).toFixed(3);
+  });
+
+  // ---- the globe (in the phone) ----
+  gg.setTransform(DPR, 0, 0, DPR, 0, 0);
+  gg.clearRect(0, 0, SW, SH);
+  const h = home();
+  const typingAmp = typingNow ? 0.45 + 0.3 * Math.sin(clock * 8) : 0.08;
+  const a = lerp(amp, typingAmp, m);
+  drawGlobe(gg, lerp(h.x, nest.x, m), lerp(h.y, nest.y, m), lerp(h.r, nest.r, m), clock, a, buzzing ? 1 : 0);
+
+  // ---- the end card ----
+  const E = S[7];
+  const lk = eo(seg(t, E + 0.5, E + 1.4));
+  bg.setTransform(2, 0, 0, 2, 0, 0);
+  bg.clearRect(0, 0, 600, 600);
+  if (lk > 0) {
+    const talkE = 0.3 + 0.5 * Math.abs(Math.sin(clock * 3.1) * Math.sin(clock * 1.7 + 1));
+    drawGlobe(bg, 300, 300, lerp(60, 150, lk), clock, talkE, 0, lk);
+  }
+  const h1 = document.querySelector('#lockup h1'), p = document.querySelector('#lockup p');
+  pop(h1, eo(seg(t, E + 1.0, E + 1.6)), { dy: 30, blur: 14 });
+  pop(p, eo(seg(t, E + 1.35, E + 1.95)), { dy: 22, blur: 10 });
+
+  // in from, and out to, the background (so it loops)
+  $('fade').style.opacity = Math.max(1 - seg(t, 0, 0.5), seg(t, DURATION - 0.8, DURATION)).toFixed(3);
+}
+
+/* ---------- playback ---------- */
+window.render = render;
+window.ready = (async () => {
+  if (document.fonts) await document.fonts.ready;
+  layout();
+  render(0);
+})();
+const params = new URLSearchParams(location.search);
+if (params.has('still')) window.ready.then(() => { for (let x = 0; x <= +params.get('still'); x += 1 / 30) render(x); });
+else if (!params.has('capture')) {
+  window.ready.then(() => {
+    const t0 = performance.now() - (+params.get('t') || 0) * 1000;
+    const loop = (now) => { render(((now - t0) / 1000) % DURATION); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  });
+}
+</script>
+</body>
+</html>

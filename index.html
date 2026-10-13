@@ -145,7 +145,7 @@
     .hero, .panel, .team-section, footer,
     .panel > *, footer > *,
     .team-heading, .team-member{ opacity:1; transform:none; }
-    .divider-bg, .coach-title, .coach-cards{ opacity:1; transform:none; filter:none; }
+    .coach-title, .coach-body{ opacity:1; transform:none; filter:none; }
     .site-logo, .nav-links li, .nav-cta-pill, .title-xl-line1, .title-xl-line2,
     .hero-subtitle, .hero-card, .hero-emg-bg{ animation:none !important; }
   }
@@ -1335,256 +1335,338 @@
     .an-card.an-wide{ flex-basis:260px; }
   }
 
-  /* ACTUS COACH (the science section's fourth option): a light iPhone,
-     its bottom cropped and faded, playing a loop (the coach script). The
-     coach is a slowly turning globe of coloured dots (the title dots'
-     gradient) drawn on a canvas over the screen: in voice mode it sits
-     big in the middle and ripples while it talks, the caption filling in
-     word by word below it; after the workout it shrinks up into the chat
-     header as the coach's avatar, and the post-workout chat plays (the
-     analysis, a summary card, a reply). */
-  .coach-viz{
-    position:relative; overflow:hidden;
-    /* (tall enough, at the least, for all three caption lines to clear the fade) */
-    height:clamp(276px, 36vh, 330px); margin:0 0 clamp(18px, 2.4vh, 28px);
-    -webkit-mask-image:linear-gradient(to bottom, #000 82%, transparent);
-    mask-image:linear-gradient(to bottom, #000 82%, transparent);
-  }
-  .cc-glow{
-    position:absolute; left:50%; top:42%; width:min(440px, 100%); height:320px; transform:translate(-50%, -50%);
-    background:radial-gradient(closest-side, rgba(236,38,120,0.16), rgba(139,61,255,0.08) 55%, transparent);
-    pointer-events:none;
-  }
-  .cc-phone{
-    position:relative; width:226px; height:470px; margin:6px auto 0; padding:6px;
-    border-radius:42px; background:linear-gradient(160deg, #FFFFFF, #E9E9EC);
-    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.07), 0 24px 50px rgba(60,30,110,0.12), 0 2px 6px rgba(0,0,0,0.05);
-  }
-  .cc-screen{
-    position:relative; height:100%; overflow:hidden; border-radius:36px; background:#fff;
-    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.05);
-  }
-  .cc-island{ position:absolute; z-index:4; top:10px; left:50%; width:64px; height:19px; margin-left:-32px; border-radius:10px; background:#111; }
-  .cc-status{
-    position:absolute; z-index:4; top:12px; left:26px; right:22px;
-    display:flex; justify-content:space-between; align-items:center;
-    font-size:9.5px; font-weight:600; color:var(--ink);
-  }
-  .cc-battery{ width:17px; height:8px; border-radius:2.5px; border:1px solid currentColor; padding:1px; opacity:0.8; }
+  /* phone status-bar icons (the ecosystem's App phone) */
+  .cc-battery{ width:17px; height:8px; border-radius:2.5px; border:1px solid currentColor; padding:1px; }
   .cc-battery::after{ content:''; display:block; width:75%; height:100%; border-radius:1px; background:currentColor; }
-  /* the globe: one canvas over the whole screen (it moves between the two modes) */
-  .cc-sphere{ position:absolute; z-index:3; inset:0; width:100%; height:100%; pointer-events:none; }
-  .cc-voice, .cc-chat{ position:absolute; inset:0; transition:opacity 0.6s ease; }
-  .cc-chat{ opacity:0; background:#F6F6F8; }
-  .cc-phone[data-mode="chat"] .cc-voice{ opacity:0; }
-  .cc-phone[data-mode="chat"] .cc-chat{ opacity:1; }
-  /* voice mode */
-  .cc-voice-head{ position:absolute; top:36px; left:0; right:0; text-align:center; }
-  .cc-who{ display:block; font-size:8.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); }
-  .cc-ctx{
-    display:inline-block; margin-top:5px; padding:3px 9px; border-radius:999px;
-    background:#F1F1F3; color:var(--ink); font-size:9px; font-weight:600; white-space:nowrap;
-    transition:background 0.3s ease, color 0.3s ease;
-  }
-  .cc-ctx.is-buzz{ background:linear-gradient(90deg, #8B3DFF, #EC2678 62%, #FF5E3A); color:#fff; animation:cc-buzz 0.12s linear infinite; }
-  @keyframes cc-buzz{ 0%,100%{ transform:translateX(0); } 25%{ transform:translateX(-1.5px) rotate(-1deg); } 75%{ transform:translateX(1.5px) rotate(1deg); } }
-  .cc-caption{
-    position:absolute; top:164px; left:16px; right:16px; text-align:center;
-    font-size:12px; font-weight:600; line-height:1.4; letter-spacing:-0.005em;
-  }
-  .cc-caption span{ color:#D3D3D8; transition:color 0.3s ease; }
-  .cc-caption span.is-on{ color:var(--ink); }
-  /* chat */
-  .cc-chat-head{
-    position:absolute; z-index:2; top:0; left:0; right:0; padding:34px 14px 8px;
-    display:flex; align-items:center; gap:8px;
-    background:rgba(246,246,248,0.94); border-bottom:1px solid rgba(0,0,0,0.05);
-  }
-  .cc-avatar{ flex:0 0 auto; width:24px; height:24px; } /* (the globe settles here) */
-  .cc-chat-name{ display:block; font-size:10.5px; font-weight:700; line-height:1.1; color:var(--ink); }
-  .cc-chat-sub{ display:block; font-size:8px; line-height:1.3; color:var(--gray); }
-  .cc-thread{
-    position:absolute; top:76px; left:10px; right:10px;
-    display:flex; flex-direction:column; gap:6px;
-    transition:transform 0.6s cubic-bezier(.2,.8,.2,1);
-  }
-  .cc-msg{
-    align-self:flex-start; max-width:86%; padding:7px 10px;
-    border-radius:14px 14px 14px 5px; background:#fff; color:var(--ink);
-    font-size:10px; font-weight:500; line-height:1.38;
-    box-shadow:0 1px 2px rgba(0,0,0,0.05);
-    opacity:0; transform:translateY(8px) scale(0.94); transform-origin:left bottom;
-    transition:opacity 0.35s ease, transform 0.5s cubic-bezier(.2,.9,.3,1.3);
-  }
-  .cc-msg.is-in{ opacity:1; transform:none; }
-  .cc-thread [hidden]{ display:none !important; }
-  .cc-msg.is-me{
-    align-self:flex-end; border-radius:14px 14px 5px 14px; transform-origin:right bottom;
-    background:linear-gradient(90deg, #8B3DFF, #EC2678); color:#fff;
-  }
-  .cc-typing{ display:flex; gap:3px; padding:9px 11px; }
-  .cc-typing i{ width:4px; height:4px; border-radius:50%; background:#B8B8B8; animation:cc-dot 1s ease-in-out infinite; }
-  .cc-typing i:nth-child(2){ animation-delay:0.15s; }
-  .cc-typing i:nth-child(3){ animation-delay:0.3s; }
-  @keyframes cc-dot{ 0%,60%,100%{ transform:translateY(0); opacity:0.5; } 30%{ transform:translateY(-3px); opacity:1; } }
-  /* the report: a link-preview card (like a shared doc): a peek at the
-     report's first page over a soft gradient, then its name, and a
-     chevron. A shimmer passes over it as it lands; then it's tapped */
-  .cc-msg.cc-card{ position:relative; width:88%; padding:0; overflow:hidden; }
-  .cc-card-preview{
-    position:relative; height:78px; padding:9px 12px 0; overflow:hidden;
-    background:linear-gradient(135deg, #F1EBFF, #FFEAF2 58%, #FFF0E8);
-  }
-  .cc-card-preview::after{
-    content:''; position:absolute; inset:0; transform:translateX(-110%);
-    background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.75) 50%, transparent 70%);
-  }
-  .cc-card.is-in .cc-card-preview::after{ animation:cc-shimmer 1.1s ease 0.35s 1 both; }
-  @keyframes cc-shimmer{ to{ transform:translateX(110%); } }
-  .cc-sheet{
-    height:100%; padding:7px 8px 0; border-radius:7px 7px 0 0;
-    background:#fff; box-shadow:0 1px 4px rgba(60,30,110,0.1);
-  }
-  .cc-sk{ display:block; height:4px; border-radius:2px; background:#E4E4EA; }
-  .cc-sk + .cc-sk{ margin-top:3px; width:38%; background:#EFEFF3; }
-  .cc-minis{ display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:7px; }
-  .cc-minis svg{ display:block; width:100%; height:30px; border-radius:4px; background:#F6F6F9; }
-  .cc-card-meta{ display:flex; align-items:center; gap:7px; padding:7px 9px 8px; }
-  .cc-card-icon{
-    flex:0 0 auto; display:grid; place-items:center; width:20px; height:20px; border-radius:6px;
-    background:linear-gradient(135deg, #8B3DFF, #EC2678 60%, #FF5E3A);
-  }
-  .cc-card-text{ flex:1 1 auto; min-width:0; line-height:1.2; }
-  .cc-card-text b{ display:block; font-size:9.5px; font-weight:700; }
-  .cc-card-text span{ display:block; font-size:8px; color:var(--gray); }
-  .cc-card-open{ flex:0 0 auto; font-size:14px; line-height:1; color:#B8B8B8; }
-  /* the tap: the card presses in under a ripple */
-  .cc-msg.cc-card.is-in{ transition:opacity 0.35s ease, transform 0.25s cubic-bezier(.2,.9,.3,1.3); }
-  .cc-msg.cc-card.is-in.is-tapped{ transform:scale(0.965); }
-  .cc-tap{
-    position:absolute; left:64%; top:48%; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%;
-    background:rgba(139,61,255,0.22); opacity:0; transform:scale(0); pointer-events:none;
-  }
-  .cc-card.is-tapped .cc-tap{ animation:cc-tap 0.7s ease-out 1 both; }
-  @keyframes cc-tap{ 0%{ opacity:1; transform:scale(0.2); } 100%{ opacity:0; transform:scale(2.2); } }
-  @media (prefers-reduced-motion: reduce){ .cc-ctx.is-buzz, .cc-typing i{ animation:none; } }
+  .cc-icons{ display:flex; align-items:center; gap:4px; }
+  /* Wi-Fi, full, drawn like Apple's: two round-capped arcs over a rounded wedge */
+  .cc-wifi{ display:block; width:12.7px; height:9px; } /* (its viewBox trimmed to the shape, so centring it centres what you see) */
 
   .panel{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 40px; text-align:center; scroll-snap-align: start; }
 
-  /* DIVIDER — a black beat between the story section and capability, breaking
-     the white rhythm before it resumes. A full-screen video (haptic / AI,
-     darkened by a black overlay) with the "coaches you in return" title
-     and the current feature tucked into its bottom-left corner. The
-     section pins in place while you scroll through the features — each
-     scroll brings in the next one, with its video — and lets go after
-     the last (see the coach script). */
+  /* DIVIDER — a black beat between the science section and capability,
+     breaking the light rhythm before it resumes. The same pattern as the
+     science section, in the dark: the "pill-sized lab" title, a
+     row of pill options (the ecosystem, the coach) and, below them, a wide
+     window showing the picked one — its visual, a headline and a line of
+     text — crossfading on a switch (the coach-tabs script). The pills
+     and window are dark greys that sit quietly on the black. */
   .divider-black{
-    position:relative;
-    background:#000;
-    /* one screen, plus a stretch of pinned scroll per feature after the
-       first (--coach-steps is set by the coach script) */
-    height:calc(100vh + var(--coach-steps, 2) * var(--coach-step, 70vh));
+    --coach-max:1180px;
+    --coach-pill:#1C1C1E;      /* a pill */
+    --coach-pill-on:#3A3A3C;   /* the picked pill */
+    --coach-window:#121214;    /* the window */
+    --coach-edge:rgba(255,255,255,0.07);
+    --coach-h:clamp(440px, 64vh, 640px);   /* the window's height */
+    background:#000; color:#fff;
+    padding:clamp(80px, 14vh, 160px) var(--frame-gap);
   }
-  .coach-pin{
-    position:sticky; top:0; overflow:hidden;
-    height:100vh; min-height:560px;
-    display:flex; align-items:flex-end;
-    padding:0 40px 80px;
-  }
-  /* Full-bleed background video + black overlay (::after). Raise/lower
-     the overlay's alpha to darken/reveal more of the video. */
-  .divider-bg{
-    position:absolute; inset:0; z-index:0;
-    pointer-events:none;
-  }
-  /* Videos stacked; only the one matching the current feature shows,
-     crossfading when it switches. */
-  .divider-bg video{
-    position:absolute; inset:0;
-    display:block; width:100%; height:100%; object-fit:cover;
-    opacity:0; transition:opacity 0.4s ease;
-  }
-  .divider-bg video.is-active{ opacity:1; }
-  .divider-bg::after{
-    content:''; position:absolute; inset:0;
-    background:rgba(0,0,0,0.25);
-  }
-  /* Pinned to the left of the screen (just the section's side padding),
-     with the title and feature text left-aligned */
-  .coach-stage{
-    position:relative; z-index:1; width:100%;
-    margin:0; text-align:left;
-  }
+  .coach-frame{ max-width:var(--coach-max); margin:0 auto; }
   .coach-title{
     display:block;
-    white-space:nowrap;
-    font-size:clamp(60px, 6vw, 84px); font-weight:400;
-    letter-spacing:-0.02em; line-height:1.15; color:#fff;
-    margin-bottom:28px;
+    font-size:clamp(44px, 5.4vw, 80px); font-weight:400;
+    letter-spacing:-0.02em; line-height:1.08; color:#fff;
+    margin-bottom:clamp(28px, 4.5vh, 48px);
   }
-  /* The features share one spot (stacked in a single grid cell);
-     only the current one shows, the others fade out as it fades in
-     (see the coach script). */
-  .coach-cards{
-    display:grid; grid-template-columns:minmax(0, 470px);
+  /* "pill-sized", ringed by a thin light pill: the silhouette of the
+     sensor. A glint of sunlight sits on its rim, at the top-left as the
+     title comes up the screen, sliding over to the top-right as it
+     scrolls on (--glint, 0 → 1, from the coach-tabs script). ::before is
+     the faint rim with a whisper of glassy sheen inside; ::after is the
+     glint, a bright spot clipped to the rim (the mask keeps only the
+     border-wide ring). */
+  .pill-word{
+    --rim:max(1.5px, 0.02em);
+    --gx:calc(14% + var(--glint, 0) * 72%);
+    position:relative; display:inline-block;
+    padding:0 0.3em; margin:0 0.04em;
   }
-  .coach-card{
-    grid-area:1 / 1;
-    color:#fff;
-    opacity:0; transform:translateY(10px);
-    transition:opacity 0.6s ease, transform 0.8s cubic-bezier(.2,.8,.2,1);
+  .pill-word::before, .pill-word::after{
+    content:''; position:absolute; inset:0.05em 0 -0.09em; pointer-events:none;
+    border-radius:999px;
   }
-  .coach-card.is-active{ opacity:1; transform:none; transition-delay:0.1s; }
-  /* One dot per feature, stacked down the right edge of the screen,
-     centred vertically; the current one is the bright one. Clicking one
-     scrolls to it. */
-  .coach-dots{
-    position:absolute; right:28px; top:50%; z-index:1;
-    translate:0 -50%;
-    display:flex; flex-direction:column; gap:10px;
+  .pill-word::before{
+    border:var(--rim) solid rgba(255,255,255,0.26);
+    background:radial-gradient(38% 70% at var(--gx) 0%, rgba(255,255,255,0.07), transparent 70%);
   }
-  .coach-dot{
-    width:8px; height:8px; padding:0; border:0; border-radius:50%;
-    background:#fff; opacity:0.3;
-    cursor:pointer;
-    transition:opacity 0.4s ease, transform 0.4s ease;
+  .pill-word::after{
+    padding:var(--rim);
+    background:
+      radial-gradient(20% 70% at var(--gx) 0%, #fff, rgba(255,255,255,0.7) 30%, transparent 72%),
+      radial-gradient(40% 120% at var(--gx) 0%, rgba(255,255,255,0.45), transparent 70%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite:exclude;
   }
-  .coach-dot:hover{ opacity:0.6; }
-  .coach-dot.is-active{ opacity:1; transform:scale(1.15); cursor:default; }
-  .coach-dot:focus-visible{ outline:1px solid #fff; outline-offset:3px; }
+  /* the options: one row of pills, each a round "+" and a name. When
+     they don't fit, the row scrolls sideways (no scrollbar); the few px
+     of padding leave room for the hover grow and the focus ring. */
+  .coach-options{
+    display:flex; gap:12px; margin:-4px -4px clamp(14px, 2.6vh, 24px); padding:4px;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .coach-options::-webkit-scrollbar{ display:none; }
+  .coach-option{
+    flex:0 0 auto;
+    display:inline-flex; align-items:center; gap:12px;
+    padding:9px 22px 9px 9px; border:1px solid var(--coach-edge); border-radius:999px;
+    background:var(--coach-pill); color:rgba(255,255,255,0.72);
+    font-family:var(--sans); font-size:17px; font-weight:700; letter-spacing:-0.01em;
+    white-space:nowrap; cursor:pointer;
+    transition:background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  }
+  .coach-option:hover{ transform:scale(1.02); color:#fff; }
+  .coach-option:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+  /* round "+" icon; on the picked option it turns into a "−" */
+  .coach-option-icon{
+    position:relative; flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+    background:#fff;
+  }
+  .coach-option-icon::before, .coach-option-icon::after{
+    content:''; position:absolute; left:50%; top:50%; width:12px; height:2px; margin:-1px 0 0 -6px;
+    border-radius:1px; background:var(--coach-pill); transition:transform 0.3s ease, background-color 0.3s ease;
+  }
+  .coach-option-icon::after{ transform:rotate(90deg); }
+  .coach-option.is-active{ background:var(--coach-pill-on); color:#fff; cursor:default; transform:none; }
+  .coach-option.is-active .coach-option-icon::before,
+  .coach-option.is-active .coach-option-icon::after{ background:var(--coach-pill-on); }
+  .coach-option.is-active .coach-option-icon::after{ transform:rotate(0deg); }
+  /* the window: one panel per option, stacked in one spot. Its visual
+     fills the window; the headline and text sit at its bottom-left over
+     a fade to black. */
+  .coach-panels{ display:grid; grid-template-columns:minmax(0, 1fr); }
+  .coach-panel{
+    grid-area:1 / 1; position:relative; overflow:hidden;
+    height:var(--coach-h);
+    border-radius:var(--frame-radius); border:1px solid var(--coach-edge);
+    background:var(--coach-window);
+    animation:science-in 0.45s ease both;
+  }
+  .coach-panel[hidden]{ display:none; }
+  .coach-media{ position:absolute; inset:0; }
+  .coach-media video, .coach-media img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .coach-media::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.35) 40%, transparent 70%);
+  }
+  .coach-copy{
+    position:absolute; left:0; bottom:0; z-index:1;
+    max-width:560px; padding:clamp(24px, 3vw, 44px);
+  }
+  .coach-copy h3{
+    font-size:clamp(24px, 2.2vw, 32px); font-weight:800; line-height:1.08;
+    letter-spacing:-0.02em; color:#fff;
+  }
+  .coach-copy p{
+    margin-top:10px; font-size:clamp(15px, 1.1vw, 17px); line-height:1.45;
+    color:rgba(255,255,255,0.68);
+  }
+  @media (prefers-reduced-motion: reduce){ .coach-panel{ animation:none; } }
 
-  .coach-card-title{
-    font-size:clamp(22px, 2.2vw, 32px); font-weight:600;
-    letter-spacing:-0.01em; line-height:1.15;
+  /* ECOSYSTEM (the first option): three cards side by side — Sensors,
+     Hub, App — each named by a small glass pill in its corner, with the
+     headline and text beneath them instead of over a picture. Sensors
+     and Hub hold photos; App is a phone drawn here, its top half rising
+     out of the card's bottom edge. */
+  .coach-panel.is-eco:not([hidden]){
+    display:flex; flex-direction:column;
+    padding:clamp(12px, 1.3vw, 18px) clamp(12px, 1.3vw, 18px) 0;
   }
-  .coach-card-text{
-    margin-top:8px;
-    font-size:clamp(15px, 1.4vw, 18px); line-height:1.45;
-    color:rgba(255,255,255,0.75);
+  .is-eco .coach-copy{ position:relative; padding:clamp(16px, 2vh, 24px) clamp(12px, 1.6vw, 26px) clamp(20px, 2.6vh, 32px); }
+  .eco-grid{
+    flex:1 1 auto; min-height:0;
+    display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:clamp(10px, 1.1vw, 16px);
+  }
+  .eco-card{
+    position:relative; min-height:0; margin:0; overflow:hidden;
+    border-radius:calc(var(--frame-radius) - 10px);
+    background:#1C1C1E;
+  }
+  .eco-media{ position:absolute; inset:0; }
+  .eco-media img{ display:block; width:100%; height:100%; object-fit:cover; }
+  /* a product shot on a transparent background: centred, clear of the
+     label, standing in a soft pool of light (so the black sensor still
+     reads on the dark card) with a shadow under it */
+  .eco-media.is-product{
+    padding:56px 8% 52px;
+    background:radial-gradient(65% 50% at 50% 55%, #3A3A3F, #1C1C1E 75%);
+  }
+  .eco-media.is-product img{ object-fit:contain; filter:drop-shadow(0 14px 18px rgba(0,0,0,0.45)); }
+  /* The hub, sized so the sensors sitting in it are exactly as tall as
+     the loose ones in the Sensors card beside it. The Sensors shot fills
+     its box (the card less the padding above: 84% of the card's width by
+     its height less 108px) as far as it fits; a sensor is 518 of its 568px
+     height (865 wide). In the hub shot, a sensor is 346 of 478px. */
+  .eco-card{ container-type:size; }
+  .eco-media.is-product{ display:flex; align-items:center; justify-content:center; }
+  .eco-media.is-product img.is-hub{
+    width:auto; max-width:100%; max-height:100%;
+    height:calc(min(84cqw * 518 / 865, (100cqh - 108px) * 518 / 568) * 478 / 346);
+  }
+  .eco-label{
+    position:absolute; left:12px; top:12px; z-index:2;
+    padding:7px 15px; border-radius:999px;
+    background:rgba(20,20,22,0.55); border:1px solid rgba(255,255,255,0.12);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    font-size:15px; font-weight:700; letter-spacing:-0.01em; color:#fff;
+  }
+  /* a line about the card, along its bottom edge */
+  .eco-note{
+    position:absolute; left:16px; right:16px; bottom:16px; z-index:2;
+    font-size:15px; font-weight:600; letter-spacing:-0.01em; line-height:1.3;
+    color:rgba(255,255,255,0.78);
+  }
+  /* App: the phone, sized to its card (everything in it is in em, off
+     the phone's font size — 22em wide, 46em tall), with just its top
+     half rising out of the card's bottom edge, faded into the card there.
+     Its size: as wide as the card allows, but small enough that the
+     half still clears the label above it. */
+  .eco-app{
+    container-type:size; overflow:hidden;
+    background:radial-gradient(60% 50% at 50% 62%, rgba(236,38,120,0.16), rgba(139,61,255,0.07) 60%, transparent);
+  }
+  .eco-app::after{
+    content:''; position:absolute; left:0; right:0; bottom:0; height:22%; pointer-events:none;
+    background:linear-gradient(to top, #1C1C1E 6%, transparent);
+  }
+  .eco-phone{
+    position:absolute; left:50%; top:calc(100cqh - 23em);
+    font-size:min(3.6cqw, calc((100cqh - 60px) / 23));
+    width:22em; height:46em; margin-left:-11em; padding:0.55em;
+    border-radius:3.7em;
+    background:linear-gradient(160deg, #4A4A4F, #2A2A2D 40%, #1A1A1C);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14), 0 2em 4em rgba(0,0,0,0.5);
+  }
+  .eco-screen{
+    position:relative; height:100%; overflow:hidden; border-radius:3.15em;
+    background:#F4F4F6; color:#242424;
+  }
+  .eco-island{ position:absolute; top:1em; left:50%; width:4.2em; height:1.8em; margin-left:-2.1em; border-radius:0.9em; background:#0B0B0C; }
+  /* (level with the island: its top and height, everything centred) */
+  .eco-status{
+    position:absolute; top:1em; height:1.8em; left:2.6em; right:2.3em;
+    display:flex; justify-content:space-between; align-items:center;
+    font-weight:600; line-height:1;
+  }
+  .eco-status > span:first-child{ font-size:0.95em; }
+  .eco-status .cc-icons{ gap:0.45em; }
+  .eco-status .cc-wifi{ width:1.27em; height:0.9em; }
+  .eco-status .cc-battery{ width:1.7em; height:0.8em; }
+  .eco-body{ position:absolute; top:4.6em; left:1.5em; right:1.5em; }
+  .eco-hello{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1.3em; }
+  .eco-hello small{ display:block; font-size:0.95em; color:#8E8E93; }
+  .eco-hello b{ display:block; margin-top:0.1em; font-size:2.1em; font-weight:800; letter-spacing:-0.03em; line-height:1.05; }
+  .eco-avatar{ flex:0 0 auto; width:2.8em; height:2.8em; border-radius:50%; background:linear-gradient(135deg, #8B3DFF, #EC2678 60%, #FF5E3A); }
+  .eco-tile{
+    margin-bottom:0.9em; padding:1.3em 1.35em;
+    border-radius:1.7em; background:#fff;
+    box-shadow:0 0.1em 0.3em rgba(0,0,0,0.04);
+  }
+  .eco-tile-head{ display:flex; justify-content:space-between; align-items:center; gap:1em; }
+  .eco-tile-head b{ display:block; font-size:1.2em; font-weight:700; letter-spacing:-0.01em; }
+  .eco-tile-head small{ display:block; margin-top:0.2em; font-size:0.9em; color:#8E8E93; }
+  .eco-ring{ position:relative; flex:0 0 auto; width:4.4em; height:4.4em; }
+  .eco-ring svg{ display:block; width:100%; height:100%; transform:rotate(-90deg); }
+  .eco-ring span{ position:absolute; inset:0; display:grid; place-items:center; font-size:1.25em; font-weight:800; letter-spacing:-0.02em; }
+  .eco-muscles{ display:grid; grid-template-columns:auto 1fr; align-items:center; gap:0.7em 0.9em; margin-top:1.2em; }
+  .eco-muscles span{ font-size:0.9em; color:#6B6B6B; }
+  .eco-muscles i{ display:block; height:0.65em; border-radius:1em; background:#EEEEF0; overflow:hidden; }
+  .eco-muscles i::after{ content:''; display:block; width:var(--v); height:100%; border-radius:1em; background:linear-gradient(to right, #8B3DFF, #EC2678 70%, #FF5E3A); }
+  .eco-trace{ display:block; width:100%; height:4.6em; margin-top:0.8em; }
+
+  /* ACTUS COACH (the second option): the words on the left, the film on
+     the right, square, as tall as the window. The film's background is the
+     window's own colour; its edges are faded out anyway, so a shade's
+     difference from the video encoding can't show as a box. */
+  .coach-panel.is-ai:not([hidden]){
+    display:grid; align-items:center;
+    /* (the film's column: a square as tall as the window inside its border) */
+    grid-template-columns:minmax(0, 1fr) calc(var(--coach-h) - 2px);
+  }
+  .ai-copy{ padding:clamp(28px, 3.2vw, 52px); padding-right:clamp(8px, 1.5vw, 24px); }
+  .ai-kicker{
+    display:inline-block; font-size:13px; font-weight:800; letter-spacing:0.09em; text-transform:uppercase;
+    background:linear-gradient(90deg, #8B3DFF, #EC2678 62%, #FF5E3A); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .ai-copy h3{
+    margin-top:10px; max-width:480px;
+    font-size:clamp(24px, 2.2vw, 32px); font-weight:800; line-height:1.08; letter-spacing:-0.02em; color:#fff;
+  }
+  .ai-copy p{ margin-top:12px; max-width:500px; font-size:clamp(14px, 1.05vw, 16px); line-height:1.5; color:rgba(255,255,255,0.68); }
+  /* the film's chapters, as small pills; the one playing lit */
+  .ai-chapters{ display:flex; flex-wrap:wrap; gap:8px; margin-top:clamp(16px, 2.4vh, 24px); max-width:520px; }
+  .ai-chapter{
+    position:relative; display:inline-flex; align-items:center; gap:8px;
+    padding:7px 13px 7px 10px; border:1px solid var(--coach-edge); border-radius:999px;
+    background:var(--coach-pill); color:rgba(255,255,255,0.6);
+    font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer;
+    transition:background-color 0.3s ease, color 0.3s ease;
+  }
+  .ai-chapter::before{
+    content:''; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.3);
+    transition:background 0.3s ease, transform 0.3s ease;
+  }
+  .ai-chapter:hover{ color:#fff; }
+  .ai-chapter:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+  .ai-chapter.is-on{ background:var(--coach-pill-on); color:#fff; }
+  .ai-chapter.is-on::before{ background:linear-gradient(135deg, #8B3DFF, #EC2678 60%, #FF5E3A); transform:scale(1.25); }
+  .ai-note{ font-size:11.5px !important; line-height:1.45 !important; color:rgba(255,255,255,0.38) !important; margin-top:clamp(14px, 2vh, 20px) !important; }
+  .ai-media{ width:100%; aspect-ratio:1 / 1; overflow:hidden; }
+  .ai-media video{
+    display:block; width:100%; height:100%; object-fit:cover;
+    -webkit-mask-image:linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent);
+    mask-composite:intersect;
   }
 
-  /* Entrance, once the content itself is on screen (.is-visible is set
-     on .divider-black by the coach script): the video fades up out of
-     black, then the title and the feature rise a few px and un-blur in
-     turn — the same quiet motion as the hero intro. */
-  .divider-bg{ opacity:0; transition:opacity 1.4s ease; }
-  .divider-black.is-visible .divider-bg{ opacity:1; }
-  .coach-title, .coach-cards{
+  /* phones: no room for three across — the cards scroll sideways, one
+     and a bit at a time, under the same edge-to-edge treatment as the pills */
+  @media (max-width:860px){
+    .coach-panel.is-eco{ padding:12px 0 0; }
+    .eco-grid{
+      flex:none; height:min(400px, 100vw);
+      grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:76%;
+      gap:10px; padding:0 12px;
+      overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding:0 12px;
+      scrollbar-width:none; overscroll-behavior-x:contain;
+    }
+    .eco-grid::-webkit-scrollbar{ display:none; }
+    .eco-card{ scroll-snap-align:start; }
+    .is-eco .coach-copy{ padding:16px 20px 22px; }
+    .coach-panel.is-ai:not([hidden]){ display:flex; flex-direction:column; }
+    .ai-media{ order:-1; }
+    .ai-copy{ padding:4px 20px 24px; }
+    .ai-chapter{ font-size:12px; padding:6px 11px 6px 9px; }
+  }
+
+  /* Entrance, once the section is on screen (.is-visible is set on
+     .divider-black by the coach-tabs script): the title, then the pills
+     and window, rise a few px and un-blur in turn — the same quiet
+     motion as the hero intro. */
+  .coach-title, .coach-body{
     opacity:0; transform:translateY(18px); filter:blur(6px);
-    transition:opacity 0.1s ease, transform 1s cubic-bezier(.2,.8,.2,1), filter 0.9s ease;
+    transition:opacity 0.6s ease, transform 1s cubic-bezier(.2,.8,.2,1), filter 0.9s ease;
   }
-  .coach-title{ transition-delay:0.2s; }
-  .coach-cards{ transition-delay:0.45s; }
+  .coach-body{ transition-delay:0.2s; }
   .divider-black.is-visible .coach-title,
-  .divider-black.is-visible .coach-cards{
-    opacity:1; transform:none; filter:none;
-  }
+  .divider-black.is-visible .coach-body{ opacity:1; transform:none; filter:none; }
 
-  @media (max-width:1000px){
-    .coach-title{ white-space:normal; font-size:clamp(34px, 8vw, 60px); }
-  }
-  @media (max-width:700px){
-    .coach-pin{ padding:0 20px 56px; }
+  /* phones / narrow: the pills' row runs out to the screen edges; the visual
+     sits on top of the window with the text below it */
+  @media (max-width:860px){
+    .divider-black{ padding:72px 16px; }
+    .coach-title{ font-size:clamp(34px, 9vw, 52px); }
+    .coach-options{ gap:10px; margin:0 -16px 16px; padding:4px 16px; }
+    .coach-option{ padding:7px 16px 7px 7px; gap:10px; font-size:15px; }
+    .coach-option:hover{ transform:none; }
+    .coach-option-icon{ width:26px; height:26px; }
+    .coach-panel{ height:auto; display:flex; flex-direction:column; }
+    .coach-media{ position:relative; inset:auto; aspect-ratio:4 / 3; }
+    .coach-media::after{ background:linear-gradient(to top, var(--coach-window), transparent 35%); }
+    .coach-copy{ position:relative; padding:4px 20px 22px; }
   }
 
 
@@ -2029,10 +2111,6 @@
         <span class="science-option-icon" aria-hidden="true"></span>
         <span class="science-option-text"><b>Analysis</b><span>Real-time &amp; post-workout</span></span>
       </button>
-      <button class="science-option" type="button" role="tab" id="scienceTabCoach" aria-controls="sciencePanelCoach" aria-selected="false" tabindex="-1">
-        <span class="science-option-icon" aria-hidden="true"></span>
-        <span class="science-option-text"><b>Actus Coach</b><span>Your AI personal trainer</span></span>
-      </button>
     </div>
     <div class="science-panels">
       <article class="science-panel is-active" role="tabpanel" id="sciencePanelEmg" aria-labelledby="scienceTabEmg">
@@ -2069,85 +2147,110 @@
         <h3>Every rep, decoded.</h3>
         <p>Real-time and post-workout analysis tracks your effort, form and progress, and shows you exactly where to push next.</p>
       </article>
-      <!-- the coach: a phone playing a voice-mode workout, then the post-workout chat (the coach script) -->
-      <article class="science-panel" role="tabpanel" id="sciencePanelCoach" aria-labelledby="scienceTabCoach" hidden>
-        <div class="coach-viz" aria-hidden="true">
-          <div class="cc-glow"></div>
-          <div class="cc-phone" id="coachPhone" data-mode="voice">
-            <div class="cc-screen">
-              <div class="cc-island"></div>
-              <div class="cc-status"><span>9:41</span><span class="cc-battery"></span></div>
-              <div class="cc-voice">
-                <div class="cc-voice-head"><span class="cc-who">Actus Coach</span><span class="cc-ctx"></span></div>
-                <div class="cc-caption"></div>
-              </div>
-              <div class="cc-chat">
-                <div class="cc-chat-head"><span class="cc-avatar"></span><span><span class="cc-chat-name">Actus Coach</span><span class="cc-chat-sub">Post-workout</span></span></div>
-                <div class="cc-thread">
-                  <div class="cc-msg">Great session today, Bia!</div>
-                  <div class="cc-msg">Your analysis is ready: fatigue, left–right balance, targeted training and more.</div>
-                  <div class="cc-msg">Here's your full report:</div>
-                  <div class="cc-msg cc-card">
-                    <div class="cc-card-preview">
-                      <div class="cc-sheet">
-                        <span class="cc-sk" style="width:58%"></span><span class="cc-sk"></span>
-                        <div class="cc-minis">
-                          <svg viewBox="0 0 60 30" preserveAspectRatio="none"><path d="M4 8 L14 9 L22 11 L30 13 L38 17 L46 20 L56 23" fill="none" stroke="#242424" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 24 L14 23 L22 21 L30 19 L38 15 L46 12 L56 8" fill="none" stroke="#EC2678" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                          <svg viewBox="0 0 60 30" preserveAspectRatio="none"><rect x="8" y="14" width="7" height="13" rx="3.5" fill="#C9C9CF"/><rect x="20" y="5" width="7" height="22" rx="3.5" fill="#EC2678"/><rect x="32" y="18" width="7" height="9" rx="3.5" fill="#C9C9CF"/><rect x="44" y="12" width="7" height="15" rx="3.5" fill="#C9C9CF"/></svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="cc-card-meta">
-                      <span class="cc-card-icon"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M2 8V5M5 8V2M8 8V4"/></svg></span>
-                      <span class="cc-card-text"><b>Workout report</b><span>Upper body · 7 insights</span></span>
-                      <span class="cc-card-open">›</span>
-                    </div>
-                    <span class="cc-tap"></span>
-                  </div>
-                  <div class="cc-msg is-me">Thanks, coach!</div>
-                  <div class="cc-msg cc-typing"><i></i><i></i><i></i></div>
-                </div>
-              </div>
-              <canvas class="cc-sphere"></canvas>
-            </div>
-          </div>
-        </div>
-        <h3>Actus Intelligence.</h3>
-        <p>AI turns a flood of data into simple advice. Actus Coach talks you through every set and sums up every workout.</p>
-      </article>
     </div>
     <h2 class="science-title">The <span class="science-word"><span class="science-word-text">science</span><canvas aria-hidden="true"></canvas></span><br>behind ACTUS</h2>
   </div>
 </section>
 
-<section class="divider-black">
- <div class="coach-pin">
-  <div class="divider-bg" aria-hidden="true">
-    <!-- One video per feature, same order; the current one fades in and plays -->
-    <video class="is-active" src="assets/Hardware1.mp4" autoplay muted loop playsinline></video>
-    <video src="assets/haptic1.mp4" muted loop playsinline preload="auto"></video>
-    <video src="assets/AI1.mp4" muted loop playsinline preload="auto"></video>
-  </div>
-  <div class="coach-stage">
-    <span class="coach-title">And it coaches you in return!</span>
-    <div class="coach-cards" id="coachCards">
-      <article class="coach-card is-active">
-        <h3 class="coach-card-title">EMG &amp; IMU sensors</h3>
-        <p class="coach-card-text">Reads what your muscles are doing and how your body moves, together, in real time.</p>
-      </article>
-      <article class="coach-card">
-        <h3 class="coach-card-title">Haptic system</h3>
-       <p class="coach-card-text">Direct feedback on your movement to your tactile senses.</p>  <!--  //  Also counting your reps! -->
-      </article>
-      <article class="coach-card">
-        <h3 class="coach-card-title">Talkable AI!</h3>
-        <p class="coach-card-text">An AI coach you can simply talk to through your earpods while practicing. </p> <!--  //  It will also optimize your training based on your performance and goals. -->
-      </article>
+<!-- The coach, science-style in the dark: a row of pill options, the
+     picked one's visual and explanation in the wide window below
+     (switching by the coach-tabs script). The visuals are placeholders
+     for now — swap each .coach-media's contents for the real one. -->
+<section class="divider-black" id="coach">
+  <div class="coach-frame">
+    <h2 class="coach-title">Your <span class="pill-word">pill-sized</span> lab.</h2>
+    <div class="coach-body">
+      <div class="coach-options" role="tablist" aria-label="The ACTUS hardware">
+        <button class="coach-option is-active" type="button" role="tab" id="coachTabEcosystem" aria-controls="coachPanelEcosystem" aria-selected="true">
+          <span class="coach-option-icon" aria-hidden="true"></span>Actus Ecosystem
+        </button>
+        <button class="coach-option" type="button" role="tab" id="coachTabAi" aria-controls="coachPanelAi" aria-selected="false" tabindex="-1">
+          <span class="coach-option-icon" aria-hidden="true"></span>Actus Coach
+        </button>
+      </div>
+      <div class="coach-panels">
+        <!-- Ecosystem: three cards. Sensors and Hub are product shots on
+             transparent backgrounds; App is the phone, drawn here. -->
+        <article class="coach-panel is-eco is-active" role="tabpanel" id="coachPanelEcosystem" aria-labelledby="coachTabEcosystem">
+          <div class="eco-grid">
+            <figure class="eco-card">
+              <div class="eco-media is-product"><img src="assets/sensors.webp" alt="Three Actus sensors: one black and one white from the front, and a white one from the back"></div>
+              <figcaption class="eco-label">Sensors</figcaption>
+              <p class="eco-note">Track up to 8 muscles</p>
+            </figure>
+            <figure class="eco-card">
+              <div class="eco-media is-product"><img class="is-hub" src="assets/hub.webp" alt="The Actus hub, holding two black sensors"></div>
+              <figcaption class="eco-label">Hub</figcaption>
+              <p class="eco-note">Up to 6 workouts on a full charge</p>
+            </figure>
+            <figure class="eco-card">
+              <div class="eco-media eco-app" role="img" aria-label="The Actus app on an iPhone: today's upper-body session, muscle by muscle">
+                <div class="eco-phone" aria-hidden="true">
+                  <div class="eco-screen">
+                    <div class="eco-island"></div>
+                    <div class="eco-status"><span>9:41</span><span class="cc-icons"><svg class="cc-wifi" viewBox="0.97 1.1 16.06 11.4"><path d="M2.07 5.07A9.8 9.8 0 0 1 15.93 5.07M4.47 7.47A6.4 6.4 0 0 1 13.53 7.47" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M9 12L6.6 9.6A3.4 3.4 0 0 1 11.4 9.6Z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg><span class="cc-battery"></span></span></div>
+                    <div class="eco-body">
+                      <div class="eco-hello">
+                        <span><small>Ready for upper body?</small><b>Hi, Bia</b></span>
+                        <span class="eco-avatar"></span>
+                      </div>
+                      <div class="eco-tile">
+                        <div class="eco-tile-head">
+                          <span><b>Today's session</b><small>42 min · 9 sets</small></span>
+                          <span class="eco-ring">
+                            <svg viewBox="0 0 40 40"><defs><linearGradient id="ecoRingGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8B3DFF"/><stop offset="0.6" stop-color="#EC2678"/><stop offset="1" stop-color="#FF5E3A"/></linearGradient></defs><circle cx="20" cy="20" r="16" fill="none" stroke="#EEEEF0" stroke-width="4"/><circle cx="20" cy="20" r="16" fill="none" stroke="url(#ecoRingGrad)" stroke-width="4" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="14"/></svg>
+                            <span>86</span>
+                          </span>
+                        </div>
+                        <div class="eco-muscles">
+                          <span>Lats</span><i style="--v:84%"></i>
+                          <span>Biceps</span><i style="--v:63%"></i>
+                          <span>Rear delts</span><i style="--v:45%"></i>
+                        </div>
+                      </div>
+                      <div class="eco-tile">
+                        <div class="eco-tile-head"><span><b>Live EMG</b><small>Left lat · set 3</small></span></div>
+                        <svg class="eco-trace" viewBox="0 0 200 46" preserveAspectRatio="none"><path d="M0 23 L14 23 L18 20 L22 26 L26 22 L34 23 L40 9 L44 38 L48 5 L52 41 L56 12 L60 33 L64 19 L68 26 L76 23 L92 23 L96 20 L100 27 L104 23 L112 23 L118 11 L122 36 L126 7 L130 39 L134 14 L138 31 L142 20 L146 25 L154 23 L200 23" fill="none" stroke="#EC2678" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption class="eco-label">App</figcaption>
+            </figure>
+          </div>
+          <div class="coach-copy">
+            <h3>The Actus ecosystem.</h3>
+            <p>Everything Actus, working together.</p>
+          </div>
+        </article>
+        <!-- Actus Coach: the film (assets/actus-coach.mp4, made from
+             motion/actus-coach.html by motion/render.mjs) on the right; the
+             words, and a pill per chapter of the film, on the left. The
+             pill for the part playing lights up; clicking one jumps there
+             (the coach-tabs script). -->
+        <article class="coach-panel is-ai" role="tabpanel" id="coachPanelAi" aria-labelledby="coachTabAi" hidden>
+          <div class="ai-copy">
+            <span class="ai-kicker">Actus Intelligence</span>
+            <h3>Your coach, in your ear and in your pocket.</h3>
+            <p>AI turns a flood of data into simple advice. Actus Coach talks you through every set and sums up every workout.</p>
+            <p>Actus Intelligence pairs our own models, which read your muscles and movement and decide what you need next, with large language models that put it into plain words, for anyone, in any language.</p>
+            <div class="ai-chapters" aria-label="Chapters of the video">
+              <button type="button" class="ai-chapter" data-at="0">Live coaching</button>
+              <button type="button" class="ai-chapter" data-at="9.8">Workout reports</button>
+              <button type="button" class="ai-chapter" data-at="19.2">Personal plans</button>
+              <button type="button" class="ai-chapter" data-at="27.4">EMG insights</button>
+              <button type="button" class="ai-chapter" data-at="36.4">Motivation, 24/7</button>
+              <button type="button" class="ai-chapter" data-at="42.6">Ask anything</button>
+              <button type="button" class="ai-chapter" data-at="52">Any language</button>
+            </div>
+            <p class="ai-note">Supervised training led to greater strength gains than training alone in a 12-week study (Mazzetti et al., <i>Med Sci Sports Exerc</i>, 2000).</p>
+          </div>
+          <div class="ai-media"><video src="assets/actus-coach.mp4" poster="assets/actus-coach-poster.jpg" muted loop playsinline preload="metadata" aria-label="Actus Coach: live coaching, workout reports, personal plans, EMG insights, motivation, questions answered, in English, French, Chinese and Spanish"></video></div>
+        </article>
+      </div>
     </div>
   </div>
-  <!-- one dot per feature, filled in by the coach script -->
-  <div class="coach-dots" id="coachDots"></div>
- </div>
 </section>
 
 <section class="panel" id="capability">
@@ -3295,115 +3398,122 @@
     setTimeout(typeTitleXlWord, 1800);
   }
 
-  /* Coach section: one feature at a time ("EMG & IMU sensors", then
-     "Haptic system", then "Talkable AI!"), each with its background
-     video, which plays from the start each time it comes up. Driven by
-     scroll position: the section pins once it fills the screen, and its
-     pinned stretch is split evenly between the features — scrolling moves
-     through them like any other part of the page (no snapping or holds),
-     and after the last one the page carries on. The dots at the bottom
-     jump to a feature. */
+  /* Coach options: picking a feature (click, or the arrow keys while one
+     has focus) shows it in the window below. Its video plays from the
+     start each time it comes up; the others pause, and all of them pause
+     while the section is off screen. On phones, where the pills scroll
+     sideways, the picked one is scrolled into view. */
   (function(){
-    const wrap = document.getElementById('coachCards');
-    if (!wrap) return;
-    const cards = Array.from(wrap.querySelectorAll('.coach-card'));
-    // Background videos, one per feature in the same order (sensors, haptic, AI).
-    const videos = Array.from(document.querySelectorAll('.divider-bg video'));
-    let current = 0;
-    // one dot per feature at the bottom; the current one is the bright one
-    const dotsEl = document.getElementById('coachDots');
-    const dots = cards.map((card, i) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'coach-dot' + (i === 0 ? ' is-active' : '');
-      dot.setAttribute('aria-label', card.querySelector('.coach-card-title').textContent);
-      if (dotsEl) dotsEl.appendChild(dot);
-      return dot;
-    });
-    function activate(idx){
-      if (idx === current) return;
-      current = idx;
-      cards.forEach((card, i) => card.classList.toggle('is-active', i === idx));
-      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === idx));
-      videos.forEach((video, i) => {
-        const on = i === idx;
-        video.classList.toggle('is-active', on);
-        if (on) {
-          video.currentTime = 0;
-          const p = video.play();
-          if (p && p.catch) p.catch(() => {}); // ignore autoplay refusals
-        } else {
-          // pause once it has faded out (matches the CSS opacity transition)
-          setTimeout(() => { if (!video.classList.contains('is-active')) video.pause(); }, 400);
-        }
+    const section = document.querySelector('.divider-black');
+    if (!section) return;
+    const list = section.querySelector('.coach-options');
+    const tabs = Array.from(section.querySelectorAll('.coach-option'));
+    const panelOf = (t) => document.getElementById(t.getAttribute('aria-controls'));
+    const videoOf = (t) => { const p = panelOf(t); return p && p.querySelector('video'); };
+    let inView = false;
+    const play = (v) => { if (v) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } };
+    function pick(tab, focus){
+      tabs.forEach(t => {
+        const on = t === tab;
+        const was = t.classList.contains('is-active');
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = panelOf(t);
+        if (panel) { panel.hidden = !on; panel.classList.toggle('is-active', on); }
+        const v = videoOf(t);
+        if (!v) return;
+        if (on && !was) { v.currentTime = 0; if (inView) play(v); }
+        else if (!on) v.pause();
       });
+      // keep the picked pill in view in the sideways-scrolling row (only
+      // the row scrolls, never the page)
+      if (list.scrollWidth > list.clientWidth) {
+        const pad = parseFloat(getComputedStyle(list).paddingLeft) || 0;
+        const left = tab.offsetLeft - list.offsetLeft, right = left + tab.offsetWidth;
+        if (left - pad < list.scrollLeft) list.scrollTo({ left: left - pad, behavior: 'smooth' });
+        else if (right + pad > list.scrollLeft + list.clientWidth) list.scrollTo({ left: right + pad - list.clientWidth, behavior: 'smooth' });
+      }
+      if (focus) tab.focus({ preventScroll: true });
     }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => pick(tab, false));
+      tab.addEventListener('keydown', (e) => {
+        const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (!step) return;
+        e.preventDefault();
+        e.stopPropagation(); // (not the gallery's arrow keys)
+        pick(tabs[(i + step + tabs.length) % tabs.length], true);
+      });
+    });
+    // play the picked one's video only while the section is on screen
+    new IntersectionObserver((entries) => {
+      inView = entries.some(e => e.isIntersecting);
+      const cur = tabs.find(t => t.classList.contains('is-active'));
+      tabs.forEach(t => { const v = videoOf(t); if (v && !(inView && t === cur)) v.pause(); });
+      if (inView && cur) play(videoOf(cur));
+    }, { threshold:0.15 }).observe(section);
+    // The coach film's chapter pills: the one for the part playing is lit;
+    // clicking one jumps the film there (and plays it, if it had stopped)
+    const film = section.querySelector('.ai-media video');
+    const chapters = Array.from(section.querySelectorAll('.ai-chapter'));
+    if (film && chapters.length) {
+      const marks = chapters.map((c) => parseFloat(c.dataset.at));
+      const light = () => {
+        let k = 0;
+        marks.forEach((m, i) => { if (film.currentTime >= m - 0.05) k = i; });
+        chapters.forEach((c, i) => c.classList.toggle('is-on', i === k));
+      };
+      film.addEventListener('timeupdate', light);
+      film.addEventListener('seeked', light);
+      chapters.forEach((c, i) => c.addEventListener('click', () => {
+        film.currentTime = marks[i];
+        light();
+        if (film.paused) play(film);
+      }));
+      light();
+    }
+    // (a page opened in a background tab can't start it: try again on show)
+    document.addEventListener('visibilitychange', () => {
+      const cur = tabs.find(t => t.classList.contains('is-active'));
+      if (inView && cur && !document.hidden) play(videoOf(cur));
+    });
+    // Entrance (see the .divider-black .is-visible CSS): once the title
+    // is actually on screen, so the animation isn't over before you get there.
+    const title = section.querySelector('.coach-title');
+    const revealObs = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        section.classList.add('is-visible');
+        revealObs.disconnect();
+      }
+    }, { threshold:0.35 });
+    revealObs.observe(title || section);
 
-    const section = wrap.closest('.divider-black');
-    if (section) section.style.setProperty('--coach-steps', cards.length - 1);
-    // Page-scroll position where feature i is up: the section's top for
-    // the first, the end of its pinned stretch for the last, evenly between.
-    // Measured against the pinned panel's own (fixed, vh-based) height, not
-    // the live window height — a phone's address bar showing / hiding
-    // changes that mid-scroll, which would shift every stop under you.
-    const pin = section && section.querySelector('.coach-pin');
-    function stopAt(i){
-      const top = section.getBoundingClientRect().top + window.scrollY;
-      const pinned = Math.max(1, section.offsetHeight - (pin ? pin.offsetHeight : window.innerHeight));
-      return top + i / Math.max(1, cards.length - 1) * pinned;
-    }
-    // Plain scrolling: the page always follows the wheel / finger freely —
-    // no holds, no snapping, no easing on to the next feature. The pinned
-    // stretch is split evenly between the features, and whichever third
-    // you're in is the one showing.
-    function update(){
-      if (!section) return;
-      const y = window.scrollY;
-      const first = stopAt(0), last = stopAt(cards.length - 1);
-      const t = Math.min(1, Math.max(0, (y - first) / Math.max(1, last - first)));
-      activate(Math.min(cards.length - 1, Math.floor(t * cards.length)));
-    }
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-
-    function easeTo(y, nav = false){
-      if (window.actusSmoothTo) window.actusSmoothTo(y, nav);
-      else window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-
-    // a dot scrolls to the middle of its feature's stretch
-    function goTo(i){
-      const first = stopAt(0), last = stopAt(cards.length - 1);
-      easeTo(Math.round(first + (i + 0.5) / cards.length * (last - first)), true);
-    }
-    // a dot scrolls straight to its feature
-    dots.forEach((dot, i) => dot.addEventListener('click', () => { if (i !== current) goTo(i); }));
-    if (section) {
-      new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            const v = videos[current];
-            if (v && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
-          } else {
-            videos.forEach(v => v.pause());
-          }
-        });
-      }, { threshold:0.2 }).observe(section);
-    }
-
-    // Entrance (see the .divider-black .is-visible CSS): fires once the
-    // title + feature are actually on screen, so the animation isn't over
-    // before you get there.
-    const stage = wrap.closest('.coach-stage');
-    if (section && stage) {
-      const revealObs = new IntersectionObserver((entries) => {
-        if (entries.some(e => e.isIntersecting)) {
-          section.classList.add('is-visible');
-          revealObs.disconnect();
-        }
-      }, { threshold:0.35 });
-      revealObs.observe(stage);
+    // The glint on the "pill-sized" ring: top-left until the title is
+    // past the middle of the screen (where the eye is), top-right by the
+    // time it nears the top — eased
+    // along, so it glides rather than ticks with each scroll step.
+    const pillWord = section.querySelector('.pill-word');
+    if (pillWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // where the word's middle is on the screen (fraction of its height,
+      // from the top) when the glint sets off, and when it arrives
+      const START = 0.6, END = 0.15;
+      let shown = 0, target = 0, raf = 0;
+      const measure = () => {
+        const r = pillWord.getBoundingClientRect(), vh = window.innerHeight;
+        const t = Math.min(1, Math.max(0, (vh * START - (r.top + r.height / 2)) / (vh * (START - END))));
+        target = t * t * (3 - 2 * t); // smoothstep
+      };
+      const tick = () => {
+        shown += (target - shown) * 0.12;
+        if (Math.abs(target - shown) < 0.001) shown = target;
+        pillWord.style.setProperty('--glint', shown.toFixed(4));
+        raf = shown === target ? 0 : requestAnimationFrame(tick);
+      };
+      const onScroll = () => { measure(); if (!raf) raf = requestAnimationFrame(tick); };
+      measure(); shown = target; pillWord.style.setProperty('--glint', shown.toFixed(4));
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
     }
   })();
 
@@ -5418,201 +5528,6 @@
   })();
 </script>
 <script>
-  /* Actus Coach: the phone's loop, timed off one clock (seconds, only
-     running while it's on screen). First voice mode, one spoken line
-     after another: the context chip (the exercise, or the rest
-     countdown), the caption's words filling in as they're said, the
-     globe rippling while the coach talks (and shaking through the
-     sensor's buzz). Then the globe glides up into the chat header as the
-     avatar and the post-workout chat plays: each coach message after a
-     moment of "typing" (the avatar pulsing), the report's preview card
-     (tapped), Bia's reply, the thread scrolling up as it fills; then it all glides back.
-     Reduced motion: the finished chat, still. */
-  (function(){
-    const phone = document.getElementById('coachPhone');
-    if (!phone) return;
-    const viz = phone.closest('.coach-viz');
-    const screen = phone.querySelector('.cc-screen');
-    const canvas = phone.querySelector('.cc-sphere'), g = canvas.getContext('2d');
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ctx = phone.querySelector('.cc-ctx');
-    const caption = phone.querySelector('.cc-caption');
-    const avatar = phone.querySelector('.cc-avatar');
-    const thread = phone.querySelector('.cc-thread'), typing = phone.querySelector('.cc-typing');
-    const msgs = Array.from(thread.querySelectorAll('.cc-msg:not(.cc-typing)'));
-
-    // what the coach says, mid-workout: strings are spoken, { buzz } pauses for the sensor
-    const LINES = [
-      { ctx: 'Lat pulldown · Set 3', say: ['One more rep, Bia. Push harder, I can see you have one more in you.'] },
-      { ctx: 'rest', say: ["Relax for 2 minutes. Next up: seated cable rows. I'll count your reps once you start."] },
-      { ctx: 'Chest press · Set 2', say: ['Push harder with your left arm, Bia, until the left sensor vibrates…', { buzz: 1.6 }, 'Great work!'] },
-    ];
-    const LEAD = 0.9, WORD = 0.3, HOLD = 2, OUT = 0.4, GLIDE = 0.9;
-    // each line's timeline: when each word is said, when it's talking, when it buzzes
-    const lines = LINES.map((ln) => {
-      let t = LEAD;
-      const words = [], talk = [], buzz = [];
-      ln.say.forEach((part) => {
-        if (part.buzz) { buzz.push([t, t + part.buzz]); t += part.buzz; return; }
-        const start = t;
-        part.split(' ').forEach((w) => { words.push({ w, at: t }); t += WORD; });
-        talk.push([start, t + 0.15]);
-      });
-      return { ...ln, words, talk, buzz, dur: t + HOLD + OUT };
-    });
-    const VOICE = lines.reduce((a, l) => a + l.dur, 0);
-
-    // the chat: each coach message after a beat of typing; Bia's reply without
-    const chat = [];
-    let ct = GLIDE + 0.3;
-    msgs.forEach((m) => {
-      const me = m.classList.contains('is-me');
-      const type = me ? 0 : (m.classList.contains('cc-card') ? 1.2 : 0.9);
-      const wait = me ? 2.6 : 0;   // (Bia replies once she's had a look at the report)
-      chat.push({ m, me, card: m.classList.contains('cc-card'), typeAt: ct, at: ct + type + wait });
-      ct = ct + type + wait + 0.55;
-    });
-    const CHAT = ct + 3.5;
-    const LOOP = VOICE + CHAT;
-
-    /* the globe: points spread evenly over a sphere (a Fibonacci
-       spiral), held at a fixed tilt; talking sends rings rippling over it */
-    const N = 420, PTS = [];
-    for (let i = 0; i < N; i++) {
-      const y = 1 - 2 * (i + 0.5) / N, r = Math.sqrt(1 - y * y), lon = i * 2.399963;
-      PTS.push({ x: Math.cos(lon) * r, y, z: Math.sin(lon) * r });
-    }
-    const STOPS = [[139, 61, 255], [236, 38, 120], [255, 94, 58]];
-    const LUT = [];
-    for (let i = 0; i < 48; i++) {
-      const f = i / 47 * (STOPS.length - 1), k = Math.min(STOPS.length - 2, Math.floor(f)), u = f - k;
-      LUT.push(`rgb(${STOPS[k].map((c, j) => Math.round(c + (STOPS[k + 1][j] - c) * u)).join(',')})`);
-    }
-    let W = 0, H = 0, dpr = 1, home = { x: 0, y: 0, r: 46 }, nest = { x: 0, y: 0, r: 11 };
-    function layout(){
-      W = screen.clientWidth; H = screen.clientHeight;
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-      home = { x: W / 2, y: 114, r: 40 };
-      const s = screen.getBoundingClientRect(), a = avatar.getBoundingClientRect();
-      nest = { x: a.left - s.left + a.width / 2, y: a.top - s.top + a.height / 2, r: a.width / 2 - 1 };
-    }
-    const ease = (u) => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-    function drawGlobe(clock, amp, shake, m){
-      const R = home.r + (nest.r - home.r) * m;
-      const cx = home.x + (nest.x - home.x) * m + shake * Math.sin(clock * 95) * 2.2;
-      const cy = home.y + (nest.y - home.y) * m;
-      g.setTransform(dpr, 0, 0, dpr, 0, 0);
-      g.clearRect(0, 0, W, H);
-      // a soft halo, brighter as it talks
-      const halo = g.createRadialGradient(cx, cy, R * 0.2, cx, cy, R * 1.9);
-      halo.addColorStop(0, `rgba(236,38,120,${(0.1 + 0.16 * amp).toFixed(3)})`);
-      halo.addColorStop(1, 'rgba(139,61,255,0)');
-      g.fillStyle = halo;
-      g.beginPath(); g.arc(cx, cy, R * 1.9, 0, 6.283); g.fill();
-      const ry = 0.6, rx = 0.38;   // (a fixed tilt: it doesn't turn)
-      const cY = Math.cos(ry), sY = Math.sin(ry), cX = Math.cos(rx), sX = Math.sin(rx);
-      const dot = Math.max(0.7, R / 44 * 1.25);
-      for (const p of PTS) {
-        // turn it, then push each dot out along a ring rippling from the
-        // side facing us towards the edge, like sound from a speaker
-        const x1u = p.x * cY - p.z * sY, z1u = p.x * sY + p.z * cY;
-        const y2u = p.y * cX - z1u * sX, z2u = p.y * sX + z1u * cX;
-        const d = 1 + amp * 0.09 * Math.sin(9 * Math.acos(Math.max(-1, Math.min(1, z2u))) - clock * 10) + 0.025 * Math.sin(clock * 1.7);
-        const x1 = x1u * d, y2 = y2u * d, z2 = z2u * d;
-        const depth = (z2u + 1) / 2;
-        let c = ((x1 + 1) / 2 * 0.75 + (1 - y2) / 2 * 0.25 + 0.15 * Math.sin(clock * 0.6)) % 1;
-        if (c < 0) c += 1;
-        g.globalAlpha = 0.18 + 0.82 * depth;
-        g.fillStyle = LUT[(c * 47) | 0];
-        g.beginPath(); g.arc(cx + x1 * R, cy - y2 * R, dot * (0.55 + 0.75 * depth), 0, 6.283); g.fill();
-      }
-      g.globalAlpha = 1;
-    }
-
-    let shownLine = -1, amp = 0.1;
-    function buildCaption(line){
-      caption.textContent = '';
-      line.words.forEach((x) => { const s = document.createElement('span'); s.textContent = `${x.w} `; caption.appendChild(s); });
-    }
-    const inside = (spans, t) => spans.some(([a, b]) => t >= a && t < b);
-
-    function frame(clock){
-      const t = clock % LOOP;
-      const voice = t < VOICE;
-      phone.dataset.mode = voice ? 'voice' : 'chat';
-      let want, shake = 0, m;
-      if (voice) {
-        let i = 0, lt = t;
-        while (lt >= lines[i].dur) { lt -= lines[i].dur; i++; }
-        const line = lines[i];
-        if (i !== shownLine) { shownLine = i; buildCaption(line); resetChat(); }
-        caption.style.opacity = lt > line.dur - OUT ? (line.dur - lt) / OUT : Math.min(1, lt / 0.3);
-        Array.from(caption.children).forEach((s, k) => s.classList.toggle('is-on', lt >= line.words[k].at));
-        const buzzing = inside(line.buzz, lt);
-        ctx.classList.toggle('is-buzz', buzzing);
-        if (buzzing) ctx.textContent = 'Left sensor · bzz';
-        else if (line.ctx === 'rest') { const left = Math.max(0, 120 - Math.floor(lt)); ctx.textContent = `Rest · ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`; }
-        else ctx.textContent = line.ctx;
-        const talking = inside(line.talk, lt);
-        want = talking ? 0.55 + 0.45 * Math.abs(Math.sin(clock * 9.3) * Math.sin(clock * 4.1 + 1)) : 0.12;
-        shake = buzzing ? 1 : 0;
-        m = t < GLIDE ? 1 - ease(t / GLIDE) : 0;   // gliding back down from the avatar
-      } else {
-        const lt = t - VOICE;
-        shownLine = -1;
-        let typingNow = false, changed = false;
-        chat.forEach((c) => {
-          const on = lt >= c.at;
-          if (on !== !c.m.hidden) { show(c.m, on); changed = true; }
-          if (!on && !c.me && lt >= c.typeAt) typingNow = true;
-          // the report card gets tapped a moment after it lands
-          if (c.card) c.m.classList.toggle('is-tapped', lt >= c.at + 1.7 && lt < c.at + 1.95);
-        });
-        if (typingNow === typing.hidden) { show(typing, typingNow); changed = true; }
-        if (changed) scroll();
-        want = typingNow ? 0.45 + 0.3 * Math.sin(clock * 8) : 0.08;
-        m = ease(Math.min(1, lt / GLIDE));            // up into the avatar
-      }
-      amp += (want - amp) * 0.15;
-      drawGlobe(clock, amp, shake, m);
-    }
-    function show(el, on){
-      if (on) { el.hidden = false; void el.offsetWidth; el.classList.add('is-in'); }
-      else { el.hidden = true; el.classList.remove('is-in'); }
-    }
-    function resetChat(){
-      msgs.forEach((m) => show(m, false));
-      show(typing, false);
-      thread.style.transform = '';
-    }
-    // keep the newest message in view: slide the thread up by whatever no longer fits
-    function scroll(){
-      // (from layout, not the screen: the thread may be mid-slide)
-      const top = phone.offsetTop + parseFloat(getComputedStyle(phone).paddingTop) + thread.offsetTop;
-      const room = viz.clientHeight * 0.82 - top - 6;
-      const over = Math.max(0, thread.offsetHeight - room);
-      thread.style.transform = over ? `translateY(${-over}px)` : '';
-    }
-
-    resetChat();
-    layout();
-    new ResizeObserver(() => { layout(); if (reduce) frame(LOOP - 0.01); }).observe(screen);
-    if (reduce) { frame(LOOP - 0.01); return; }
-    let raf = 0, last = 0, clock = GLIDE, running = false; // (starting with the globe already in the middle)
-    function tick(now){
-      raf = 0;
-      if (!running) { last = 0; return; }
-      clock += Math.min(0.1, (now - (last || now)) / 1000);
-      last = now;
-      frame(clock);
-      raf = requestAnimationFrame(tick);
-    }
-    new IntersectionObserver(([e]) => {
-      running = e.isIntersecting;
-      if (running) { layout(); if (!raf) raf = requestAnimationFrame(tick); }
-    }).observe(viz);
-  })();
 </script>
 <!-- Overlay scroll indicator (see .page-scroller) -->
 <div class="page-scroller" id="pageScroller" aria-hidden="true"><div class="page-scroller-thumb"></div></div>
