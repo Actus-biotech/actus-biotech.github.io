@@ -709,14 +709,14 @@
   .intro-on .hero-emg-bg{ animation:none; }
 
   /* SCROLL-DRIVEN TITLE PANEL — background pinned in place, titles change as you scroll past */
-  /* The pinned features screen's geometry (desktop): the cards sit
+  /* The features screen's geometry (desktop): the cards sit
      centred, 42vh tall in the first view; the reel's focused card is 56vh
      (in a narrow window, as tall as its width allows — see updateReel).
      The gallery controls sit --reel-nav-gap under the reel's card, the
      lower of the two, so they never move and nothing reaches them; the
-     next section starts right under them (the empty
-     bottom of the pinned screen is pulled in by the negative margin, so
-     the science doesn't sit a whole empty strip further down). */
+     next section starts right under them (the screen's empty bottom is
+     pulled in by the negative margin, so the science doesn't sit a whole
+     empty strip further down). */
   .story{
     position:relative;
     --reel-nav-gap:clamp(28px, 4.5vh, 48px);
@@ -1051,7 +1051,7 @@
      are built from the story's tabs by the phone-features script. */
   .m-features{ display:none; }
   @media (max-width:900px), (pointer:coarse) and (max-height:500px){
-    .story-sticky, .story-gallery-steps{ display:none; }
+    .story-sticky{ display:none; }
     .story{ margin-bottom:0; }
     .m-features{ display:block; padding:64px 0 16px; }
   }
@@ -2095,10 +2095,6 @@
      </div>
     </div>
   </div>
-  <!-- Scroll length only: the features stay pinned for a short hold, then
-       the section un-pins (height set by the gallery script). The gallery
-       is browsed with its buttons or sideways input, not by scrolling. -->
-  <div class="story-gallery-steps" id="storyGallerySteps" aria-hidden="true"></div>
   <!-- Phones: the features as a plain row of cards (see .m-features),
        filled by the phone-features script just below -->
   <div class="m-features">
@@ -3518,13 +3514,8 @@
       layout();
     }
 
-    // A short hold on the features before the section un-pins
-    // (the gallery-steps spacer at the end of the story section). The
-    // gallery itself is browsed with the buttons / sideways input (see the
-    // focus reel in the story script), never by vertical scrolling.
-    const GALLERY_HOLD_VH = 27;
-    const stepsEl = document.getElementById('storyGallerySteps');
-    if (stepsEl) stepsEl.style.height = `${GALLERY_HOLD_VH}vh`;
+    // (The gallery is browsed with the buttons / sideways input — see the
+    // focus reel in the story script — never by vertical scrolling.)
 
     // Which tabs' videos play: all of them on the first view; in the focus
     // reel only the focused one (set by the story script), restarted from
@@ -3765,8 +3756,8 @@
 
   const panReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const storyEl2 = document.getElementById('story');
-  /* The features ("Only with Actus" and the gallery), pinned for a short
-     hold (#storyGallerySteps) and browsed as a focus reel, below. */
+  /* The features ("Only with Actus" and the gallery), one screen that
+     scrolls with the page, browsed as a focus reel, below. */
   const featuresLayer = document.getElementById('storyRip');
   const clamp01 = v => Math.min(1, Math.max(0, v));
   function updateStory(){
@@ -3809,8 +3800,8 @@
      buttons, the left / right arrow keys and a sideways finger swipe step
      one unit; a trackpad swipe or Shift + mouse wheel moves continuously
      (REEL_PX_PER_ITEM of sideways scroll per unit), while the features are
-     pinned on screen. Once in it, scrolling up or down just scrolls the
-     page on, as past any section (see reelScrollOff). */
+     on screen. Scrolling up or down just scrolls the page on, as past any
+     section. */
   const REEL_PX_PER_ITEM = 450;
   const REEL_SWIPE_PX = 40;  // a finger swipe this far sideways = one step
   let reelH = 0, reelHTarget = 0, reelHRaf = 0;
@@ -3822,7 +3813,7 @@
   function reelMaxH(){ return REEL_IN + reelItems().length - 1; }
   function reelActive(){
     if (!featuresLayer || window.actusPhone.matches) return false;
-    // still pinned on screen (not scrolled mostly away)
+    // on screen (not scrolled mostly away)
     const b = featuresLayer.getBoundingClientRect(), mid = window.innerHeight / 2;
     return b.top < mid && b.bottom > mid;
   }
@@ -3871,8 +3862,8 @@
   if (reelExplore) reelExplore.addEventListener('click', () => {
     if (reelHTarget > 0.001) return;
     // the pill rides off with the section as it scrolls away, so it can be
-    // clicked part-way past it: bring the section back to its pinned spot
-    // and open the features on the way
+    // clicked part-way past it: bring the section back into place and
+    // open the features on the way
     if (!reelActive() && storyEl2 && !window.actusPhone.matches) {
       const r = storyEl2.getBoundingClientRect();
       window.actusSmoothTo(r.top + window.scrollY + r.height - window.innerHeight);
@@ -4181,25 +4172,6 @@
     const top = introWrapEl.getBoundingClientRect().top + window.scrollY;
     return { top, end: top + introSpacerEl.offsetHeight };
   }
-  function jumpTo(y){
-    window.actusJumpAt = performance.now(); // (no landing / holds catching it)
-    currentScroll = targetScroll = y;
-    window.scrollTo(0, y);
-  }
-  /* The features reel is a horizontal strip in an ordinary page: once
-     you're in it (past its first view), scrolling up or down just scrolls
-     the page on, with no dead pinned stretch first — a jump (which
-     doesn't show: the panel is pinned) to the end it's leaving by. */
-  function reelScrollOff(down){
-    const r = storyEl2.getBoundingClientRect();
-    if (r.top > 0.5 || r.bottom < window.innerHeight - 0.5) return; // not pinned: it's scrolling like a section already
-    const top = Math.round(r.top + window.scrollY);
-    const pinEnd = Math.round(top + r.height - window.innerHeight);
-    if (down) { if (window.scrollY < pinEnd - 1) jumpTo(pinEnd); }
-    else if (window.scrollY > top + 1) jumpTo(top);
-    updateStory();
-    syncWheel();
-  }
   // glide to `to`; `back` is the other end (a turn-around heads there);
   // fullMs = how long the whole stretch takes (a partial one, proportionally less)
   // A click's own destination (a gallery tab, a coach dot) while the page
@@ -4314,8 +4286,8 @@
     if (!e.deltaY) return;
     navTo = null; // you're scrolling yourself again
     // In the features reel (past its first view), up or down just scrolls
-    // the page (see reelScrollOff)
-    if (reelHTarget > 0 && !window.actusPhone.matches) { reelScrollOff(e.deltaY > 0); return; }
+    // the page
+    if (reelHTarget > 0 && !window.actusPhone.matches) return;
     if (glideLanded && !introGlide) {
       const now = performance.now(), step = Math.abs(e.deltaY);
       const sameScroll = Math.sign(e.deltaY) === glideLanded.dir && now - glideLanded.at < GLIDE_LAND_GAP_MS && step <= glideLanded.step * GLIDE_LAND_RISE + 1;
