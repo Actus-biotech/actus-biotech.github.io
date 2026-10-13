@@ -122,6 +122,11 @@
      both, cuts that off without making <body> a scroll container (which
      would break the sticky sections). */
   html{ scroll-behavior:auto; scroll-snap-type: none; scrollbar-width:none; overflow-x:clip; }
+  /* Touch: no grey box flashed over whatever you tap (phones paint a
+     square one, ignoring rounded corners). Hover effects only on a
+     real mouse — @media (hover:hover) — so a tap doesn't leave a button
+     grown or lit; buttons get a small press-in (:active) instead. */
+  html{ -webkit-tap-highlight-color:transparent; }
   ::-webkit-scrollbar{ width:0; height:0; display:none; }
   /* The overlay scroll indicator: a thin pill on the right edge, floating
      over the page. White with difference-blending, so it reads dark on
@@ -201,7 +206,7 @@
     color:#fff;
   }
   .site-logo img{ width:44px; height:44px; display:block; transition:transform 0.2s ease; }
-  .site-logo:hover img{ transform:scale(1.08); }
+  @media (hover:hover){ .site-logo:hover img{ transform:scale(1.08); } }
   .nav-links{
     position:relative; z-index:1;
     display:flex; justify-content:center; align-items:center;
@@ -213,7 +218,7 @@
     padding:8px 14px; border-radius:8px;
     transition:color 0.15s ease, background 0.2s ease;
   }
-  .nav-links a:hover{ color:#fff; }
+  @media (hover:hover){ .nav-links a:hover{ color:#fff; } }
   /* The hover highlight: one shared pill behind the links that glides
      from link to link while the mouse is on the bar (see the nav script),
      fading in where you first land and out when you leave. Only
@@ -252,7 +257,8 @@
     white-space:nowrap;
     transition:transform 0.2s ease;
   }
-  .nav-cta-pill:hover{ transform:scale(1.05); }
+  @media (hover:hover){ .nav-cta-pill:hover{ transform:scale(1.05); } }
+  .nav-cta-pill:active{ transform:scale(0.96); }
 
   .nav-toggle{ display:none; }
   @media (max-width:760px){
@@ -283,7 +289,7 @@
     .header-wrap.is-open .nav-links{ opacity:1; transform:none; pointer-events:auto; }
     .nav-links a{ display:flex; padding:12px 14px; font-size:15px; }
     /* the dropdown keeps a plain per-link highlight */
-    .nav-links a:hover{ background:rgba(255,255,255,0.1); }
+    @media (hover:hover){ .nav-links a:hover{ background:rgba(255,255,255,0.1); } }
     .nav-hover, .nav-current{ display:none; }
   }
 
@@ -387,7 +393,8 @@
   .nav-links li:nth-child(1){ --intro-delay:0.13s; }
   .nav-links li:nth-child(2){ --intro-delay:0.21s; }
   .nav-links li:nth-child(3){ --intro-delay:0.29s; }
-  .nav-cta-pill{ --intro-delay:0.37s; }
+  .nav-links li:nth-child(4){ --intro-delay:0.37s; }
+  .nav-cta-pill{ --intro-delay:0.45s; }
   .title-xl-line1{ --intro-delay:0.45s; }
   .title-xl-line2{ --intro-delay:0.6s; }
   .hero-subtitle{ --intro-delay:0.78s; }
@@ -588,7 +595,7 @@
     pointer-events:auto;
     transition:color 0.2s ease;
   }
-  .intro-cue:hover{ color:#fff; }
+  @media (hover:hover){ .intro-cue:hover{ color:#fff; } }
   .intro-cue-text{
     display:block;
     font-size:13px; font-weight:500; letter-spacing:0.22em; text-transform:uppercase;
@@ -951,7 +958,7 @@
     cursor:pointer;
     box-shadow:0 6px 20px rgba(0,0,0,0.14);
   }
-  .story-reel-btn:hover{ transform:translateY(-1px) scale(1.04); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+  @media (hover:hover){ .story-reel-btn:hover{ transform:translateY(-1px) scale(1.04); box-shadow:0 8px 24px rgba(0,0,0,0.2); } }
   .story-reel-btn:active{ transform:scale(0.97); }
   .story-reel-btn:focus-visible, .story-reel-explore:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
   .story-reel-btn svg, .story-reel-explore-label svg{ flex:0 0 auto; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
@@ -1008,7 +1015,7 @@
     cursor:pointer; pointer-events:auto;
     transition-delay:calc(var(--circ-t) * 0.6);
   }
-  .story-reel-nav.is-start .story-reel-explore:hover{ box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+  @media (hover:hover){ .story-reel-nav.is-start .story-reel-explore:hover{ box-shadow:0 8px 24px rgba(0,0,0,0.2); } }
   .story-reel-nav.is-start .story-reel-explore-label{ opacity:1; transition:opacity 0.25s ease calc(var(--circ-t) * 0.6 + var(--bar-t) * 0.6); }
   .story-reel-nav.is-start .story-reel-progress-fill{ opacity:0; transition:opacity 0.15s ease; }
   @media (max-width:900px){
@@ -1175,7 +1182,8 @@
     box-shadow:0 1px 2px rgba(0,0,0,0.04);
     transition:background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
   }
-  .science-option:hover{ transform:scale(1.02); }
+  @media (hover:hover){ .science-option:hover{ transform:scale(1.02); } }
+  .science-option:active{ transform:scale(0.97); }
   .science-option:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
   /* round "+" icon; on the picked option it turns into a "−" */
   .science-option-icon{
@@ -1439,7 +1447,8 @@
     white-space:nowrap; cursor:pointer;
     transition:background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
   }
-  .coach-option:hover{ transform:scale(1.02); color:#fff; }
+  @media (hover:hover){ .coach-option:hover{ transform:scale(1.02); color:#fff; } }
+  .coach-option:active{ transform:scale(0.97); }
   .coach-option:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
   /* round "+" icon; on the picked option it turns into a "−" */
   .coach-option-icon{
@@ -1624,13 +1633,14 @@
     padding:7px 13px 7px 10px; border:1px solid var(--coach-edge); border-radius:999px;
     background:var(--coach-pill); color:rgba(255,255,255,0.6);
     font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer;
-    transition:background-color 0.3s ease, color 0.3s ease;
+    transition:background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
   }
   .ai-chapter::before{
     content:''; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.3);
     transition:background 0.3s ease, transform 0.3s ease;
   }
-  .ai-chapter:hover{ color:#fff; }
+  @media (hover:hover){ .ai-chapter:hover{ color:#fff; } }
+  .ai-chapter:active{ transform:scale(0.96); }
   .ai-chapter:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
   .ai-chapter.is-on{ background:var(--coach-pill-on); color:#fff; }
   .ai-chapter.is-on::before{ background:linear-gradient(135deg, #8B3DFF, #EC2678 60%, #FF5E3A); transform:scale(1.25); }
@@ -1822,7 +1832,7 @@
     scroll-snap-align: start;
   }
   footer a{ color:#F2F2F2; text-decoration:none; }
-  footer a:hover{ text-decoration:underline; }
+  @media (hover:hover){ footer a:hover{ text-decoration:underline; } }
   .footer-contacts{ display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:flex-end; }
 
   /* WAITLIST / CONTACT: one small form above the footer. A two-way
@@ -1874,7 +1884,8 @@
     font-size:13px; font-weight:600; color:var(--gray);
     transition:color 0.2s ease;
   }
-  .wl-switch label:hover span, .wl-switch input:checked + span{ color:var(--ink); }
+  .wl-switch input:checked + span{ color:var(--ink); }
+  @media (hover:hover){ .wl-switch label:hover span{ color:var(--ink); } }
   .wl-switch input:focus-visible + span{ outline:2px solid var(--ink); outline-offset:2px; }
 
   /* The fields: the email and the button share the first row; Name and
@@ -1932,7 +1943,8 @@
   .waitlist-form[data-mode="contact"] .wl-label[data-for="waitlist"]{
     transform:translateX(calc(100% + 22px)); transition-delay:0s;
   }
-  .wl-submit:hover{ transform:scale(1.03); }
+  @media (hover:hover){ .wl-submit:hover{ transform:scale(1.03); } }
+  .wl-submit:active{ transform:scale(0.97); }
   .wl-submit:disabled{ opacity:0.5; cursor:default; transform:none; }
   .wl-honey{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
   .wl-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
@@ -2016,8 +2028,9 @@
 <div class="header-wrap">
   <header>
     <ul class="nav-links">
-      <li><a href="#story"><span>Product</span></a></li>
+      <li><a href="#story"><span>Features</span></a></li>
       <li><a href="#science"><span>Science</span></a></li>
+      <li><a href="#coach"><span>Product</span></a></li>
       <li><a href="#team"><span>Team</span></a></li>
     </ul>
     <a class="nav-cta-pill" href="#waitlist">Join waitlist</a>
@@ -2512,7 +2525,8 @@
     // half to half, appears in place where you first land, fades on leave
     const sw = form.querySelector('.wl-switch');
     const hover = sw.querySelector('.wl-hover');
-    sw.addEventListener('mouseover', (e) => {
+    sw.addEventListener('pointerover', (e) => {
+      if (e.pointerType !== 'mouse') return; // (a tap would leave it stuck on)
       const input = e.target.closest('label') && e.target.closest('label').querySelector('input');
       if (!input) return;
       const first = !hover.classList.contains('is-on');
@@ -2521,7 +2535,7 @@
       if (first) hover.offsetWidth; // apply the jump before fading in
       hover.classList.add('is-on');
     });
-    sw.addEventListener('mouseleave', () => hover.classList.remove('is-on'));
+    sw.addEventListener('pointerleave', () => hover.classList.remove('is-on'));
 
     // Contact-only fields are disabled on the waitlist side, so they're
     // neither required nor sent
@@ -4807,19 +4821,21 @@
       pill.classList.add('is-on');
     };
     const hide = () => pill.classList.remove('is-on');
-    list.addEventListener('mouseover', (e) => { const a = e.target.closest('a'); if (a) moveTo(a); });
-    list.addEventListener('mouseleave', hide);
+    list.addEventListener('pointerover', (e) => { if (e.pointerType !== 'mouse') return; const a = e.target.closest('a'); if (a) moveTo(a); });
+    list.addEventListener('pointerleave', hide);
     list.addEventListener('focusin', (e) => { const a = e.target.closest('a'); if (a && a.matches(':focus-visible')) moveTo(a); });
     list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget)) hide(); });
   })();
 
   // The section you're in lights its link (see .nav-current): whichever
-  // section is under a line 40% of the way down the screen. The coach
-  // and the "No matter what you do" panel are the product too.
+  // section is under a line 40% of the way down the screen. Each link
+  // covers one unbroken stretch of the page, in order: the "Wear it."
+  // story and its feature gallery, the science, then the product (the
+  // pill-sized lab and the "No matter what you do" panel), the team.
   (function(){
     const list = document.querySelector('.nav-links');
     if (!list) return;
-    const linkFor = { story: '#story', coach: '#story', capability: '#story', science: '#science', team: '#team' };
+    const linkFor = { story: '#story', science: '#science', coach: '#coach', capability: '#coach', team: '#team' };
     const sections = ['intro', 'top', 'story', 'science', 'coach', 'capability', 'team', 'waitlist']
       .map(id => document.getElementById(id)).filter(Boolean);
     const links = [...list.querySelectorAll('a[href^="#"]')];
