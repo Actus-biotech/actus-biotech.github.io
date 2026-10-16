@@ -79,6 +79,23 @@
     if ((!location.hash || location.hash === '#intro') && window.actusRestoreY === null) document.documentElement.classList.add('is-loading');
   }
 </script>
+<!-- The 3D sensor first: its model and code start downloading right away,
+     at high priority, ahead of everything else below (the videos wait for
+     the model, see the "videos after the model" script) -->
+<!-- (the import map comes before any module loads, the early ones below
+     included: they import "three" by name) -->
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
+    }
+  }
+</script>
+<link rel="preload" href="actus_3d.glb" as="fetch" crossorigin fetchpriority="high">
+<link rel="modulepreload" href="https://unpkg.com/three@0.170.0/build/three.module.js" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/loaders/GLTFLoader.js" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/libs/meshopt_decoder.module.js" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/environments/RoomEnvironment.js" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -2090,9 +2107,9 @@
       <div class="story-gallery" id="storyGallery">
         <div class="story-gallery-stage">
           <div class="story-gallery-track" id="storyGalleryTrack">
-            <div class="story-gallery-tab" data-desc="Train the muscles you mean to."><video src="assets/F1.mp4" muted loop playsinline preload="metadata" aria-label="Muscle-specific optimization"></video><span class="story-gallery-tab-label">Muscle-Specific Optimization</span></div>
-            <div class="story-gallery-tab" data-desc="Clean form, every single rep."><video src="assets/F2.mp4" muted loop playsinline preload="metadata" aria-label="Form correction"></video><span class="story-gallery-tab-label">Form Correction</span></div>
-            <div class="story-gallery-tab" data-desc="Every joint, tracked in motion."><video src="assets/F3.mp4" muted loop playsinline preload="metadata" aria-label="Pose estimation"></video><span class="story-gallery-tab-label">Pose Estimation</span></div>
+            <div class="story-gallery-tab" data-desc="Train the muscles you mean to."><video src="assets/F1.mp4" muted loop playsinline preload="none" data-after-model aria-label="Muscle-specific optimization"></video><span class="story-gallery-tab-label">Muscle-Specific Optimization</span></div>
+            <div class="story-gallery-tab" data-desc="Clean form, every single rep."><video src="assets/F2.mp4" muted loop playsinline preload="none" data-after-model aria-label="Form correction"></video><span class="story-gallery-tab-label">Form Correction</span></div>
+            <div class="story-gallery-tab" data-desc="Every joint, tracked in motion."><video src="assets/F3.mp4" muted loop playsinline preload="none" data-after-model aria-label="Pose estimation"></video><span class="story-gallery-tab-label">Pose Estimation</span></div>
             <div class="story-gallery-tab" data-desc="Know when to push, and when to stop."><img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&w=500&q=80" alt="Fatigue detection"><span class="story-gallery-tab-label">Fatigue Detection</span></div>
             <div class="story-gallery-tab" data-desc="Every rep counted for you."><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=500&q=80" alt="Automatic rep count"><span class="story-gallery-tab-label">Automatic Rep Count</span></div>
             <div class="story-gallery-tab" data-title-before="And also, all the standard metrics." data-desc="Your heart, measured — not estimated."><img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=500&q=80" alt="ECG"><span class="story-gallery-tab-label">ECG</span></div>
@@ -2154,7 +2171,8 @@
         if (media.tagName === 'VIDEO') {
           media.removeAttribute('autoplay'); // (played by the observer below)
           media.muted = true;
-          media.preload = 'metadata';
+          // (preload: as the original — held until the 3D model is in, see
+          // the "videos after the model" script)
           videos.push(media);
         } else {
           media.loading = 'lazy';
@@ -2395,7 +2413,7 @@
               <button type="button" class="ai-chapter" data-at="52">Any language</button>
             </div>
           </div>
-          <div class="ai-media"><video src="assets/actus-coach.mp4" poster="assets/actus-coach-poster.jpg" muted loop playsinline preload="metadata" aria-label="Actus Coach: live coaching, workout reports, personal plans, EMG insights, motivation, questions answered, in English, French, Chinese and Spanish"></video></div>
+          <div class="ai-media"><video src="assets/actus-coach.mp4" poster="assets/actus-coach-poster.jpg" muted loop playsinline preload="none" data-after-model aria-label="Actus Coach: live coaching, workout reports, personal plans, EMG insights, motivation, questions answered, in English, French, Chinese and Spanish"></video></div>
         </article>
       </div>
     </div>
@@ -2405,16 +2423,16 @@
 <section class="panel" id="capability">
   <span class="title-lg">No matter what you do,<br>Actus is going to make it easier.</span>
   <div class="sport-grid">
-    <div class="sport-tile t1"><img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=700&q=80" alt="Sprinter at the starting blocks"></div>
-    <div class="sport-tile t2"><img src="https://images.unsplash.com/photo-1608245449230-4ac19066d2d0?auto=format&fit=crop&w=700&q=80" alt="Basketball player dunking"></div>
-    <div class="sport-tile t3"><img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=700&q=80" alt="Runners silhouetted at sunrise"></div>
-    <div class="sport-tile t4"><img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=700&q=80" alt="Tennis player serving"></div>
-    <div class="sport-tile t5"><img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=700&q=80" alt="Cyclists racing in a pack"></div>
-    <div class="sport-tile t6"><img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=700&q=80" alt="Weightlifter mid-lift"></div>
-    <div class="sport-tile t7"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=700&q=80" alt="Athlete doing a core workout"></div>
-    <div class="sport-tile t8"><img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=700&q=80" alt="Swimmer mid-stroke"></div>
-    <div class="sport-tile t9"><img src="https://images.unsplash.com/photo-1554284126-aa88f22d8b74?auto=format&fit=crop&w=700&q=80" alt="Group weightlifting session"></div>
-    <div class="sport-tile t10"><img src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=700&q=80" alt="Cyclists riding along a coastal road"></div>
+    <div class="sport-tile t1"><img loading="lazy" src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=700&q=80" alt="Sprinter at the starting blocks"></div>
+    <div class="sport-tile t2"><img loading="lazy" src="https://images.unsplash.com/photo-1608245449230-4ac19066d2d0?auto=format&fit=crop&w=700&q=80" alt="Basketball player dunking"></div>
+    <div class="sport-tile t3"><img loading="lazy" src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=700&q=80" alt="Runners silhouetted at sunrise"></div>
+    <div class="sport-tile t4"><img loading="lazy" src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=700&q=80" alt="Tennis player serving"></div>
+    <div class="sport-tile t5"><img loading="lazy" src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=700&q=80" alt="Cyclists racing in a pack"></div>
+    <div class="sport-tile t6"><img loading="lazy" src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=700&q=80" alt="Weightlifter mid-lift"></div>
+    <div class="sport-tile t7"><img loading="lazy" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=700&q=80" alt="Athlete doing a core workout"></div>
+    <div class="sport-tile t8"><img loading="lazy" src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=700&q=80" alt="Swimmer mid-stroke"></div>
+    <div class="sport-tile t9"><img loading="lazy" src="https://images.unsplash.com/photo-1554284126-aa88f22d8b74?auto=format&fit=crop&w=700&q=80" alt="Group weightlifting session"></div>
+    <div class="sport-tile t10"><img loading="lazy" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=700&q=80" alt="Cyclists riding along a coastal road"></div>
   </div>
 </section>
 
@@ -2574,14 +2592,6 @@
       }
     });
   })();
-</script>
-
-<script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
-    }
-  }
 </script>
 
 <script type="module">
@@ -2787,6 +2797,30 @@
   window.addEventListener('resize', resizeModel);
   resizeModel();
   renderModel();
+</script>
+
+<script>
+  /* Videos after the model: the feature clips and the Actus Coach film
+     (data-after-model, preload="none") start downloading only once the
+     3D sensor's model is in (or failed, or 8 s on), so they don't compete
+     with it for the connection on a first visit. Playing one before then
+     (scrolling straight to it) still loads it as usual. */
+  (function(){
+    let done = false;
+    function release(){
+      if (done) return;
+      done = true;
+      document.querySelectorAll('video[data-after-model]').forEach(v => {
+        v.removeAttribute('data-after-model');
+        if (v.preload !== 'none') return;
+        v.preload = 'metadata';
+        if (v.paused && v.readyState === 0) v.load();
+      });
+    }
+    if (window.actusModelReady) release();
+    else window.addEventListener('actus:model-ready', release, { once: true });
+    setTimeout(release, 8000);
+  })();
 </script>
 
 <script>
