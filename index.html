@@ -2587,6 +2587,9 @@
 <script type="module">
   import * as THREE from 'https://unpkg.com/three@0.170.0/build/three.module.js';
   import { GLTFLoader } from 'https://unpkg.com/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
+  // actus_3d.glb is packed small (WebP textures, meshopt-compressed
+  // geometry: ~160 KB to download, from ~750 KB): this unpacks it
+  import { MeshoptDecoder } from 'https://unpkg.com/three@0.170.0/examples/jsm/libs/meshopt_decoder.module.js';
   import { RoomEnvironment } from 'https://unpkg.com/three@0.170.0/examples/jsm/environments/RoomEnvironment.js';
 
   const modelCanvas = document.getElementById('heroModel');
@@ -2596,7 +2599,7 @@
   const modelCamera = new THREE.PerspectiveCamera(28, 1, 0.01, 100);
   const modelRoot = new THREE.Group();
   const modelClock = new THREE.Clock();
-  const modelLoader = new GLTFLoader();
+  const modelLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   let modelObject;
   // Black-screen intro (see the intro script): it shares its state on
   // window.actusIntro — spinFactor (0 = idle on black … 1 = normal spin),
@@ -4902,7 +4905,14 @@
       dots.forEach(d => { d.x = Math.random() * w; d.y = Math.random() * h; d.vx = d.vy = 0; });
     }
 
-    document.fonts.ready.then(() => {
+    // Built as soon as the word's own font is ready — not on
+    // document.fonts.ready, which also waits for the whole page to finish
+    // loading (every video and image), and so held the dots back for as
+    // long as the slowest file took. The title is in Helvetica, which is
+    // on the computer already, so this is right away.
+    const wcs = getComputedStyle(text);
+    const wordFont = `${wcs.fontStyle} ${wcs.fontWeight} ${wcs.fontSize} ${wcs.fontFamily}`;
+    (document.fonts && document.fonts.load ? document.fonts.load(wordFont).catch(() => {}) : Promise.resolve()).then(() => {
       build();
       // rebuilt whenever the word changes size (the title's font size
       // follows the window). Watching the inline text itself never fires
