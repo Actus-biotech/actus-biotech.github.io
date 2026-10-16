@@ -469,11 +469,14 @@
     display:block; width:100%; height:100%;
     cursor:default; /* still draggable to spin it, just no hand cursor */
   }
-  .hero-model-status{
-    position:absolute; left:18px; bottom:16px;
-    font-size:11px; color:var(--gray);
-    pointer-events:none;
+  /* the still over the 3D canvas until the model has drawn the very same
+     pose under it (then faded out, see the model script). If the model
+     never loads, the still simply stays. */
+  .hero-model-poster{
+    position:absolute; inset:0; width:100%; height:100%;
+    pointer-events:none; transition:opacity 0.4s ease;
   }
+  .hero-model-poster.is-gone{ opacity:0; }
   .hero-card-label{
     position:absolute; left:20px; bottom:16px;
     font-size:15px; font-weight:500; color:var(--ink);
@@ -2046,7 +2049,8 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="hero-card">
       <canvas class="hero-model" id="heroModel" aria-label="Rotating 3D model of the Actus sensor"></canvas>
-      <span class="hero-model-status" id="heroModelStatus">Loading model...</span>
+      <!-- a still of the 3D sensor in its first pose (rendered from the model itself), shown while the model loads and faded out over its first frame -->
+      <img class="hero-model-poster" id="heroModelPoster" src="assets/sensor-poster.webp" alt="" aria-hidden="true">
     </div>
   </div>
 </section>
@@ -2586,7 +2590,7 @@
   import { RoomEnvironment } from 'https://unpkg.com/three@0.170.0/examples/jsm/environments/RoomEnvironment.js';
 
   const modelCanvas = document.getElementById('heroModel');
-  const modelStatus = document.getElementById('heroModelStatus');
+  const modelPoster = document.getElementById('heroModelPoster');
   const modelRenderer = new THREE.WebGLRenderer({ canvas:modelCanvas, alpha:true, antialias:true });
   const modelScene = new THREE.Scene();
   const modelCamera = new THREE.PerspectiveCamera(28, 1, 0.01, 100);
@@ -2685,12 +2689,10 @@
         }
       });
     });
-    modelStatus.textContent = '';
     resizeModel();
     announceModelReady();
   }, undefined, () => {
-    modelStatus.textContent = 'Model unavailable';
-    announceModelReady(); // let the intro carry on regardless
+    announceModelReady(); // let the intro carry on regardless (the still stays)
   });
 
   // tells the intro script it can slide the sensor in now
@@ -2712,6 +2714,7 @@
   const SPIN_SHARPNESS_OUT = 1.5; // slow-down, after the back
   let spin = 0;
   let modelDrawn = false; // drawn at least once since it loaded
+  let shownAt = null;     // when that first drawing was
 
   function renderModel(){
     const dt = Math.min(modelClock.getDelta(), 0.1); // clamp: no jump after a hidden tab
@@ -2720,7 +2723,10 @@
       const spinFactor = intro ? intro.spinFactor : 1;
       const pastBack = (spin % (2 * Math.PI)) > Math.PI;
       const backness = Math.pow((1 - Math.cos(spin)) / 2, pastBack ? SPIN_SHARPNESS_OUT : SPIN_SHARPNESS_IN);
-      spin += (SPIN_SLOW + (SPIN_FAST - SPIN_SLOW) * backness) * dt * spinFactor;
+      // (held still while the poster fades off it, so the two match; then
+      // the spin eases in)
+      const shown = shownAt === null ? 0 : Math.min(1, Math.max(0, (performance.now() - shownAt - 400) / 800));
+      spin += (SPIN_SLOW + (SPIN_FAST - SPIN_SLOW) * backness) * dt * spinFactor * shown * shown * (3 - 2 * shown);
       // idling on the black screen (spinFactor → 0): ease back round to
       // the nearest front-facing turn, so scrolling back up to black
       // always ends with the sensor's front showing
@@ -2753,7 +2759,15 @@
     // done when the curtain lifts, not a hitch at the start of the lift)
     if (!modelDrawn || !(intro && intro.covered && intro.covered())) {
       modelRenderer.render(modelScene, modelCamera);
-      if (modelObject) modelDrawn = true;
+      if (modelObject && !modelDrawn) {
+        modelDrawn = true;
+        // the model now shows the poster's pose under it: fade the poster
+        shownAt = performance.now();
+        if (modelPoster) {
+          modelPoster.classList.add('is-gone');
+          setTimeout(() => { modelPoster.hidden = true; }, 600);
+        }
+      }
     }
     modelRaf = modelOnScreen ? requestAnimationFrame(renderModel) : 0;
   }
