@@ -80,8 +80,8 @@
   }
 </script>
 <!-- The 3D sensor first: its model and code start downloading right away,
-     at high priority, ahead of everything else below (the videos wait for
-     the model, see the "videos after the model" script) -->
+     ahead of everything else below (the feature clips wait for the model,
+     see the "videos after the model" script) -->
 <!-- (the import map comes before any module loads, the early ones below
      included: they import "three" by name) -->
 <script type="importmap">
@@ -91,9 +91,17 @@
     }
   }
 </script>
-<link rel="preload" href="actus_3d.glb" as="fetch" crossorigin fetchpriority="high">
+<script>
+  /* The 3D sensor's model, fetched first thing; the model script parses
+     these very bytes. (A <link rel="preload"> did the same in Chrome, but
+     Safari ignored it and fetched the model a second time, behind
+     everything else.) */
+  window.actusModelBytes = fetch('actus_3d.glb', { priority: 'high' })
+    .then(r => { if (!r.ok) throw new Error('model ' + r.status); return r.arrayBuffer(); });
+</script>
 <link rel="modulepreload" href="https://unpkg.com/three@0.170.0/build/three.module.js" crossorigin>
 <link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/loaders/GLTFLoader.js" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js" crossorigin>
 <link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/libs/meshopt_decoder.module.js" crossorigin>
 <link rel="modulepreload" href="https://unpkg.com/three@0.170.0/examples/jsm/environments/RoomEnvironment.js" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2171,8 +2179,11 @@
         if (media.tagName === 'VIDEO') {
           media.removeAttribute('autoplay'); // (played by the observer below)
           media.muted = true;
-          // (preload: as the original — held until the 3D model is in, see
-          // the "videos after the model" script)
+          // loaded only when one is played (on screen, below) — never on
+          // desktop, where this row is hidden. Safari would otherwise fetch
+          // every clip a second time for it.
+          media.removeAttribute('data-after-model');
+          media.preload = 'none';
           videos.push(media);
         } else {
           media.loading = 'lazy';
@@ -2413,7 +2424,7 @@
               <button type="button" class="ai-chapter" data-at="52">Any language</button>
             </div>
           </div>
-          <div class="ai-media"><video src="assets/actus-coach.mp4" poster="assets/actus-coach-poster.jpg" muted loop playsinline preload="none" data-after-model aria-label="Actus Coach: live coaching, workout reports, personal plans, EMG insights, motivation, questions answered, in English, French, Chinese and Spanish"></video></div>
+          <div class="ai-media"><video src="assets/actus-coach.mp4" poster="assets/actus-coach-poster.jpg" muted loop playsinline preload="none" aria-label="Actus Coach: live coaching, workout reports, personal plans, EMG insights, motivation, questions answered, in English, French, Chinese and Spanish"></video></div>
         </article>
       </div>
     </div>
@@ -2688,7 +2699,10 @@
     modelCamera.lookAt(0, 0, 0);
   }
 
-  modelLoader.load('actus_3d.glb', (gltf) => {
+  // (the bytes the page head started fetching; a fresh fetch if that's missing)
+  (window.actusModelBytes || fetch('actus_3d.glb').then(r => r.arrayBuffer()))
+    .then(bytes => modelLoader.parse(bytes, '', onModel, onModelFailed), onModelFailed);
+  function onModel(gltf){
     modelObject = gltf.scene;
     modelRoot.add(modelObject);
     frameModel(modelObject);
@@ -2704,9 +2718,10 @@
     });
     resizeModel();
     announceModelReady();
-  }, undefined, () => {
+  }
+  function onModelFailed(){
     announceModelReady(); // let the intro carry on regardless (the still stays)
-  });
+  }
 
   // tells the intro script it can slide the sensor in now
   function announceModelReady(){
@@ -2800,11 +2815,12 @@
 </script>
 
 <script>
-  /* Videos after the model: the feature clips and the Actus Coach film
-     (data-after-model, preload="none") start downloading only once the
-     3D sensor's model is in (or failed, or 8 s on), so they don't compete
-     with it for the connection on a first visit. Playing one before then
-     (scrolling straight to it) still loads it as usual. */
+  /* Videos after the model: the feature clips (data-after-model,
+     preload="none") start downloading only once the 3D sensor's model is
+     in (or failed, or 8 s on), so they don't compete with it for the
+     connection on a first visit. Playing one before then (scrolling
+     straight to it) still loads it as usual. (The Actus Coach film isn't
+     preloaded at all: its poster shows until its tab plays it.) */
   (function(){
     let done = false;
     function release(){
