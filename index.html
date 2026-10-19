@@ -1647,6 +1647,40 @@
     content:''; position:absolute; inset:-56px -16px -16px; z-index:-1;
     background:linear-gradient(to bottom, rgba(28,28,30,0), rgba(28,28,30,0.92) 50px, #1C1C1E);
   }
+  /* With a mouse: until you hover a card, it's just its name — big, at
+     its top left, whole (sized off the card's width, cqw — the card is a
+     size container — so the longest, "Sensors", just fits) — and no line
+     about it. Hovering, the name shrinks into its little glass pill in
+     the same corner and the line fades in. Touch screens keep the small
+     name and the line, as there's no hover there.
+     It's the one element at its big size the whole time, shrunk into the
+     pill with a transform — never by animating its font size, which
+     re-laid the letters out every frame and made them shake. So the pill's
+     padding and border are in em (the pill's own 7px 15px / 1px at its
+     small size), and --k, how far it shrinks (15px over its big size), is
+     set per card by the eco-labels script. The big word's text sits 16px
+     in and 12px down; the pill lands 12px in from the corner.
+     PC only (a mouse, and the three-across layout): on phones, tablets and
+     the narrow layout the cards are static — small name, line showing. */
+  @media (hover:hover) and (pointer:fine) and (min-width:861px){
+    .eco-label{
+      font-size:19cqw; letter-spacing:-0.025em; white-space:nowrap; line-height:1.15;
+      padding:0.467em 1em; border-width:0.0667em;
+      left:calc(16px - 1.0667em); top:calc(12px - 0.533em);
+      transform-origin:0 0;
+      transform:translate(calc(1.0667em - 4px), 0.533em) scale(var(--k, 0.2));
+      -webkit-backdrop-filter:blur(calc(12px / var(--k, 0.2))); backdrop-filter:blur(calc(12px / var(--k, 0.2)));
+      transition:transform 0.6s cubic-bezier(.2,.8,.2,1),
+        background-color 0.35s ease, border-color 0.35s ease;
+    }
+    .eco-card:not(:hover) .eco-label{
+      transform:none;
+      background-color:rgba(20,20,22,0); border-color:rgba(255,255,255,0);
+      -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+    .eco-note{ transition:opacity 0.4s ease 0.12s, translate 0.5s cubic-bezier(.2,.8,.2,1) 0.12s; }
+    .eco-card:not(:hover) .eco-note{ opacity:0; translate:0 10px; transition-delay:0s; }
+  }
   /* App: the phone, sized to its card (everything in it is in em, off
      the phone's font size — 22em wide, 46em tall), rising out of the
      card's bottom edge, faded into the card there. Its size: as wide as
@@ -3837,6 +3871,19 @@
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     setTimeout(typeTitleXlWord, 1800);
   }
+
+  /* Ecosystem card names (see .eco-label under @media (hover:hover)): how
+     far each one shrinks into its pill — 15px over its big size, 19% of
+     its card's width — kept up to date as the cards change size */
+  (function(){
+    const cards = document.querySelectorAll('.eco-card');
+    if (!cards.length || !window.ResizeObserver) return;
+    const ro = new ResizeObserver((entries) => entries.forEach((e) => {
+      const w = e.contentRect.width;
+      if (w) e.target.style.setProperty('--k', (15 / (0.19 * w)).toFixed(4));
+    }));
+    cards.forEach((c) => ro.observe(c));
+  })();
 
   /* Coach options: picking a feature (click, or the arrow keys while one
      has focus) shows it in the window below. Its video plays from the
