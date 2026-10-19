@@ -12,7 +12,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Actus Biotech: A new era of bio-wearables</title>
+<title>Actus Biotech</title>
 <!-- what search results and link previews show -->
 <meta name="description" content="Actus is a wearable EMG and IMU sensor system with an AI coach: real-time muscle feedback for training and rehabilitation.">
 <link rel="canonical" href="https://actus.bio/">
@@ -2009,16 +2009,79 @@
     .team-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); row-gap:28px; }
   }
 
-  /* FOOTER */
+  /* FOOTER — near black, a hairline of the brand gradient along its top
+     and a faint glow under it. Top: the mark, a line and the social
+     buttons (round glass, filling with the gradient on hover) on the
+     left; the addresses, each under a small label, on the right. Bottom:
+     the copyright and a way back up. */
   footer{
-    background:#2B2B2B; color:#A8A8A8;
-    padding:50px 40px; display:flex; justify-content:space-between; align-items:center;
-    font-size:13px;
+    position:relative; overflow:hidden;
+    background:#0B0B0B; color:#8E8E93;
+    padding:clamp(56px, 9vh, 96px) clamp(24px, 5vw, 72px) 28px;
+    font-size:14px;
     scroll-snap-align: start;
   }
+  footer::before{
+    content:''; position:absolute; left:0; right:0; top:0; height:1px;
+    background:linear-gradient(90deg, transparent, #8B3DFF 20%, #EC2678 50%, #FF5E3A 80%, transparent);
+    opacity:0.75;
+  }
+  footer::after{
+    content:''; position:absolute; left:50%; top:-180px; width:min(900px, 120vw); height:360px;
+    translate:-50% 0; pointer-events:none;
+    background:radial-gradient(closest-side, rgba(236,38,120,0.13), rgba(139,61,255,0.06) 55%, transparent);
+  }
   footer a{ color:#F2F2F2; text-decoration:none; }
-  @media (hover:hover){ footer a:hover{ text-decoration:underline; } }
-  .footer-contacts{ display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:flex-end; }
+  .footer-inner{ position:relative; z-index:1; max-width:1240px; margin:0 auto; }
+  .footer-top{ display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:48px 72px; align-items:start; }
+  .footer-brand{ display:flex; flex-direction:column; align-items:flex-start; gap:18px; }
+  .footer-mark{ display:block; width:44px; height:44px; }
+  .footer-line{ margin:0; max-width:420px; font-size:clamp(20px, 1.8vw, 26px); font-weight:800; line-height:1.15; letter-spacing:-0.02em; color:#F2F2F2; }
+  .footer-social{ display:flex; gap:12px; margin-top:6px; }
+  .footer-social a{
+    position:relative; isolation:isolate;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:46px; height:46px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.04);
+    color:#F2F2F2;
+    transition:transform 0.3s cubic-bezier(.2,.8,.2,1), border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  /* the gradient fill, faded in on hover (a background can't fade
+     between a colour and a gradient) */
+  .footer-social a::before{
+    content:''; position:absolute; inset:-1px; z-index:-1; border-radius:50%;
+    background:linear-gradient(135deg, #8B3DFF, #EC2678 60%, #FF5E3A);
+    opacity:0; transition:opacity 0.3s ease;
+  }
+  .footer-social svg{ width:20px; height:20px; display:block; }
+  @media (hover:hover){
+    .footer-social a:hover{ transform:translateY(-3px); border-color:transparent; box-shadow:0 10px 28px rgba(236,38,120,0.35); }
+    .footer-social a:hover::before{ opacity:1; }
+  }
+  .footer-social a:active{ transform:scale(0.94); }
+  .footer-social a:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+  .footer-contacts{ display:grid; grid-template-columns:repeat(2, max-content); gap:26px 56px; }
+  .footer-contact{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
+  .footer-contact span{ font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#6E6E73; }
+  /* the address: a gradient underline drawn in from the left on hover */
+  .footer-contact a{
+    padding-bottom:2px; font-size:15px; font-weight:600;
+    background:linear-gradient(90deg, #8B3DFF, #EC2678 60%, #FF5E3A) left bottom / 0 1px no-repeat;
+    transition:background-size 0.35s cubic-bezier(.2,.8,.2,1);
+  }
+  @media (hover:hover){ .footer-contact a:hover{ background-size:100% 1px; } }
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+    margin-top:clamp(40px, 7vh, 72px); padding-top:22px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    font-size:13px;
+  }
+  footer .footer-top-link{ display:inline-flex; align-items:center; gap:8px; color:#8E8E93; transition:color 0.2s ease; }
+  .footer-top-link svg{ width:14px; height:14px; transition:transform 0.3s cubic-bezier(.2,.8,.2,1); }
+  @media (hover:hover){
+    footer .footer-top-link:hover{ color:#F2F2F2; }
+    .footer-top-link:hover svg{ transform:translateY(-3px); }
+  }
 
   /* WAITLIST / CONTACT: one small form above the footer. A two-way
      switch picks what it does — just an email for the waitlist, or name,
@@ -2107,6 +2170,31 @@
   .wl-field textarea{ height:132px; resize:none; line-height:1.5; }
   .wl-field input::placeholder, .wl-field textarea::placeholder{ color:var(--gray-dim); }
   .wl-field input:focus, .wl-field textarea:focus{ border-color:var(--ink); box-shadow:0 0 0 3px rgba(36,36,36,0.08); }
+  /* Browser autofill (an email it filled in or remembered) tints the box
+     yellow / light blue in Chrome, Safari and Edge, over the page's own
+     white. Kept white with ink text: an inset shadow paints over the tint
+     (its background can't be set), and the tint's own fade-in is pushed
+     off for good. With the focus ring when focused. (The -webkit- and the
+     standard forms in separate rules: a browser that doesn't know one
+     drops the whole rule it's in.) */
+  .wl-field input:-webkit-autofill, .wl-field textarea:-webkit-autofill{
+    -webkit-box-shadow:0 0 0 1000px #fff inset; box-shadow:0 0 0 1000px #fff inset;
+    -webkit-text-fill-color:var(--ink); caret-color:var(--ink);
+    transition:background-color 99999s ease-out 0s, border-color 0.2s ease;
+  }
+  .wl-field input:autofill, .wl-field textarea:autofill{
+    -webkit-box-shadow:0 0 0 1000px #fff inset; box-shadow:0 0 0 1000px #fff inset;
+    -webkit-text-fill-color:var(--ink); caret-color:var(--ink);
+    transition:background-color 99999s ease-out 0s, border-color 0.2s ease;
+  }
+  .wl-field input:-webkit-autofill:focus, .wl-field textarea:-webkit-autofill:focus{
+    -webkit-box-shadow:0 0 0 1000px #fff inset, 0 0 0 3px rgba(36,36,36,0.08);
+    box-shadow:0 0 0 1000px #fff inset, 0 0 0 3px rgba(36,36,36,0.08);
+  }
+  .wl-field input:autofill:focus, .wl-field textarea:autofill:focus{
+    -webkit-box-shadow:0 0 0 1000px #fff inset, 0 0 0 3px rgba(36,36,36,0.08);
+    box-shadow:0 0 0 1000px #fff inset, 0 0 0 3px rgba(36,36,36,0.08);
+  }
   /* both labels stacked in one cell, so the button is always as wide as
      the longer one (the email never changes width). Switching to Contact
      us, "Join waitlist" slides out through the right edge and then "Send
@@ -2142,6 +2230,70 @@
   .wl-status{ grid-column:1 / -1; grid-row:2; align-self:start; min-height:1.5em; margin:2px 0 0; font-size:14px; color:var(--gray); }
   .waitlist-form[data-mode="contact"] .wl-status{ grid-row:4; }
   .wl-status.is-ok{ color:var(--ink); }
+  /* sending: the word, and three dots bouncing after it (in ink) */
+  .wl-sending{
+    display:inline-flex; align-items:baseline; gap:3px; font-weight:600; color:var(--ink);
+  }
+  .wl-sending i{
+    display:inline-block; width:5px; height:5px; border-radius:50%;
+    animation:wl-bounce 0.9s ease-in-out infinite;
+  }
+  .wl-sending i{ background:var(--ink); }
+  .wl-sending i:nth-of-type(1){ margin-left:3px; }
+  .wl-sending i:nth-of-type(2){ animation-delay:0.15s; }
+  .wl-sending i:nth-of-type(3){ animation-delay:0.3s; }
+  @keyframes wl-bounce{ 0%, 60%, 100%{ transform:translateY(0); opacity:0.5; } 30%{ transform:translateY(-5px); opacity:1; } }
+  /* Sent: the fields fade away and, in their place, a message in ink —
+     a ring drawn round, a tick drawn in, a few sparks out of it, and the
+     words rising in. (.is-done on .wl-body,
+     set by the waitlist script; switching the form's mode clears it.) */
+  .wl-body{ position:relative; }
+  .wl-body > :not(.wl-done){ transition:opacity 0.35s ease, filter 0.35s ease, visibility 0s 0s; }
+  .wl-body.is-done > :not(.wl-done){ opacity:0; filter:blur(4px); visibility:hidden; pointer-events:none; transition:opacity 0.35s ease, filter 0.35s ease, visibility 0s 0.35s; }
+  .wl-done{
+    position:absolute; left:0; right:0; top:0;
+    display:flex; align-items:center; gap:20px;
+    opacity:0; visibility:hidden; pointer-events:none;
+  }
+  .wl-body.is-done .wl-done{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity 0.3s ease 0.15s; }
+  .wl-done-mark{ position:relative; flex:0 0 auto; width:64px; height:64px; }
+  .wl-done-mark svg{ position:relative; display:block; width:100%; height:100%; overflow:visible; }
+  .wl-done-mark::before{ /* a soft glow behind it, breathing */
+    content:''; position:absolute; inset:-14px; border-radius:50%;
+    background:radial-gradient(closest-side, rgba(36,36,36,0.14), rgba(36,36,36,0.05) 60%, transparent);
+    opacity:0;
+  }
+  .wl-done-ring, .wl-done-tick{ fill:none; stroke:var(--ink); stroke-linecap:round; stroke-linejoin:round; }
+  .wl-done-ring{ stroke-width:3; stroke-dasharray:176; stroke-dashoffset:176; transform:rotate(-90deg); transform-origin:50% 50%; }
+  .wl-done-tick{ stroke-width:3.6; stroke-dasharray:36; stroke-dashoffset:36; }
+  .wl-spark{
+    position:absolute; left:50%; top:50%; width:7px; height:7px; margin:-3.5px 0 0 -3.5px; border-radius:50%;
+    background:var(--ink); opacity:0;
+  }
+  .wl-done-text{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .wl-done-title{
+    font-size:clamp(24px, 2.4vw, 32px); font-weight:800; letter-spacing:-0.02em; line-height:1.1;
+    color:var(--ink);
+  }
+  .wl-done-sub{ font-size:15px; line-height:1.45; color:var(--gray); }
+  .wl-body.is-done .wl-done-ring{ animation:wl-draw 0.75s cubic-bezier(.65,0,.35,1) 0.2s forwards; }
+  .wl-body.is-done .wl-done-tick{ animation:wl-draw 0.4s cubic-bezier(.65,0,.35,1) 0.8s forwards; }
+  .wl-body.is-done .wl-done-mark::before{ animation:wl-glow 2.6s ease-in-out 0.9s infinite; }
+  .wl-body.is-done .wl-spark{ animation:wl-spark 0.9s cubic-bezier(.2,.8,.2,1) 0.95s forwards; }
+  .wl-body.is-done .wl-done-title{ animation:wl-rise 0.6s cubic-bezier(.2,.8,.2,1) 0.35s backwards; }
+  .wl-body.is-done .wl-done-sub{ animation:wl-rise 0.6s cubic-bezier(.2,.8,.2,1) 0.5s backwards; }
+  @keyframes wl-draw{ to{ stroke-dashoffset:0; } }
+  @keyframes wl-glow{ 0%, 100%{ opacity:0.55; scale:0.92; } 50%{ opacity:1; scale:1.06; } }
+  @keyframes wl-spark{
+    0%{ opacity:0; transform:rotate(var(--a)) translateX(14px) scale(0.6); }
+    25%{ opacity:1; }
+    100%{ opacity:0; transform:rotate(var(--a)) translateX(48px) scale(1); }
+  }
+  @keyframes wl-rise{ from{ opacity:0; transform:translateY(12px); filter:blur(6px); } }
+  @media (prefers-reduced-motion: reduce){
+    .wl-done-ring, .wl-done-tick{ stroke-dashoffset:0; }
+    .wl-spark{ display:none; }
+  }
   .wl-status a{ color:var(--ink); }
 
   @media (max-width:900px){
@@ -2174,15 +2326,16 @@
     .team-name{ font-size:min(20px, 100cqi / 9.2); }
     .team-degree{ font-size:min(15px, 100cqi / 14.2); }
   }
-  /* Narrower screens: the footer stacks, centred, and the addresses sit
-     in a 2 × 2 grid — each column centred, so the two rows line up
-     (wrapped rows of different widths didn't) */
+  /* Narrower screens: the footer stacks — the mark, line and social
+     buttons, then the addresses in two columns, then the bottom row */
   @media (max-width:960px){
-    footer{ flex-direction:column; gap:18px; text-align:center; }
-    .footer-contacts{
-      display:grid; grid-template-columns:repeat(2, max-content);
-      justify-content:center; justify-items:center; gap:10px 32px;
-    }
+    .footer-top{ grid-template-columns:minmax(0, 1fr); gap:44px; }
+    .footer-contacts{ gap:22px 32px; }
+  }
+  @media (max-width:420px){
+    .footer-contacts{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+    .footer-contact a{ font-size:14px; }
+    .footer-bottom{ flex-direction:column-reverse; align-items:flex-start; }
   }
 
   /* SHORT LANDSCAPE SCREENS (a phone held sideways): the stacked phone
@@ -2191,14 +2344,44 @@
      cards collided with the navbar and the gallery buttons. Everything
      there shrinks to fit below the navbar instead. */
   @media (max-width:900px) and (max-height:500px) and (orientation:landscape){
-    .hero{ padding-top:calc(var(--frame-gap) + 64px); padding-bottom:calc(var(--frame-gap) + 16px); }
-    .hero-right{ width:min(150px, 34vh); }
     .story-content{ gap:8px; padding-top:72px; }
     .story-title-sense{ font-size:32px; }
     .story-rip .story-subtitle{ margin-top:6px; font-size:14px; }
     .story-gallery{ --tab-scale:0.62; }
     .story-gallery-tab-label{ left:7px; right:7px; bottom:7px; font-size:11px; }
     .story-reel-nav{ bottom:8px; --nav-btn:36px; }
+  }
+  /* PHONES HELD SIDEWAYS — any phone (a touch screen under 500px tall:
+     the same as window.actusPhone's second half), however wide: the big
+     ones (~930px) used to get the desktop hero, sized for a screen twice
+     as tall, and the others a stacked hero with a tiny sensor. Here the
+     hero sits side by side, as on a desktop: the headline on the left,
+     the sensor on the right, both sized off the short screen; the frame
+     hugs the edges and the logo and navbar are a size smaller, so they
+     take less of the little height there is. */
+  @media (pointer:coarse) and (max-height:500px) and (orientation:landscape),
+         (max-width:900px) and (max-height:500px) and (orientation:landscape){
+    :root{ --frame-gap:8px; --frame-radius:20px; --corner-inset:10px; --frame-pad-x:24px; }
+    .header-wrap, .site-logo{ scale:0.84; top:calc(var(--frame-gap) + 8px); }
+    .header-wrap{ right:calc(var(--frame-gap) + 10px); }
+    .site-logo{ left:calc(var(--frame-gap) + 10px); }
+    .hero{
+      flex-direction:row; justify-content:space-between; align-items:center;
+      gap:clamp(12px, 3vw, 32px); text-align:left;
+      padding:calc(var(--frame-gap) + 60px) calc(var(--frame-gap) + 28px) calc(var(--frame-gap) + 18px);
+    }
+    .hero-left{
+      flex:1 1 auto; align-self:center; align-items:flex-start; text-align:left;
+      transform:none; z-index:2;
+    }
+    .title-xl{ font-size:min(11.5vh, 5.6vw); }
+    .hero-subtitle{ font-size:min(3.4vh, 13px); margin-top:10px; }
+    .hero-right{
+      order:0; flex:0 0 auto; align-self:center; transform:none;
+      width:min(66vh, 40vw); max-width:none;
+    }
+    .hero-card{ max-width:none; }
+    .intro-on .hero-glow{ max-width:none; }
   }
 </style>
 </head>
@@ -2736,6 +2919,22 @@
         <label class="wl-field wl-contact wl-message"><span class="wl-sr">Message</span><textarea name="message" placeholder="How can we help?" rows="4" required disabled></textarea></label>
         <button type="submit" class="wl-submit"><span class="wl-label" data-for="waitlist">Join waitlist</span><span class="wl-label" data-for="contact" aria-hidden="true">Send message</span></button>
         <p class="wl-status" role="status" aria-live="polite"></p>
+        <!-- shown once it's sent (see .wl-done and the waitlist script) -->
+        <div class="wl-done" role="status" aria-live="polite" aria-hidden="true">
+          <span class="wl-done-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <circle class="wl-done-ring" cx="32" cy="32" r="28"/>
+              <path class="wl-done-tick" d="M21 33l7.5 7.5L44 25"/>
+            </svg>
+            <i class="wl-spark" style="--a:-80deg"></i>
+            <i class="wl-spark" style="--a:-20deg"></i>
+            <i class="wl-spark" style="--a:40deg"></i>
+            <i class="wl-spark" style="--a:100deg"></i>
+            <i class="wl-spark" style="--a:160deg"></i>
+            <i class="wl-spark" style="--a:220deg"></i>
+          </span>
+          <span class="wl-done-text"><span class="wl-done-title"></span><span class="wl-done-sub"></span></span>
+        </div>
       </div>
       <input type="text" name="_honey" class="wl-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
     </form>
@@ -2743,12 +2942,31 @@
 </section>
 
 <footer>
-  <div>© 2026 Actus Biotech. All rights reserved.</div>
-  <div class="footer-contacts">
-    <a href="mailto:hello@actus.bio">hello@actus.bio</a>
-    <a href="mailto:support@actus.bio">support@actus.bio</a>
-    <a href="mailto:research@actus.bio">research@actus.bio</a>
-    <a href="mailto:teams@actus.bio">teams@actus.bio</a>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img class="footer-mark" src="assets/actus_w_logo.svg" alt="Actus" width="44" height="44">
+        <p class="footer-line">A new era of bio‑wearables.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/actus_biotech/" target="_blank" rel="noopener" aria-label="Actus on Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/actus-biotech/" target="_blank" rel="noopener" aria-label="Actus on LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.2 3.6a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2zM3.4 9.4h3.6V20.6H3.4zM9.3 9.4h3.45v1.53h.05c.48-.91 1.66-1.87 3.42-1.87 3.66 0 4.33 2.4 4.33 5.53v6.01h-3.6v-5.33c0-1.27-.02-2.9-1.77-2.9-1.77 0-2.04 1.38-2.04 2.81v5.42H9.3z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-contacts">
+        <div class="footer-contact"><span>General</span><a href="mailto:hello@actus.bio">hello@actus.bio</a></div>
+        <div class="footer-contact"><span>Support</span><a href="mailto:support@actus.bio">support@actus.bio</a></div>
+        <div class="footer-contact"><span>Research</span><a href="mailto:research@actus.bio">research@actus.bio</a></div>
+        <div class="footer-contact"><span>Teams</span><a href="mailto:teams@actus.bio">teams@actus.bio</a></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Actus Biotech. All rights reserved.</span>
+      <a class="footer-top-link" href="#intro">Back to top<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+    </div>
   </div>
 </footer>
 
@@ -2788,7 +3006,26 @@
 
     // Contact-only fields are disabled on the waitlist side, so they're
     // neither required nor sent
+    // Sent: the message in place of the fields (see .wl-done); cleared
+    // when the form's mode is switched, ready for another go
+    const body = form.querySelector('.wl-body');
+    const done = form.querySelector('.wl-done');
+    function showDone(contact){
+      done.querySelector('.wl-done-title').textContent = contact ? 'Message sent.' : 'You’re on the list.';
+      done.querySelector('.wl-done-sub').textContent = contact ? 'Thanks — we’ll get back to you soon.' : 'We’ll be in touch with launch news and early access.';
+      body.classList.remove('is-done');
+      void body.offsetWidth; // (so its animations play again from the start)
+      body.classList.add('is-done');
+      done.setAttribute('aria-hidden', 'false');
+      const words = done.querySelector('.wl-done-text');
+      words.replaceWith(words.cloneNode(true)); // (fresh words in the live region, so they're read out again)
+    }
+    function hideDone(){
+      body.classList.remove('is-done');
+      done.setAttribute('aria-hidden', 'true');
+    }
     const setMode = (mode) => {
+      hideDone();
       form.dataset.mode = mode;
       form.querySelectorAll('.wl-contact input, .wl-contact textarea').forEach(f => { f.disabled = mode !== 'contact'; });
       labels.forEach(l => l.setAttribute('aria-hidden', String(l.dataset.for !== mode)));
@@ -2825,13 +3062,14 @@
       delete data._honey;
       const contact = form.dataset.mode === 'contact';
       btn.disabled = true;
-      say('Sending…');
+      say('<span class="wl-sending">Sending<i></i><i></i><i></i></span>'); // (the loader: see .wl-sending)
       try {
         if (contact) await send(data, 'New message from actus.bio');
         else if (WAITLIST_SHEET) await addToSheet(data.email);
         else await send(data, 'New waitlist sign-up on actus.bio');
         form.querySelectorAll('input:not([type="radio"]), textarea').forEach(f => { f.value = ''; });
-        say(contact ? 'Thanks — we’ll get back to you soon.' : 'You’re on the list. We’ll be in touch.', true);
+        say('');
+        showDone(contact); // (the message is a live region of its own: it's what gets read out)
       } catch (err) {
         say('Something went wrong. Email us at <a href="mailto:hello@actus.bio">hello@actus.bio</a> instead.');
       } finally {
@@ -6414,6 +6652,47 @@
     const cs = getComputedStyle(document.body);
     (document.fonts && document.fonts.load ? document.fonts.load(`${cs.fontWeight} 16px ${cs.fontFamily}`).catch(() => {}) : Promise.resolve()).then(restore);
     setTimeout(restore, RESTORE_MAX_WAIT);
+  })();
+</script>
+
+<script>
+  /* The page's own (base) colour follows what's on screen: black while
+     the dark parts fill most of it (the loading screens, the intro
+     curtain, the pill-sized lab, the footer), light otherwise. It only
+     shows outside the page itself — the strips an iPhone held sideways
+     leaves beside its camera, and the overscroll bounce — which were
+     always white, even beside the black sections. */
+  (function(){
+    const root = document.documentElement;
+    const LIGHT = '#F7F7F7', DARK = '#000';
+    const curtain = document.getElementById('introBlack');
+    const coach = document.getElementById('coach');
+    const coachBand = document.getElementById('coachPinSticky');
+    const foot = document.querySelector('footer');
+    let shown = '', raf = 0;
+    const cover = (el) => {
+      if (!el) return 0;
+      const r = el.getBoundingClientRect();
+      return Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0));
+    };
+    function pick(){
+      raf = 0;
+      let dark = 0;
+      if (root.classList.contains('is-loading') || root.classList.contains('is-restoring')) dark = innerHeight;
+      else {
+        if (curtain && root.classList.contains('intro-on') && curtain.style.visibility !== 'hidden') dark += cover(curtain);
+        // (the pill-sized lab: on a desktop only its pinned band is black)
+        dark += coach && coach.classList.contains('is-staged') ? cover(coachBand) : cover(coach);
+        dark += cover(foot);
+      }
+      const c = dark > innerHeight / 2 ? DARK : LIGHT;
+      if (c !== shown) { shown = c; root.style.backgroundColor = c; }
+    }
+    const queue = () => { if (!raf) raf = requestAnimationFrame(pick); };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    new MutationObserver(queue).observe(root, { attributes: true, attributeFilter: ['class'] });
+    pick();
   })();
 </script>
 
