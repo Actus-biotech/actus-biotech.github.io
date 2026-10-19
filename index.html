@@ -1072,6 +1072,23 @@
     font-size:clamp(40px, 12vw, 56px); font-weight:800;
     letter-spacing:-0.03em; line-height:0.98;
   }
+  /* Two titles in one spot: "Only with Actus", and from the first card
+     with a data-title-before on (ECG) that card's title — crossfading as
+     the row is scrolled past it (the phone-features script sets
+     .is-alt). Stacked in one grid cell, so the title is always as tall as
+     the longer one and the cards never jump; each sits at the bottom, on
+     the subtitle. */
+  .m-features-title{ display:grid; align-items:end; }
+  .m-features-title > span{
+    grid-area:1 / 1;
+    transition:opacity 0.35s ease, translate 0.45s cubic-bezier(.2,.8,.2,1);
+  }
+  /* sideways, with the cards: swiping on, "Only with Actus" slides out to
+     the left as the new title comes in from the right; swiping back, the
+     same in reverse */
+  .m-features-title-alt{ opacity:0; translate:40px 0; }
+  .m-features-title.is-alt .m-features-title-main{ opacity:0; translate:-40px 0; }
+  .m-features-title.is-alt .m-features-title-alt{ opacity:1; translate:0 0; }
   .m-features-sub{
     margin-top:14px; padding:0 20px; max-width:520px;
     font-size:17px; font-weight:500; line-height:1.45; color:var(--ink);
@@ -2135,7 +2152,7 @@
   <!-- Phones: the features as a plain row of cards (see .m-features),
        filled by the phone-features script just below -->
   <div class="m-features">
-    <h2 class="m-features-title">Only with<br>Actus</h2>
+    <h2 class="m-features-title" id="mFeaturesTitle"><span class="m-features-title-main">Only with<br>Actus</span></h2>
     <p class="m-features-sub">Actus senses your muscles and movements.</p>
     <div class="m-features-row" id="mFeaturesRow"></div>
     <div class="m-features-bar" id="mFeaturesBar" aria-hidden="true">
@@ -2195,6 +2212,37 @@
       thumb.style.width = `${shown * 100}%`;
       // (translate % is of the thumb's own width: its travel is 1/shown − 1 of it)
       thumb.style.transform = `translateX(${max > 0 ? (row.scrollLeft / max) * (1 / shown - 1) * 100 : 0}%)`;
+      placeTitle();
+    }
+
+    // The title: from the first card with its own title (the story tab's
+    // data-title-before, i.e. ECG) on, that title replaces "Only with
+    // Actus" — once that card is the nearest to the row's resting spot
+    const title = document.getElementById('mFeaturesTitle');
+    const altAt = Array.from(tabs).findIndex(t => t.dataset.titleBefore);
+    const cards = row.children;
+    let altEl = null;
+    if (title && altAt > 0) {
+      altEl = document.createElement('span');
+      altEl.className = 'm-features-title-alt';
+      altEl.textContent = tabs[altAt].dataset.titleBefore;
+      altEl.setAttribute('aria-hidden', 'true');
+      title.appendChild(altEl);
+    }
+    function placeTitle(){
+      if (!altEl) return;
+      const pad = parseFloat(getComputedStyle(row).scrollPaddingLeft) || 0;
+      const max = row.scrollWidth - row.clientWidth;
+      let near = 0;
+      for (let i = 0, best = Infinity; i < cards.length; i++) {
+        const dist = Math.abs(Math.min(max, cards[i].offsetLeft - pad) - row.scrollLeft);
+        if (dist < best) { best = dist; near = i; }
+      }
+      const alt = near >= altAt;
+      if (alt === title.classList.contains('is-alt')) return;
+      title.classList.toggle('is-alt', alt);
+      altEl.setAttribute('aria-hidden', String(!alt));
+      title.querySelector('.m-features-title-main').setAttribute('aria-hidden', String(alt));
     }
     row.addEventListener('scroll', () => { if (!barRaf) barRaf = requestAnimationFrame(placeThumb); }, { passive: true });
     if (window.ResizeObserver) new ResizeObserver(placeThumb).observe(row);
