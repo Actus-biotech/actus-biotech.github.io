@@ -74,6 +74,15 @@
       }
     } catch (e) {}
   })();
+  /* The sections' entrances (fading / sliding in the first time they're
+     on screen) start watching through this: right away normally, but on
+     a reload only once the reload curtain starts lifting — so whatever's
+     on screen where you were plays its entrance in front of you, not
+     unseen behind the curtain. */
+  window.actusWhenShown = function(cb){
+    if (!document.documentElement.classList.contains('is-restoring')) cb();
+    else window.addEventListener('actus:restored', cb, { once: true });
+  };
 </script>
 <script>
   /* Black-screen sensor intro (see .intro / the intro script): switched
@@ -1061,6 +1070,41 @@
      feature cards, swiped sideways with the browser's own scrolling
      (snapping card to card) — nothing scales, fades or tilts. The cards
      are built from the story's tabs by the phone-features script. */
+  /* The features' entrance, the photo grid's (see .panel > *): the first
+     time the section comes up the screen (.is-entered, set by the
+     entrance script), "Only with Actus" and then the cards, left to right,
+     fade in from 40px to the left (--enter-delay apart). Only a `from`
+     keyframe, so each lands on whatever opacity and place the gallery
+     gives it — and `translate`, not `transform`, which the gallery uses
+     to lay the cards out. Hidden until then. */
+  @keyframes story-enter{ from{ opacity:0; translate:-40px 0; } }
+  @media (prefers-reduced-motion: no-preference){
+    .story:not(.is-entered) :is(.story-rip .story-text-col, .story-gallery-tab, .m-features-title, .m-features-sub, .m-feature, .m-features-bar){ visibility:hidden; }
+    .story.is-entered :is(.story-rip .story-text-col, .story-gallery-tab, .m-features-title, .m-features-sub, .m-feature, .m-features-bar){
+      animation:story-enter 0.6s cubic-bezier(.2,.8,.2,1) var(--enter-delay, 0s) backwards;
+    }
+    /* "Explore features" (desktop only — phones have the plain cards)
+       fades in once you're well into the section (.is-arrived, set by the
+       entrance script), and for as long as it's the pill, soft rings keep
+       rippling out of it, inviting a click. Not while it's the bar: the
+       rings stop as it shrinks into it, and start again (after the bar
+       has swelled back into the pill) on the way out. Both by name in
+       one list, so the fade plays once — leaving or re-entering the
+       pill only stops or restarts the rings. (box-shadow / opacity only:
+       the pill's width and height belong to the pill ⇄ bar morph.) */
+    .story:not(.is-arrived) .story-reel-explore{ visibility:hidden; }
+    .story.is-arrived .story-reel-explore{ animation:reel-explore-in 0.6s ease backwards; }
+    .story.is-arrived .story-reel-nav.is-start .story-reel-explore{
+      animation:reel-explore-in 0.6s ease backwards,
+                reel-explore-pulse 2.4s ease-out 0.8s infinite;
+    }
+  }
+  @keyframes reel-explore-in{ from{ opacity:0; } }
+  /* one ring, then a pause before the next */
+  @keyframes reel-explore-pulse{
+    0%{ box-shadow:0 6px 20px rgba(0,0,0,0.14), 0 0 0 0 rgba(36,36,36,0.32); }
+    60%, 100%{ box-shadow:0 6px 20px rgba(0,0,0,0.14), 0 0 0 16px rgba(36,36,36,0); }
+  }
   .m-features{ display:none; }
   @media (max-width:900px), (pointer:coarse) and (max-height:500px){
     .story-sticky{ display:none; }
@@ -1157,7 +1201,7 @@
     grid-template-rows:auto 1fr;
     column-gap:clamp(32px, 4.5vw, 72px); row-gap:clamp(28px, 4vh, 48px);
     padding:clamp(28px, 3.4vw, 52px);
-    min-height:clamp(540px, 74vh, 700px);
+    min-height:clamp(520px, 58vh, 580px); /* (just room for the tallest explanation, Analysis, with a little air: the frame never jumps on a switch) */
     border-radius:var(--frame-radius); background:var(--frame-bg);
   }
   .science-options{ grid-area:options; display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
@@ -1171,6 +1215,36 @@
   }
   @media (hover:hover){ .science-option:hover{ transform:scale(1.02); } }
   .science-option:active{ transform:scale(0.97); }
+  /* The options' entrance (desktop; the science-options script sets
+     .is-folded, then .is-in once they're on screen — Apple's "closer
+     look"): the three start as one round "+" in the middle of the column,
+     which splits up and down into three, each then stretching out
+     sideways into its pill as its name fades in. The pill is cut down to
+     the circle round its icon with clip-path (no layout changes) and
+     stacked on the middle one with translate (--stack-y). The script
+     takes the classes off once it's over. */
+  .science-options.is-folded .science-option{
+    opacity:0; scale:0.4; translate:0 var(--stack-y, 0px);
+    clip-path:inset(0 calc(100% - var(--pill-h, 54px)) 0 0 round 999px);
+  }
+  /* (plain, one-colour circles until then: the round "+" / "−" icon
+     comes in with the names) */
+  .science-options.is-folded .science-option-text,
+  .science-options.is-folded .science-option-icon{ opacity:0; }
+  .science-options.is-folded.is-in .science-option{
+    opacity:1; scale:1; translate:0 0;
+    clip-path:inset(0 0 0 0 round 999px);
+    transition:opacity 0.3s ease, scale 0.5s cubic-bezier(.2,.9,.3,1.25),
+      translate 0.65s cubic-bezier(.65,0,.35,1) 0.45s,
+      clip-path 0.7s cubic-bezier(.65,0,.35,1) calc(1.05s + var(--i, 0) * 0.08s),
+      background-color 0.3s ease, color 0.3s ease;
+  }
+  .science-options.is-folded.is-in .science-option-text{
+    opacity:1; transition:opacity 0.45s ease calc(1.3s + var(--i, 0) * 0.08s);
+  }
+  .science-options.is-folded.is-in .science-option-icon{
+    opacity:1; transition:opacity 0.45s ease calc(1.3s + var(--i, 0) * 0.08s), background-color 0.3s ease;
+  }
   .science-option:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
   /* round "+" icon; on the picked option it turns into a "−" */
   .science-option-icon{
@@ -1254,6 +1328,32 @@
   .science-viz .t1{ stroke:var(--ink); }
   .science-viz .t2{ stroke:var(--gray); }
   .science-viz .t3{ stroke:var(--gray-dim); }
+  /* IMU: the motion-capture stick figure (the science-mocap script) — no
+     faded ends, it stands in the middle */
+  .science-viz svg.science-mocap{ -webkit-mask-image:none; mask-image:none; }
+  /* the moves above it: a row of small names, the one playing a dark pill */
+  .science-viz.is-mocap{ flex-direction:column; gap:6px; }
+  .science-viz.is-mocap svg{ flex:1 1 0; min-height:0; height:auto; width:100%; }
+  .science-mocap-moves{ flex:0 0 auto; display:flex; flex-wrap:wrap; justify-content:center; gap:4px; }
+  .science-mocap-move{
+    padding:4px 10px; border:0; border-radius:999px; background:none; cursor:pointer;
+    font-family:var(--sans); font-size:11px; font-weight:600; line-height:1.2; color:var(--gray); white-space:nowrap;
+    transition:background-color 0.35s ease, color 0.35s ease, transform 0.2s ease;
+  }
+  @media (hover:hover){ .science-mocap-move:hover{ color:var(--ink); background:var(--frame-bg); } }
+  .science-mocap-move:active{ transform:scale(0.95); }
+  .science-mocap-move:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .science-mocap-move.is-on, .science-mocap-move.is-on:hover{ background:var(--ink); color:#fff; }
+  .science-mocap-ground{ stroke:var(--line); stroke-width:1; }
+  .science-mocap-shadow{ fill:rgba(36,36,36,0.1); }
+  .science-mocap-bone{ fill:none; stroke:var(--ink); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+  .science-mocap-bone.is-far{ stroke:var(--gray-dim); }
+  .science-mocap-head{ fill:var(--bg); stroke:var(--ink); stroke-width:2.6; }
+  .science-mocap-joint{ fill:var(--ink); stroke:var(--bg); stroke-width:1.2; }
+  .science-mocap-joint.is-far{ fill:var(--gray-dim); }
+  .science-mocap-plate circle{ fill:var(--ink); }
+  .science-mocap-plate .science-mocap-plate-hub{ fill:var(--bg); }
+  .science-mocap-trail{ fill:none; stroke:url(#mocapGrad); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; opacity:0.55; }
   /* each trace is two copies of one period side by side: sliding by one
      period loops seamlessly */
   .science-trace{ animation:science-scroll var(--science-speed, 7s) linear infinite; }
@@ -1286,6 +1386,7 @@
   @media (max-width:600px){
     .science-viz{ height:auto; flex-direction:column; gap:14px; }
     .science-viz svg{ flex:none; height:100px; }
+    .science-viz.is-mocap svg{ flex:none; height:180px; } /* (the stick figure needs the height) */
     .science-bars{ height:120px; align-self:center; }
   }
 
@@ -2294,6 +2395,36 @@
     }, { threshold: 0.25 });
     videos.forEach(v => io.observe(v));
   })();
+
+  /* The features' entrance (see .story.is-entered): the first time the
+     section comes up the screen, its title and cards fade in from the
+     left one after another, left to right — like the photo grid at the
+     end of the page. */
+  (function(){
+    const story = document.getElementById('story');
+    if (!story) return;
+    // the order they come in, desktop and phones; the stagger stops
+    // growing after the first few (the rest are off screen anyway)
+    [story.querySelectorAll('.story-rip .story-text-col, .story-gallery-tab'),
+     story.querySelectorAll('.m-features-title, .m-features-sub, .m-feature, .m-features-bar')]
+      .forEach(els => els.forEach((el, i) => el.style.setProperty('--enter-delay', `${(Math.min(i, 4) * 0.1).toFixed(1)}s`)));
+    if (!window.IntersectionObserver) { story.classList.add('is-entered'); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      story.classList.add('is-entered');
+      io.disconnect();
+    }, { rootMargin: '0px 0px -50% 0px' }); // (once the section's top is half-way up the screen: well in view, so you see it come in)
+    window.actusWhenShown(() => io.observe(story));
+    // …and "Explore features" a little after that, once you're well in
+    // (the section's top a quarter of the way down the screen) — see
+    // .story.is-arrived
+    const arrive = new IntersectionObserver((entries) => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      story.classList.add('is-arrived');
+      arrive.disconnect();
+    }, { rootMargin: '0px 0px -75% 0px' });
+    window.actusWhenShown(() => arrive.observe(story));
+  })();
 </script>
 
 <!-- The science, Apple-style: EMG / IMU / Analysis options on the left,
@@ -2335,7 +2466,7 @@
         <p>Every contraction starts with a tiny electrical signal. Actus sensors read it: which muscle fires, and how hard.</p>
       </article>
       <article class="science-panel" role="tabpanel" id="sciencePanelImu" aria-labelledby="scienceTabImu" hidden>
-        <div class="science-viz"><svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true"><g class="science-trace" data-trace="imu" style="--science-speed:9s"></g></svg></div>
+        <div class="science-viz is-mocap"><div class="science-mocap-moves" role="group" aria-label="Pick a movement"></div><svg class="science-mocap" viewBox="0 0 320 170" role="img" aria-label="Motion capture: a stick figure running, squatting, jumping, holding a yoga Warrior II pose and deadlifting"></svg></div>
         <h3>Motion, in every direction.</h3>
         <p>Actus accelerometer and gyroscope track every tilt, turn and change of speed, so it knows how you move.</p>
       </article>
@@ -3669,7 +3800,7 @@
     });
   }, { threshold:0.12 });
 
-  revealSections.forEach(section => revealObserver.observe(section));
+  window.actusWhenShown(() => revealSections.forEach(section => revealObserver.observe(section)));
 
   const titleXlTyped = document.getElementById('titleXlTyped');
   const titleXlWords = ['coach', 'spotter', 'trainer'];
@@ -3803,7 +3934,7 @@
         revealObs.disconnect();
       }
     }, { threshold:0.35 });
-    revealObs.observe(title || section);
+    window.actusWhenShown(() => revealObs.observe(title || section));
 
     // The glint on the "pill-sized" ring: top-left until the title is
     // past the middle of the screen (where the eye is), top-right by the
@@ -4653,7 +4784,8 @@
   /* Science section traces: one 400-unit period of each signal, drawn
      twice side by side so the CSS slide (.science-trace) loops seamlessly.
      EMG: a quiet baseline with bursts of fast, spiky activity as a muscle
-     contracts. IMU: three smooth axes (x / y / z) of movement. */
+     contracts. (IMU shows a stick figure instead: the science-mocap
+     script.) */
   (function(){
     const W = 400, H = 160, MID = H / 2;
     const EMG_BURSTS = window.actusEmgBursts = [[110, 34], [290, 26]]; // [centre, width]: one rep each (the science-bars script reads these too)
@@ -4677,18 +4809,233 @@
           ys.push(i === 0 || i === N ? MID : MID + (rand() * 2 - 1) * amp);
         }
         addPath(g, ys, 't1');
-      } else {
-        const N = 200;
-        [[2, 30, 0, 't1'], [3, 20, 1.3, 't2'], [1, 38, 2.4, 't3']].forEach(([cycles, amp, phase, cls]) => {
-          const ys = [];
-          for (let i = 0; i <= N; i++) {
-            const a = i / N * Math.PI * 2;
-            ys.push(MID + amp * Math.sin(a * cycles + phase) + amp * 0.25 * Math.sin(a * cycles * 3 + phase * 2));
-          }
-          addPath(g, ys, cls);
-        });
       }
     });
+  })();
+
+  /* IMU: motion capture. A stick figure — the skeleton the sensors'
+     tracked motion is turned into — seen from the side, working through a
+     few sports one after another (running, a squat, a jump, yoga's
+     Warrior II, weightlifting), each blending into the next — or the one
+     you pick from the row of names above it. Its near-side limbs in ink, the
+     far side in grey; the near hand and foot leave short trails, as in a
+     mocap viewer. Every pose is joint angles (degrees, 0 = hanging
+     straight down, positive = forward, the figure facing right), turned
+     into points from the hips out; its lower foot is kept on the ground
+     (plus any jump). Drawn only while the IMU panel is on screen; reduced
+     motion: one still pose. A fun sketch, not real data. */
+  (function(){
+    const svg = document.querySelector('.science-mocap');
+    if (!svg) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const GROUND = 156, CX = 160;
+    const B = { torso: 34, neck: 7, head: 7.5, upper: 19, fore: 18, thigh: 26, shin: 25, foot: 8 };
+    const SEG = 4.2, BLEND = 0.7; // seconds per sport, and the hand-over at the start of each
+    const TRAIL = 26;             // samples in each trail
+    const rad = d => d * Math.PI / 180;
+    const ease = t => t * t * (3 - 2 * t);
+    const cyc = (t, period) => (t / period) % 1;
+    const wave = p => (1 - Math.cos(2 * Math.PI * p)) / 2; // 0 → 1 → 0 over a cycle
+    // a pose: torso lean t, head tilt hd, arms [upper a, elbow e] near (n) / far (f),
+    // legs [thigh h, knee k], plus air (lift off the ground)
+    const SPORTS = [
+      { name: 'Running', pose(time){
+        const w = 2 * Math.PI * cyc(time, 0.72);
+        const leg = (ph) => [12 + 42 * Math.sin(w + ph), 22 + 70 * Math.pow(Math.max(0, Math.cos(w + ph)), 1.3)];
+        const arm = (ph) => [-38 * Math.sin(w + ph), 88 + 10 * Math.sin(w + ph)];
+        return { t: 12, hd: -6, ln: leg(0), lf: leg(Math.PI), an: arm(0), af: arm(Math.PI), air: 3 * Math.abs(Math.sin(w)) };
+      } },
+      { name: 'Squat', pose(time){
+        const d = wave(cyc(time, 2.1));
+        const leg = [88 * d, 128 * d];
+        const arm = [8 + 78 * d, 8];
+        return { t: 42 * d, hd: -20 * d, ln: leg, lf: leg, an: arm, af: arm, air: 0, depth: 3 };
+      } },
+      { name: 'Jump', pose(time){
+        const p = cyc(time, 2.1);
+        // dip → drive → flight → land → stand
+        const d = p < 0.32 ? 0.62 * ease(p / 0.32) : p < 0.44 ? 0.62 * (1 - ease((p - 0.32) / 0.12)) : p < 0.72 ? 0.05 : p < 0.84 ? 0.42 * Math.sin(Math.PI * (p - 0.72) / 0.24) : p < 0.96 ? 0.42 * (1 - ease((p - 0.84) / 0.12)) * 0.5 : 0;
+        const arms = p < 0.32 ? -55 * ease(p / 0.32) : p < 0.46 ? -55 + 205 * ease((p - 0.32) / 0.14) : p < 0.72 ? 150 : p < 0.9 ? 150 - 130 * ease((p - 0.72) / 0.18) : 20 - 20 * ease((p - 0.9) / 0.1);
+        const air = p > 0.44 && p < 0.74 ? 24 * Math.sin(Math.PI * (p - 0.44) / 0.3) : 0;
+        const tuck = air > 0 ? 18 * Math.sin(Math.PI * (p - 0.44) / 0.3) : 0;
+        const leg = [88 * d + tuck, 128 * d + tuck * 1.6];
+        return { t: 38 * d, hd: -14 * d, ln: leg, lf: leg, an: [arms, 12], af: [arms, 12], air, depth: 3 };
+      } },
+      { name: 'Yoga', pose(time){
+        // Warrior II: step out wide, the front knee bending over the ankle
+        // and the back leg straight, the arms opening out level, front and
+        // back — then held, breathing
+        const d = ease(Math.min(1, time / 1.3));
+        const breath = Math.sin(2 * Math.PI * time / 2.4);
+        return { t: 1.5 * breath * d, hd: 0, ln: [82 * d, 82 * d], lf: [-46 * d, 0],
+          an: [8 + 82 * d + 2 * breath * d, 6 - 6 * d], af: [-8 - 82 * d - 2 * breath * d, 6 - 6 * d], air: 0 };
+      } },
+      { name: 'Weightlifting', pose(time){
+        // a deadlift, arms hanging straight with a plate at the hands: it
+        // settles standing with the bar first (the plate only appears once
+        // the hands are down), then each rep hinges down to the floor,
+        // pauses, drives back up — knees straightening a beat before the
+        // hips — and locks out tall
+        const r = cyc(Math.max(0, time - 0.6), 2.4);
+        const d = r < 0.38 ? ease(r / 0.38) : r < 0.48 ? 1 : r < 0.86 ? 1 - ease((r - 0.48) / 0.38) : 0;
+        const up = r >= 0.48 && r < 0.86;
+        const dk = up ? Math.pow(d, 1.5) : d;   // knees lead on the way up
+        const lock = r >= 0.84 ? Math.sin(Math.PI * Math.min(1, (r - 0.84) / 0.16)) : 0;
+        return { t: 74 * d - 3 * lock, hd: -30 * d, ln: [52 * dk, 66 * dk], lf: [52 * dk, 66 * dk],
+          an: [0, 0], af: [0, 0], air: 0, depth: 3, bar: ease(Math.min(1, Math.max(0, (time - 0.35) / 0.4))) };
+      } },
+    ];
+    const lerp = (a, b, s) => a + (b - a) * s;
+    function mix(A, Bp, s){
+      if (s >= 1) return Bp;
+      const m2 = (x, y) => [lerp(x[0], y[0], s), lerp(x[1], y[1], s)];
+      return { t: lerp(A.t, Bp.t, s), hd: lerp(A.hd, Bp.hd, s), ln: m2(A.ln, Bp.ln), lf: m2(A.lf, Bp.lf),
+        an: m2(A.an, Bp.an), af: m2(A.af, Bp.af), air: lerp(A.air, Bp.air, s), depth: lerp(A.depth || 0, Bp.depth || 0, s),
+        dx: lerp(A.dx || 0, Bp.dx || 0, s), bar: lerp(A.bar || 0, Bp.bar || 0, s) };
+    }
+    const dir = (deg, len) => [Math.sin(rad(deg)) * len, Math.cos(rad(deg)) * len]; // 0 = straight down, + = forward
+    // points, with the hips at (0, 0)
+    function solve(P){
+      const up = [Math.sin(rad(P.t)) * B.torso, -Math.cos(rad(P.t)) * B.torso];
+      const neck = up;
+      const ht = P.t + P.hd;
+      const head = [neck[0] + Math.sin(rad(ht)) * (B.neck + B.head), neck[1] - Math.cos(rad(ht)) * (B.neck + B.head)];
+      const arm = ([a, e], dx) => {
+        const s = [neck[0] + dx, neck[1]];
+        const u = dir(a, B.upper), el = [s[0] + u[0], s[1] + u[1]];
+        const f = dir(a + e, B.fore);
+        return [s, el, [el[0] + f[0], el[1] + f[1]]];
+      };
+      const leg = ([h, k], dx) => {
+        const hip = [dx, 0];
+        const u = dir(h, B.thigh), kn = [hip[0] + u[0], hip[1] + u[1]];
+        const s = dir(h - k, B.shin), an = [kn[0] + s[0], kn[1] + s[1]];
+        return [hip, kn, an, [an[0] + B.foot, an[1] + 1]];
+      };
+      const dx = P.depth || 0;
+      return { neck, head, an: arm(P.an, 0), af: arm(P.af, -dx), ln: leg(P.ln, 0), lf: leg(P.lf, -dx) };
+    }
+
+    // the drawing: ground, shadow, trails, far limbs, body, near limbs, joints
+    const el = (tag, attrs, parent = svg) => {
+      const e = document.createElementNS(NS, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      parent.appendChild(e);
+      return e;
+    };
+    const defs = el('defs', {});
+    // (in the drawing's own units: a trail can be a straight line, which has no box for a bounding-box gradient)
+    const grad = el('linearGradient', { id: 'mocapGrad', gradientUnits: 'userSpaceOnUse', x1: CX - 70, y1: 0, x2: CX + 70, y2: 0 }, defs);
+    [['0', '#8B3DFF'], ['0.62', '#EC2678'], ['1', '#FF5E3A']].forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, grad));
+    // the moves, named in a row above the figure, the one playing lit
+    const moves = document.querySelector('.science-mocap-moves');
+    // — and they're buttons: picking one plays that move (see pick below)
+    const chips = moves ? SPORTS.map((sp, i) => {
+      const c = document.createElement('button');
+      c.type = 'button';
+      c.className = 'science-mocap-move';
+      c.textContent = sp.name;
+      c.setAttribute('aria-pressed', 'false');
+      c.addEventListener('click', () => pick(i));
+      moves.appendChild(c);
+      return c;
+    }) : [];
+    let shownMove = -1;
+    function setMove(i){
+      if (i === shownMove) return;
+      shownMove = i;
+      chips.forEach((c, j) => c.classList.toggle('is-on', j === i));
+    }
+    el('line', { x1: CX - 110, x2: CX + 110, y1: GROUND + 0.5, y2: GROUND + 0.5, class: 'science-mocap-ground' });
+    const shadow = el('ellipse', { cx: CX, cy: GROUND + 1, rx: 26, ry: 3, class: 'science-mocap-shadow' });
+    const trails = [el('polyline', { class: 'science-mocap-trail' }), el('polyline', { class: 'science-mocap-trail' })];
+    const far = el('polyline', { class: 'science-mocap-bone is-far' }), farLeg = el('polyline', { class: 'science-mocap-bone is-far' });
+    const spine = el('polyline', { class: 'science-mocap-bone' });
+    const head = el('circle', { r: B.head, class: 'science-mocap-head' });
+    const nearLeg = el('polyline', { class: 'science-mocap-bone' }), near = el('polyline', { class: 'science-mocap-bone' });
+    // weightlifting: the barbell, end on — a plate round the bar at the hands
+    const plate = el('g', { class: 'science-mocap-plate' });
+    el('circle', { r: 11 }, plate);
+    el('circle', { r: 2.2, class: 'science-mocap-plate-hub' }, plate);
+    const joints = Array.from({ length: 12 }, () => el('circle', { r: 2.4, class: 'science-mocap-joint' }));
+    const hist = [[], []];
+    const pts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+
+    // What's playing: move `cur`, `local` seconds in (each move on its own
+    // clock, from its own start). On its own it tours the moves, SEG each;
+    // a picked one (`pinned`) keeps playing until you pick it again, which
+    // carries on with the tour. Every change blends over BLEND from the move
+    // before — which keeps moving meanwhile, from where it was (`from`).
+    let cur = 0, local = 0, pinned = false, from = null;
+    function switchTo(i){
+      from = { i: cur, at: local };
+      cur = i; local = 0;
+    }
+    function step(dt){
+      local += dt;
+      if (!pinned && local >= SEG) switchTo((cur + 1) % SPORTS.length);
+    }
+    function pick(i){
+      if (i === cur && pinned) { pinned = false; switchTo((cur + 1) % SPORTS.length); }
+      else { pinned = true; if (i !== cur) switchTo(i); }
+      chips.forEach((c, j) => c.setAttribute('aria-pressed', String(pinned && j === i)));
+      if (reduce) { local = STILL; from = null; }
+      if (reduce || !inView) draw();
+    }
+    function draw(){
+      const now = SPORTS[cur].pose(local);
+      const s = from ? ease(Math.min(1, local / BLEND)) : 1;
+      if (s >= 1) from = null;
+      const P = from ? mix(SPORTS[from.i].pose(from.at + local), now, s) : now;
+      setMove(cur);
+      const J = solve(P);
+      // on the ground: the lower foot touches it (plus any jump)
+      const low = Math.max(...[J.ln, J.lf].flatMap(l => [l[2][1], l[3][1]]));
+      const ox = CX + (P.dx || 0), oy = GROUND - low - P.air;
+      const T = p => [p[0] + ox, p[1] + oy];
+      const hip = [ox, oy], neck = T(J.neck), hd = T(J.head);
+      const an = J.an.map(T), af = J.af.map(T), ln = J.ln.map(T), lf = J.lf.map(T);
+      far.setAttribute('points', pts(af));
+      farLeg.setAttribute('points', pts(lf));
+      spine.setAttribute('points', pts([hip, neck]));
+      nearLeg.setAttribute('points', pts(ln));
+      near.setAttribute('points', pts(an));
+      head.setAttribute('cx', hd[0].toFixed(1)); head.setAttribute('cy', hd[1].toFixed(1));
+      [hip, neck, an[1], an[2], af[1], af[2], ln[1], ln[2], ln[3], lf[1], lf[2], lf[3]].forEach((p, i) => {
+        joints[i].setAttribute('cx', p[0].toFixed(1)); joints[i].setAttribute('cy', p[1].toFixed(1));
+        joints[i].classList.toggle('is-far', i >= 4 && i <= 5 || i >= 9 && i <= 11);
+      });
+      plate.setAttribute('transform', `translate(${an[2][0].toFixed(1)} ${an[2][1].toFixed(1)})`);
+      plate.style.opacity = (P.bar || 0).toFixed(2);
+      shadow.setAttribute('cx', ox.toFixed(1));
+      shadow.setAttribute('rx', (26 - P.air * 0.5).toFixed(1));
+      shadow.style.opacity = (1 - P.air / 40).toFixed(2);
+      // trails: the near hand and foot, their last few moments
+      [an[2], ln[3]].forEach((p, i) => {
+        const h = hist[i];
+        h.push(p);
+        if (h.length > TRAIL) h.shift();
+        trails[i].setAttribute('points', pts(h));
+      });
+    }
+
+    // reduced motion: still, each move at a telling moment (picking one shows it)
+    const STILL = 1.2;
+    let raf = 0, last = 0, inView = false;
+    if (reduce) { cur = 1; local = STILL; trails.forEach(t => t.remove()); draw(); return; }
+    function tick(now){
+      raf = 0;
+      step(Math.min(0.1, (now - (last || now)) / 1000));
+      last = now;
+      draw();
+      if (inView) raf = requestAnimationFrame(tick);
+    }
+    draw();
+    new IntersectionObserver(([e]) => {
+      inView = e.isIntersecting;
+      if (inView && !raf) { last = 0; raf = requestAnimationFrame(tick); }
+    }).observe(svg);
   })();
 
   /* Science bars: how hard the lats, biceps and rear delts work through a
@@ -4806,6 +5153,41 @@
         pick(tabs[(i + step + tabs.length) % tabs.length], true);
       });
     });
+  })();
+
+  /* Science options' entrance (see .science-options.is-folded): desktop
+     only (phones and the narrow layout, where they sit in a row, just show
+     them), and not under reduced motion. Plays once, when the options are
+     well up the screen. */
+  (function(){
+    const box = document.querySelector('.science-options');
+    if (!box) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.actusPhone.matches || !window.matchMedia('(min-width:861px)').matches) return;
+    const pills = Array.from(box.querySelectorAll('.science-option'));
+    if (pills.length < 2) return;
+    // every pill's offset onto the column's middle, where they start as one
+    const mids = pills.map(p => p.offsetTop + p.offsetHeight / 2);
+    const middle = (mids[0] + mids[mids.length - 1]) / 2;
+    pills.forEach((p, i) => {
+      p.style.setProperty('--i', i);
+      p.style.setProperty('--stack-y', `${(middle - mids[i]).toFixed(1)}px`);
+      p.style.setProperty('--pill-h', `${p.offsetHeight}px`);
+      p.style.zIndex = p.classList.contains('is-active') ? '2' : '1'; // (the picked one on top while they're one circle)
+    });
+    box.classList.add('is-folded');
+    const done = () => {
+      box.classList.remove('is-folded', 'is-in');
+      pills.forEach(p => { p.style.zIndex = ''; });
+    };
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      io.disconnect();
+      requestAnimationFrame(() => {
+        box.classList.add('is-in');
+        setTimeout(done, 2600); // (the last name has faded in by ~2.2s)
+      });
+    }, { rootMargin: '0px 0px -35% 0px' });
+    window.actusWhenShown(() => io.observe(box));
   })();
 
   /* Science dots: the word "science" as a few hundred coloured dots. Each
@@ -4980,13 +5362,14 @@
       new ResizeObserver(() => {
         if (!pending) pending = requestAnimationFrame(() => { pending = 0; build(); });
       }).observe(word);
-      new IntersectionObserver(([e]) => {
+      const dotsIo = new IntersectionObserver(([e]) => {
         inView = e.isIntersecting;
         if (!inView || reduce) return;
         if (!introDone) { introDone = true; scatter(); }
         last = 0;
         if (!raf) raf = requestAnimationFrame(tick);
-      }, { threshold: 0.3 }).observe(word);
+      }, { threshold: 0.3 });
+      window.actusWhenShown(() => dotsIo.observe(word)); // (on a reload, they gather once the curtain lifts)
     });
 
     if (!reduce) {
@@ -5622,6 +6005,7 @@
         setTimeout(() => {
           curtain.classList.add('is-leaving');
           root.classList.remove('is-restoring');
+          window.dispatchEvent(new Event('actus:restored')); // (the entrances on screen play now, see actusWhenShown)
           setTimeout(() => curtain.remove(), 900);
         }, Math.max(0, RESTORE_MIN_MS - (performance.now() - shownAt)));
       };
