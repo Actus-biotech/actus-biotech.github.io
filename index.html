@@ -1369,6 +1369,7 @@
   .science-mocap-plate circle{ fill:var(--ink); }
   .science-mocap-plate .science-mocap-plate-hub{ fill:var(--bg); }
   .science-mocap-trail{ fill:none; stroke:url(#mocapGrad); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; opacity:0.55; }
+  .science-mocap-trail.is-far{ opacity:0.3; }
   /* each trace is two copies of one period side by side: sliding by one
      period loops seamlessly */
   .science-trace{ animation:science-scroll var(--science-speed, 7s) linear infinite; }
@@ -1536,6 +1537,9 @@
     transform:translate(var(--title-x, 0px), var(--title-y, 0px)) scale(var(--title-k, 1));
     opacity:var(--title-o, 0); filter:none; transition:none;
   }
+  /* (just "Your … lab." at first: "pill-sized" itself — its letters, not
+     its ring — comes in once the sensor has become the ring, --word-o) */
+  #coach.is-staged .pill-word{ color:rgba(255,255,255,var(--word-o, 0)); }
   #coach.is-staged .coach-body{
     opacity:var(--body-o, 0); transform:translateY(calc((1 - var(--body-o, 0)) * 28px));
     filter:none; transition:none;
@@ -1653,15 +1657,13 @@
   @media (prefers-reduced-motion: reduce){ .coach-panel{ animation:none; } }
 
   /* ECOSYSTEM (the first option): three cards side by side — Sensors,
-     Hub, App — each named by a small glass pill in its corner, with the
-     headline and text beneath them instead of over a picture. Sensors
+     Hub, App — each named by a small glass pill in its corner. Sensors
      and Hub hold photos; App is a phone drawn here, its top half rising
      out of the card's bottom edge. */
   .coach-panel.is-eco:not([hidden]){
     display:flex; flex-direction:column;
-    padding:clamp(12px, 1.3vw, 18px) clamp(12px, 1.3vw, 18px) 0;
+    padding:clamp(12px, 1.3vw, 18px);
   }
-  .is-eco .coach-copy{ position:relative; padding:clamp(16px, 2vh, 24px) clamp(12px, 1.6vw, 26px) clamp(20px, 2.6vh, 32px); }
   .eco-grid{
     flex:1 1 auto; min-height:0;
     display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:clamp(10px, 1.1vw, 16px);
@@ -1841,7 +1843,7 @@
   /* phones: no room for three across — the cards scroll sideways, one
      and a bit at a time, under the same edge-to-edge treatment as the pills */
   @media (max-width:860px){
-    .coach-panel.is-eco{ padding:12px 0 0; }
+    .coach-panel.is-eco{ padding:12px 0; }
     .eco-grid{
       flex:none; height:min(400px, 100vw);
       grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:76%;
@@ -1851,7 +1853,6 @@
     }
     .eco-grid::-webkit-scrollbar{ display:none; }
     .eco-card{ scroll-snap-align:start; }
-    .is-eco .coach-copy{ padding:16px 20px 22px; }
     /* the film on top with its chapter pills right under it (so you can
        hop between them while watching), then the words. .ai-copy steps
        aside (display:contents) so its pills can move up next to the film. */
@@ -2717,7 +2718,7 @@
         <p>Every contraction starts with a tiny electrical signal. Actus sensors read it: which muscle fires, and how hard.</p>
       </article>
       <article class="science-panel" role="tabpanel" id="sciencePanelImu" aria-labelledby="scienceTabImu" hidden>
-        <div class="science-viz is-mocap"><div class="science-mocap-moves" role="group" aria-label="Pick a movement"></div><svg class="science-mocap" viewBox="70 22 180 138" role="img" aria-label="Motion capture: a stick figure running, squatting, jumping, holding a yoga Warrior II pose and deadlifting"></svg></div>
+        <div class="science-viz is-mocap"><div class="science-mocap-moves" role="group" aria-label="Pick a movement"></div><svg class="science-mocap" viewBox="70 22 180 138" role="img" aria-label="Motion capture: a stick figure running, squatting, lunging, holding a yoga Warrior II pose and deadlifting"></svg></div>
         <h3>Motion, in every direction.</h3>
         <p>Actus accelerometer and gyroscope track every tilt, turn and change of speed, so it knows how you move.</p>
       </article>
@@ -2814,10 +2815,6 @@
               <figcaption class="eco-label">App</figcaption>
               <p class="eco-note">Actus Coach, workout tracking, and insights live and after every session.</p>
             </figure>
-          </div>
-          <div class="coach-copy">
-            <h3>The Actus ecosystem.</h3>
-            <p>Sensors, hub and app: one connected system.</p>
           </div>
         </article>
         <!-- Actus Coach: the film (assets/actus-coach.mp4, made from
@@ -3298,11 +3295,12 @@
      scrubbed by that scroll, p = 0 → 1:
               (the dark sensor starts huge over the black, upright and
               facing you, and holds still)
-       TITLE  "Your pill-sized lab." fades in, big, in the middle;
+       TITLE  "Your … lab." fades in, big, in the middle, a gap where
+              "pill-sized" goes;
        FLY    the sensor's one move: it shrinks, makes a quarter turn onto
-              its side and glides onto the word "pill-sized", in front of
-              it, as tall as its ring;
-       RING   it fades away as the ring grows out of it, round the word;
+              its side and glides into the gap, as tall as the word's ring;
+       RING   it fades away as the ring grows out of it;
+       WORD   "pill-sized" fades in inside the ring;
        LAND   the title shrinks into its own place (a transform: it never
               re-lays its letters out) at the top left;
        CARDS  the pills and cards fade in under it
@@ -3324,7 +3322,7 @@
   const word = title && title.querySelector('.pill-word');
   const body = section && section.querySelector('.coach-body');
   if (section && pin && sticky && gl && canvas && title && word && body) {
-    const TITLE = [0.04, 0.2], FLY = [0.14, 0.46], RING = [0.44, 0.56], LAND = [0.56, 0.78], CARDS = [0.72, 0.95];
+    const TITLE = [0.04, 0.2], FLY = [0.14, 0.46], RING = [0.44, 0.56], WORD = [0.52, 0.64], LAND = [0.56, 0.78], CARDS = [0.72, 0.95];
     const RANGE = 1.5;         // the pinned scroll, in screen heights (= the CSS --pin-range)
     const MIN_CARDS = 420;     // px — the cards' window never gets shorter than this to fit the band
     // the logo on its face: its size (the SVG's square, metres), centre on the face (x, z) and turn in its plane
@@ -3355,7 +3353,7 @@
         ['--pin-h', '--pin-top', '--coach-h', '--band-min'].forEach(v => section.style.removeProperty(v));
         ['--title-o', '--title-x', '--title-y', '--title-k'].forEach(v => title.style.removeProperty(v));
         body.style.removeProperty('--body-o');
-        ['--ring', '--ring-x'].forEach(v => word.style.removeProperty(v));
+        ['--ring', '--ring-x', '--word-o'].forEach(v => word.style.removeProperty(v));
         return;
       }
       // the band: as tall as its content, with a strip of the page above
@@ -3525,6 +3523,7 @@
       const f = easeInOut(range(p, FLY)), r = easeInOut(range(p, RING));
       // the ring grows out of the sensor — from the sensor's width to its own — as the sensor fades
       word.style.setProperty('--ring', r.toFixed(3));
+      word.style.setProperty('--word-o', easeInOut(range(p, WORD)).toFixed(3));
       word.style.setProperty('--ring-x', lerp(Math.min(1, (ringH / WIDE) / Math.max(1, ringW)), 1, r).toFixed(3));
       gl.style.opacity = (1 - r).toFixed(3);
 
@@ -5430,10 +5429,11 @@
 
   /* IMU: motion capture. A stick figure — the skeleton the sensors'
      tracked motion is turned into — seen from the side, working through a
-     few sports one after another (running, a squat, a jump, yoga's
+     few sports one after another (running, a squat, a lunge, yoga's
      Warrior II, weightlifting), each blending into the next — or the one
      you pick from the row of names above it. Its near-side limbs in ink, the
-     far side in grey; the near hand and foot leave short trails, as in a
+     far side in grey; the near hand and knee and the hip leave short
+     trails (in the lunge and yoga, the far hand and knee too), as in a
      mocap viewer. Every pose is joint angles (degrees, 0 = hanging
      straight down, positive = forward, the figure facing right), turned
      into points from the hips out; its lower foot is kept on the ground
@@ -5467,17 +5467,15 @@
         const arm = [8 + 78 * d, 8];
         return { t: 42 * d, hd: -20 * d, ln: leg, lf: leg, an: arm, af: arm, air: 0, depth: 3 };
       } },
-      { name: 'Jump', pose(time){
-        const p = cyc(time, 2.1);
-        // dip → drive → flight → land → stand
-        const d = p < 0.32 ? 0.62 * ease(p / 0.32) : p < 0.44 ? 0.62 * (1 - ease((p - 0.32) / 0.12)) : p < 0.72 ? 0.05 : p < 0.84 ? 0.42 * Math.sin(Math.PI * (p - 0.72) / 0.24) : p < 0.96 ? 0.42 * (1 - ease((p - 0.84) / 0.12)) * 0.5 : 0;
-        const arms = p < 0.32 ? -55 * ease(p / 0.32) : p < 0.46 ? -55 + 205 * ease((p - 0.32) / 0.14) : p < 0.72 ? 150 : p < 0.9 ? 150 - 130 * ease((p - 0.72) / 0.18) : 20 - 20 * ease((p - 0.9) / 0.1);
-        const air = p > 0.44 && p < 0.74 ? 17 * Math.sin(Math.PI * (p - 0.44) / 0.3) : 0;
-        const tuck = air > 0 ? 18 * Math.sin(Math.PI * (p - 0.44) / 0.3) : 0;
-        const leg = [88 * d + tuck, 128 * d + tuck * 1.6];
-        return { t: 38 * d, hd: -14 * d, ln: leg, lf: leg, an: [arms, 12], af: [arms, 12], air, depth: 3 };
+      { name: 'Lunge', both: true, pose(time){
+        // a split stance, one foot well ahead: it sinks straight down until
+        // the front thigh is level and the back knee all but touches the
+        // floor (the back foot up on its toes), then drives back up
+        const d = ease(wave(cyc(time, 2.4)));
+        return { t: 4 - 2 * d, hd: -2, ln: [20 + 65 * d, 5 + 90 * d], lf: [-22 + 12 * d, 10 + 70 * d],
+          an: [6, 8], af: [-4, 8], air: 0, depth: 3 };
       } },
-      { name: 'Yoga', pose(time){
+      { name: 'Yoga', both: true, pose(time){
         // Warrior II: step out wide, the front knee bending over the ankle
         // and the back leg straight, the arms opening out level, front and
         // back — then held, breathing
@@ -5564,7 +5562,8 @@
     }
     el('line', { x1: CX - 85, x2: CX + 85, y1: GROUND + 0.5, y2: GROUND + 0.5, class: 'science-mocap-ground' });
     const shadow = el('ellipse', { cx: CX, cy: GROUND + 1, rx: 26, ry: 3, class: 'science-mocap-shadow' });
-    const trails = [el('polyline', { class: 'science-mocap-trail' }), el('polyline', { class: 'science-mocap-trail' })];
+    // (the far hand and knee's two last: only for the moves with `both`)
+    const trails = Array.from({ length: 5 }, (_, i) => el('polyline', { class: i < 3 ? 'science-mocap-trail' : 'science-mocap-trail is-far' }));
     const far = el('polyline', { class: 'science-mocap-bone is-far' }), farLeg = el('polyline', { class: 'science-mocap-bone is-far' });
     const spine = el('polyline', { class: 'science-mocap-bone' });
     const head = el('circle', { r: B.head, class: 'science-mocap-head' });
@@ -5575,7 +5574,7 @@
     el('circle', { r: 2.2, class: 'science-mocap-plate-hub' }, plate);
     // joint dots at the hip, shoulders, elbows, hands and knees (none at the feet)
     const joints = Array.from({ length: 8 }, () => el('circle', { r: 2.4, class: 'science-mocap-joint' }));
-    const hist = [[], []];
+    const hist = trails.map(() => []);
     const pts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
 
     // What's playing: move `cur`, `local` seconds in (each move on its own
@@ -5628,9 +5627,13 @@
       shadow.setAttribute('cx', ox.toFixed(1));
       shadow.setAttribute('rx', (26 - P.air * 0.5).toFixed(1));
       shadow.style.opacity = (1 - P.air / 40).toFixed(2);
-      // trails: the near hand and foot, their last few moments
-      [an[2], ln[3]].forEach((p, i) => {
+      // trails: the near hand and knee and the hip (the trunk's joint) —
+      // and, in the moves with `both`, the far hand and knee — their last
+      // few moments
+      const both = SPORTS[cur].both;
+      [an[2], ln[1], hip, af[2], lf[1]].forEach((p, i) => {
         const h = hist[i];
+        if (i >= 3 && !both) { if (h.length) { h.length = 0; trails[i].setAttribute('points', ''); } return; }
         h.push(p);
         if (h.length > TRAIL) h.shift();
         trails[i].setAttribute('points', pts(h));
