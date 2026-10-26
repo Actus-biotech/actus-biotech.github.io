@@ -1540,6 +1540,9 @@
   /* (just "Your … lab." at first: "pill-sized" itself — its letters, not
      its ring — comes in once the sensor has become the ring, --word-o) */
   #coach.is-staged .pill-word{ color:rgba(255,255,255,var(--word-o, 0)); }
+  /* (and while it's not there it can't be selected either: a drag across
+     the title would otherwise light up the invisible letters) */
+  #coach.is-staged .pill-word.is-unsaid{ -webkit-user-select:none; user-select:none; }
   #coach.is-staged .coach-body{
     opacity:var(--body-o, 0); transform:translateY(calc((1 - var(--body-o, 0)) * 28px));
     filter:none; transition:none;
@@ -3354,6 +3357,7 @@
         ['--title-o', '--title-x', '--title-y', '--title-k'].forEach(v => title.style.removeProperty(v));
         body.style.removeProperty('--body-o');
         ['--ring', '--ring-x', '--word-o'].forEach(v => word.style.removeProperty(v));
+        word.classList.remove('is-unsaid');
         return;
       }
       // the band: as tall as its content, with a strip of the page above
@@ -3523,7 +3527,9 @@
       const f = easeInOut(range(p, FLY)), r = easeInOut(range(p, RING));
       // the ring grows out of the sensor — from the sensor's width to its own — as the sensor fades
       word.style.setProperty('--ring', r.toFixed(3));
-      word.style.setProperty('--word-o', easeInOut(range(p, WORD)).toFixed(3));
+      const wo = easeInOut(range(p, WORD));
+      word.style.setProperty('--word-o', wo.toFixed(3));
+      word.classList.toggle('is-unsaid', wo < 0.5);
       word.style.setProperty('--ring-x', lerp(Math.min(1, (ringH / WIDE) / Math.max(1, ringW)), 1, r).toFixed(3));
       gl.style.opacity = (1 - r).toFixed(3);
 
